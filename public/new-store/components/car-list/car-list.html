@@ -1,0 +1,134 @@
+<!-- Car List Component -->
+<section class="bg-white py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4" dir="rtl">
+      <div class="flex-1">
+        <h2 class="text-[32px] font-extrabold mb-3">
+          <span class="text-primary">قائمة</span>
+          <span class="text-gold"> السيارات</span>
+        </h2>
+        <p class="text-gray-600 text-[15px] leading-relaxed">
+          أكثر من مئة أفضل السيارات المتاحة
+        </p>
+      </div>
+      <button
+        class="bg-primary text-white px-8 py-3 rounded-md font-bold text-[15px] hover:bg-primary-dark transition-all whitespace-nowrap w-full sm:w-auto"
+      >
+        عرض جميع السيارات
+      </button>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <!-- Filter Sidebar -->
+      <div class="lg:col-span-1 order-1 lg:order-1">
+        <div class="space-y-4">
+          <!-- Used Cars Filter -->
+          <button
+            class="w-full bg-primary text-white px-6 py-4 rounded-lg font-bold text-[16px] hover:bg-primary-dark transition-all flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-car text-[18px]"></i>
+            <span>سيارات شائعة</span>
+          </button>
+
+          <!-- Certified Pre-owned Filter -->
+          <button
+            class="w-full bg-white text-primary border-2 border-[#E5E7EB] px-6 py-4 rounded-lg font-bold text-[16px] hover:border-primary transition-all flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-certificate text-[18px]"></i>
+            <span>سيارات مع تجربة قيادة</span>
+          </button>
+
+          <!-- Best Offers Filter -->
+          <button
+            class="w-full bg-white text-primary border-2 border-[#E5E7EB] px-6 py-4 rounded-lg font-bold text-[16px] hover:border-primary transition-all flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-trophy text-[18px]"></i>
+            <span>أفضل العروض</span>
+          </button>
+
+          <!-- New Cars Filter -->
+          <button
+            class="w-full bg-white text-primary border-2 border-[#E5E7EB] px-6 py-4 rounded-lg font-bold text-[16px] hover:border-primary transition-all flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-sparkles text-[18px]"></i>
+            <span>سيارات جديدة</span>
+          </button>
+
+          <!-- Discount Cars Filter -->
+          <button
+            class="w-full bg-white text-primary border-2 border-[#E5E7EB] px-6 py-4 rounded-lg font-bold text-[16px] hover:border-primary transition-all flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-tags text-[18px]"></i>
+            <span>سيارات مع خصم</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cars Carousel -->
+      <div class="lg:col-span-3 order-2 lg:order-2">
+        <div id="car-list-carousel" class="car-carousel-wrapper">
+          <div class="car-carousel-viewport overflow-hidden">
+            <div class="car-carousel-track flex gap-10 transition-transform duration-500 ease-in-out">
+              <!-- Cards will be inserted here dynamically -->
+            </div>
+          </div>
+
+          <!-- Bottom Controls -->
+          <div class="flex items-center justify-center gap-12 mt-14">
+            <button
+              type="button"
+              class="car-carousel-prev w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+            >
+              <i class="fas fa-arrow-right text-[22px]"></i>
+            </button>
+
+            <div class="relative w-[112px] h-[8px] bg-gray-300 rounded-full overflow-hidden">
+              <span class="car-carousel-progress absolute top-0 right-0 h-full w-[42px] bg-primary rounded-full transition-all duration-300"></span>
+            </div>
+
+            <button
+              type="button"
+              class="car-carousel-next w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+            >
+              <i class="fas fa-arrow-left text-[22px]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Initialize car list carousel
+  setTimeout(() => {
+    if (window.CarCarousel && window.carsData && window.generateCarCards) {
+      const carListCarousel = new window.CarCarousel('#car-list-carousel');
+      const cardsHTML = window.generateCarCards(window.carsData, 'car-list-card');
+      // Double the cards for infinite loop
+      carListCarousel.addCards(cardsHTML + cardsHTML);
+
+      const originalCount = window.carsData.length;
+      let autoIndex = 0;
+
+      setInterval(() => {
+        autoIndex++;
+        const move = autoIndex * carListCarousel.getCardStep();
+        carListCarousel.track.style.transition = 'transform 0.5s ease-in-out';
+        carListCarousel.track.style.transform = `translateX(${move}px)`;
+        carListCarousel.currentSlide = autoIndex;
+
+        if (autoIndex >= originalCount) {
+          setTimeout(() => {
+            carListCarousel.track.style.transition = 'none';
+            carListCarousel.track.style.transform = 'translateX(0px)';
+            carListCarousel.currentSlide = 0;
+            autoIndex = 0;
+          }, 500);
+        }
+      }, 3000);
+    }
+  }, 100);
+</script>

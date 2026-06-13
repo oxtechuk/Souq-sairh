@@ -1,0 +1,85 @@
+<!-- Featured Cars Component -->
+<section class="bg-white py-12 overflow-hidden" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4" dir="rtl">
+      <div class="flex-1">
+        <h2 class="text-[32px] font-extrabold mb-3">
+          <span class="text-primary">السيارات</span>
+          <span class="text-gold"> المميزة</span>
+        </h2>
+        <p class="text-gray-600 text-[15px] leading-relaxed">
+          استكشف مجموعتنا مميزة، بمواصفات خاصة، وبأفضل عروض التمويل.
+        </p>
+      </div>
+      <button
+        class="bg-primary text-white px-8 py-3 rounded-md font-bold text-[15px] hover:bg-primary-dark transition-all whitespace-nowrap w-full sm:w-auto"
+      >
+        عرض جميع السيارات
+      </button>
+    </div>
+
+    <!-- Carousel Container -->
+    <div id="featured-cars-carousel" class="car-carousel-wrapper">
+      <div class="car-carousel-viewport overflow-hidden">
+        <div class="car-carousel-track flex gap-10 transition-transform duration-500 ease-in-out">
+          <!-- Cards will be inserted here dynamically -->
+        </div>
+      </div>
+
+      <!-- Bottom Controls -->
+      <div class="flex items-center justify-center gap-12 mt-14">
+        <button
+          type="button"
+          class="car-carousel-prev w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+        >
+          <i class="fas fa-arrow-right text-[22px]"></i>
+        </button>
+
+        <div class="relative w-[112px] h-[8px] bg-gray-300 rounded-full overflow-hidden">
+          <span class="car-carousel-progress absolute top-0 right-0 h-full w-[42px] bg-primary rounded-full transition-all duration-300"></span>
+        </div>
+
+        <button
+          type="button"
+          class="car-carousel-next w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+        >
+          <i class="fas fa-arrow-left text-[22px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Initialize featured cars carousel
+  setTimeout(() => {
+    if (window.CarCarousel && window.carsData && window.generateCarCards) {
+      const featuredCarousel = new window.CarCarousel('#featured-cars-carousel');
+      const cardsHTML = window.generateCarCards(window.carsData, 'car-card');
+      // Double the cards for infinite loop
+      featuredCarousel.addCards(cardsHTML + cardsHTML);
+
+      const originalCount = window.carsData.length;
+      let autoIndex = 0;
+
+      setInterval(() => {
+        autoIndex++;
+        const move = autoIndex * featuredCarousel.getCardStep();
+        featuredCarousel.track.style.transition = 'transform 0.5s ease-in-out';
+        featuredCarousel.track.style.transform = `translateX(${move}px)`;
+        featuredCarousel.currentSlide = autoIndex;
+
+        // When we reach the cloned set, silently jump back to original
+        if (autoIndex >= originalCount) {
+          setTimeout(() => {
+            featuredCarousel.track.style.transition = 'none';
+            featuredCarousel.track.style.transform = 'translateX(0px)';
+            featuredCarousel.currentSlide = 0;
+            autoIndex = 0;
+          }, 500);
+        }
+      }, 3000);
+    }
+  }, 100);
+</script>

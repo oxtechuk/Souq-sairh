@@ -1,0 +1,115 @@
+.spec-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.spec-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.spec-icon-wrapper {
+    background: #1A3263;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.spec-icon {
+    color: white;
+    font-size: 24px;
+}
+
+.spec-content {
+    text-align: right;
+    flex: 1;
+}
+
+.spec-label {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 0.25rem;
+}
+
+.spec-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A3263;
+}
+
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .spec-card {
+        padding: 1.25rem;
+    }
+
+    .spec-icon-wrapper {
+        width: 48px;
+        height: 48px;
+    }
+
+    .spec-icon {
+        font-size: 20px;
+    }
+
+    .spec-value {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .spec-card {
+        padding: 1rem;
+    }
+
+    .spec-icon-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+
+    .spec-icon {
+        font-size: 18px;
+    }
+
+    .spec-label {
+        font-size: 13px;
+    }
+
+    .spec-value {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 640px) {
+    .spec-card {
+        padding: 0.875rem;
+    }
+
+    .spec-icon-wrapper {
+        width: 40px;
+        height: 40px;
+    }
+
+    .spec-icon {
+        font-size: 16px;
+    }
+
+    .spec-label {
+        font-size: 12px;
+    }
+
+    .spec-value {
+        font-size: 14px;
+    }
+}

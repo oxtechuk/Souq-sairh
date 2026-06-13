@@ -1,0 +1,75 @@
+<!-- Articles List Component -->
+<section class="articles-list-section" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-[32px] font-extrabold mb-3">
+        <span class="text-primary">احدث</span>
+        <span class="text-gold"> المقالات</span>
+      </h2>
+      <p class="text-[15px]" style="color: #1A3263;">اطلع على أفضل احدث المقالات لدينا</p>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="articles-grid" id="articles-grid">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="articles-pagination" id="articles-pagination">
+      <button class="articles-pag-btn" id="articles-prev">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <div class="articles-dots" id="articles-dots"></div>
+      <button class="articles-pag-btn" id="articles-next">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    const CARDS_PER_PAGE = 6;
+    let currentPage = 0;
+
+    const grid = document.getElementById('articles-grid');
+    const dotsContainer = document.getElementById('articles-dots');
+    const prevBtn = document.getElementById('articles-prev');
+    const nextBtn = document.getElementById('articles-next');
+
+    if (!grid || !window.articlesData || !window.generateArticleCard) return;
+
+    const totalPages = Math.ceil(window.articlesData.length / CARDS_PER_PAGE);
+
+    function renderDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'articles-dot' + (i === currentPage ? ' active' : '');
+        dot.addEventListener('click', () => goToPage(i));
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      const start = page * CARDS_PER_PAGE;
+      const slice = window.articlesData.slice(start, start + CARDS_PER_PAGE);
+      grid.innerHTML = slice.map(window.generateArticleCard).join('');
+      renderDots();
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) goToPage(currentPage - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+    });
+
+    goToPage(0);
+  })();
+</script>

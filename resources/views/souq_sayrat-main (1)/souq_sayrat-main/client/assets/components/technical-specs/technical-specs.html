@@ -1,0 +1,40 @@
+<!-- Technical Specifications Component -->
+<section class="py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-extrabold text-primary text-right mb-8">المواصفات التقنية</h2>
+    <div id="technical-specs-grid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Specs will be inserted here by JavaScript -->
+    </div>
+  </div>
+</section>
+
+<script>
+  function renderTechnicalSpecs(specs) {
+    const grid = document.getElementById('technical-specs-grid');
+    if (!grid || !specs) return;
+
+    grid.innerHTML = '';
+    
+    specs.forEach(spec => {
+      const specCard = document.createElement('div');
+      specCard.className = 'spec-card';
+      specCard.innerHTML = `
+        <div class="spec-icon-wrapper">
+          <i class="${spec.icon} spec-icon"></i>
+        </div>
+        <div class="spec-content">
+          <p class="spec-label">${spec.label}</p>
+          <p class="spec-value">${spec.value}</p>
+        </div>
+      `;
+      grid.appendChild(specCard);
+    });
+  }
+
+  // Initialize when data is available
+  setTimeout(() => {
+    if (window.carDetailsData && window.carDetailsData.technicalSpecs) {
+      renderTechnicalSpecs(window.carDetailsData.technicalSpecs);
+    }
+  }, 100);
+</script>

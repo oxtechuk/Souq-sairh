@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المقالات - سوق سيارة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1A3263",
+            "primary-dark": "#0f1f3d",
+            gold: "#d4a017",
+          },
+          fontFamily: {
+            tajawal: ["Tajawal", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../assets/css/global.css" />
+  <link rel="stylesheet" href="../assets/components/top-bar/top-bar.css" />
+  <link rel="stylesheet" href="../assets/components/header/header.css" />
+  <link rel="stylesheet" href="../assets/components/articles-list/articles-list.css" />
+  <link rel="stylesheet" href="../assets/components/articles-featured/articles-featured.css" />
+  <link rel="stylesheet" href="../assets/components/footer/footer.css" />
+  <script src="../assets/scripts/articlesData.js"></script>
+  <script src="../assets/scripts/components.js"></script>
+  <script src="../assets/scripts/articlesPage.js"></script>
+</head>
+<body class="font-tajawal">
+
+  <div id="top-bar-container"></div>
+  <div id="header-container"></div>
+
+  <div id="articles-featured-container"></div>
+
+  <div id="articles-list-container"></div>
+
+  <div id="footer-container"></div>
+
+</body>
+</html>

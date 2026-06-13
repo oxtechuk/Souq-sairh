@@ -1,0 +1,246 @@
+<!-- Hero Component -->
+<section class="bg-white py-10 sm:py-16 lg:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16" dir="ltr">
+      <!-- Left Side - Video and Social Media -->
+      <div class="relative order-2 lg:order-1" dir="ltr">
+        <!-- Video Container -->
+        <div
+          id="hero-video-container"
+          class="relative w-full max-w-[453px]"
+          style="aspect-ratio: 453/614"
+        >
+          <video
+            id="hero-video"
+            class="w-full h-full object-cover rounded-3xl"
+            poster="assets/images/hero-video-poster.png"
+          >
+            <source
+              src="assets/images/videos/hero-video.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+
+          <!-- Play Button -->
+          <button
+            id="play-button"
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-primary transition-all hover:scale-110 z-10"
+          >
+            <i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>
+          </button>
+
+          <!-- Arrow Icon -->
+          <div
+            class="absolute top-6 left-6 w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200"
+          >
+            <i class="fas fa-arrow-up-right text-xl"></i>
+          </div>
+
+          <!-- Social Media Icons -->
+          <div class="absolute bottom-4 right-4 flex flex-col gap-3 z-20">
+            <a
+              href="#"
+              class="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg"
+            >
+              <i class="fab fa-tiktok text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg"
+            >
+              <i class="fab fa-facebook-f text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg"
+            >
+              <i class="fab fa-instagram text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Title, Subtitle, Description, Buttons, Carousel -->
+      <div class="order-1 lg:order-2 flex flex-col space-y-8" dir="rtl">
+        <!-- Title and Subtitle -->
+        <div class="text-right">
+          <h1
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight mb-5"
+          >
+            تخيّر موتِرك..
+          </h1>
+          <h2
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gold leading-tight mb-4"
+          >
+            وحنّا نيسّر لك التمويل
+          </h2>
+        </div>
+
+        <!-- Description -->
+        <p
+          class="text-base sm:text-lg text-gray-600 leading-relaxed text-right"
+        >
+          لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك، أيًا بدأت
+          الحين مع "سوق سيارة" وعيش الرفاهية
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            onclick="window.location.href='pages/all-cars.html'"
+            class="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg transition-all hover:-translate-y-1 text-base"
+          >
+            استعرض السيارات
+          </button>
+          <button
+            onclick="window.location.href='pages/contact.html'"
+            class="bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg transition-all text-base"
+          >
+            اطلب تمويلك الآن
+          </button>
+        </div>
+
+        <!-- Carousel Section -->
+        <div class="relative" dir="ltr">
+          <!-- Image + Arrows Wrapper -->
+          <div class="relative">
+            <!-- Image Container -->
+            <div
+              class="carousel-container rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <div
+                class="carousel-track flex transition-transform duration-500 ease-in-out"
+              >
+                <div class="carousel-slide min-w-full">
+                  <img
+                    src="assets/images/car-slide-1.png"
+                    alt="Car Financing 1"
+                    class="w-full h-auto"
+                  />
+                </div>
+
+                <div class="carousel-slide min-w-full">
+                  <img
+                    src="assets/images/car-slide-2.png"
+                    alt="Car Financing 2"
+                    class="w-full h-auto"
+                  />
+                </div>
+
+                <div class="carousel-slide min-w-full">
+                  <img
+                    src="assets/images/car-slide-3.png"
+                    alt="Car Financing 3"
+                    class="w-full h-auto"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Left Arrow -->
+            <button
+              class="carousel-prev absolute left-2 bottom-2 w-11 h-11 bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 shadow-lg"
+            >
+              <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+
+            <!-- Right Arrow -->
+            <button
+              class="carousel-next absolute right-2 bottom-2 w-11 h-11 bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-110 z-20 shadow-lg"
+            >
+              <i class="fas fa-arrow-right text-lg"></i>
+            </button>
+          </div>
+
+          <!-- Dots -->
+          <div class="carousel-dots flex justify-center gap-2 mt-5">
+            <span
+              class="dot w-10 h-2 bg-primary rounded-full cursor-pointer transition-all"
+              data-index="0"
+            ></span>
+            <span
+              class="dot w-3 h-2 bg-gray-300 rounded-full cursor-pointer transition-all"
+              data-index="1"
+            ></span>
+            <span
+              class="dot w-3 h-2 bg-gray-300 rounded-full cursor-pointer transition-all"
+              data-index="2"
+            ></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Video Play/Pause functionality
+  const video = document.getElementById("hero-video");
+  const playButton = document.getElementById("play-button");
+
+  if (playButton && video) {
+    playButton.addEventListener("click", () => {
+      if (video.paused) {
+        video.play();
+        playButton.innerHTML =
+          '<i class="fas fa-pause text-2xl sm:text-3xl"></i>';
+      } else {
+        video.pause();
+        playButton.innerHTML =
+          '<i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>';
+      }
+    });
+  }
+
+  // Carousel functionality
+  let currentSlide = 0;
+  const track = document.querySelector(".carousel-track");
+  const slides = document.querySelectorAll(".carousel-slide");
+  const dots = document.querySelectorAll(".dot");
+  const prevButton = document.querySelector(".carousel-prev");
+  const nextButton = document.querySelector(".carousel-next");
+
+  function updateCarousel() {
+    if (track) {
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    dots.forEach((dot, index) => {
+      if (index === currentSlide) {
+        dot.classList.remove("w-3", "bg-gray-400");
+        dot.classList.add("w-10", "bg-primary");
+      } else {
+        dot.classList.remove("w-10", "bg-primary");
+        dot.classList.add("w-3", "bg-gray-400");
+      }
+    });
+  }
+
+  if (prevButton && nextButton) {
+    prevButton.addEventListener("click", () => {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      updateCarousel();
+    });
+
+    nextButton.addEventListener("click", () => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
+    });
+  }
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      currentSlide = index;
+      updateCarousel();
+    });
+  });
+
+  // Auto-play carousel
+  setInterval(() => {
+    if (slides.length > 0) {
+      currentSlide = (currentSlide + 1) % slides.length;
+      updateCarousel();
+    }
+  }, 5000);
+</script>

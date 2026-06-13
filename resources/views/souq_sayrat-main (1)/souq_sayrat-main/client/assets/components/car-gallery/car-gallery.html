@@ -1,0 +1,149 @@
+<!-- Car Gallery Component -->
+<section class="py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Interior Images -->
+      <div class="car-gallery">
+        <h3 class="text-2xl font-bold text-primary text-right mb-6">صور للسيارة من الداخل</h3>
+        <!-- Main Carousel -->
+        <div class="gallery-main">
+          <button class="carousel-btn carousel-btn-prev" onclick="changeGalleryImage('interior', -1)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <img id="interiorMainImage" src="" alt="Interior View" class="gallery-main-image" />
+          <div class="carousel-counter">
+            4 / <span id="interiorCounter">1</span>
+          </div>
+          <button class="carousel-btn carousel-btn-next" onclick="changeGalleryImage('interior', 1)">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <!-- Thumbnails -->
+        <div id="interior-thumbnails" class="gallery-thumbnails">
+          <!-- Thumbnails will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Exterior Images -->
+      <div class="car-gallery">
+        <h3 class="text-2xl font-bold text-primary text-right mb-6">صور للسيارة من الخارج</h3>
+        <!-- Main Carousel -->
+        <div class="gallery-main">
+          <button class="carousel-btn carousel-btn-prev" onclick="changeGalleryImage('exterior', -1)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <img id="exteriorMainImage" src="" alt="Exterior View" class="gallery-main-image" />
+          <div class="carousel-counter">
+            4 / <span id="exteriorCounter">1</span>
+          </div>
+          <button class="carousel-btn carousel-btn-next" onclick="changeGalleryImage('exterior', 1)">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <!-- Thumbnails -->
+        <div id="exterior-thumbnails" class="gallery-thumbnails">
+          <!-- Thumbnails will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Gallery data
+  const galleryImages = {
+    exterior: [],
+    interior: []
+  };
+
+  let currentGalleryIndex = {
+    exterior: 0,
+    interior: 0
+  };
+
+  function changeGalleryImage(gallery, direction) {
+    const images = galleryImages[gallery];
+    currentGalleryIndex[gallery] += direction;
+
+    if (currentGalleryIndex[gallery] < 0) {
+      currentGalleryIndex[gallery] = images.length - 1;
+    } else if (currentGalleryIndex[gallery] >= images.length) {
+      currentGalleryIndex[gallery] = 0;
+    }
+
+    updateGalleryDisplay(gallery);
+    updateActiveThumbnail(gallery);
+  }
+
+  function selectGalleryImage(gallery, index) {
+    currentGalleryIndex[gallery] = index;
+    updateGalleryDisplay(gallery);
+    updateActiveThumbnail(gallery);
+  }
+
+  function updateGalleryDisplay(gallery) {
+    const index = currentGalleryIndex[gallery];
+    const images = galleryImages[gallery];
+    const mainImage = document.getElementById(gallery + 'MainImage');
+    const counter = document.getElementById(gallery + 'Counter');
+
+    if (mainImage && images[index]) {
+      mainImage.src = images[index];
+    }
+    if (counter) {
+      counter.textContent = index + 1;
+    }
+  }
+
+  function updateActiveThumbnail(gallery) {
+    const container = document.getElementById(gallery + '-thumbnails');
+    if (!container) return;
+
+    const thumbs = container.querySelectorAll('.gallery-thumb');
+    thumbs.forEach((thumb, idx) => {
+      if (idx === currentGalleryIndex[gallery]) {
+        thumb.classList.add('active');
+      } else {
+        thumb.classList.remove('active');
+      }
+    });
+  }
+
+  function renderGalleryThumbnails(gallery, images) {
+    const container = document.getElementById(gallery + '-thumbnails');
+    if (!container) return;
+
+    container.innerHTML = '';
+    images.forEach((imageSrc, index) => {
+      const thumb = document.createElement('div');
+      thumb.className = 'gallery-thumb' + (index === 0 ? ' active' : '');
+      thumb.innerHTML = `<img src="${imageSrc}" alt="${gallery} ${index + 1}" />`;
+      thumb.onclick = () => selectGalleryImage(gallery, index);
+      container.appendChild(thumb);
+    });
+  }
+
+  function initializeGallery(data) {
+    if (!data) return;
+
+    // Set gallery images
+    if (data.exteriorImages) {
+      galleryImages.exterior = data.exteriorImages;
+      renderGalleryThumbnails('exterior', data.exteriorImages);
+      updateGalleryDisplay('exterior');
+    }
+
+    if (data.interiorImages) {
+      galleryImages.interior = data.interiorImages;
+      renderGalleryThumbnails('interior', data.interiorImages);
+      updateGalleryDisplay('interior');
+    }
+  }
+
+  // Initialize when data is available
+  setTimeout(() => {
+    if (window.carDetailsData) {
+      initializeGallery(window.carDetailsData);
+    }
+  }, 100);
+</script>

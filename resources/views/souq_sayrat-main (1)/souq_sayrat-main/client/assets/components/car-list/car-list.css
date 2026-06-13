@@ -1,0 +1,16 @@
+/* Car List Component - Custom styles */
+
+.car-list-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.car-list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Carousel specific styles */
+#car-list-carousel .car-carousel-track .car-list-card {
+    flex-shrink: 0;
+    width: 280px;
+}

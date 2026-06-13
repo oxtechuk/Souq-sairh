@@ -1,0 +1,134 @@
+/* Why Choose Us Section */
+.why-choose-us-section {
+    background: white;
+}
+
+.why-choose-us-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+/* Content Side */
+.why-choose-us-content {
+    text-align: right;
+}
+
+.why-choose-us-main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1A3263;
+    margin-bottom: 3rem;
+}
+
+.why-choose-us-features {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.feature-item {
+    text-align: right;
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FDB913;
+    margin-bottom: 0.75rem;
+}
+
+.feature-description {
+    font-size: 1rem;
+    color: #6B7280;
+    line-height: 1.8;
+}
+
+/* Image Side */
+.why-choose-us-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-card {
+    position: relative;
+    background: transparent;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 450px;
+    overflow: hidden;
+}
+
+.main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    display: block;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .why-choose-us-container {
+        gap: 3rem;
+    }
+
+    .why-choose-us-main-title {
+        font-size: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+    }
+
+    .feature-description {
+        font-size: 0.9375rem;
+    }
+
+    .image-card {
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .why-choose-us-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .why-choose-us-content {
+        order: 2;
+    }
+
+    .why-choose-us-image {
+        order: 1;
+    }
+
+    .why-choose-us-main-title {
+        font-size: 1.75rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .why-choose-us-features {
+        gap: 2rem;
+    }
+
+    .feature-item {
+        text-align: center;
+    }
+
+    .feature-title {
+        font-size: 1.125rem;
+    }
+
+    .feature-description {
+        font-size: 0.875rem;
+    }
+
+    .image-card {
+        max-width: 100%;
+    }
+}

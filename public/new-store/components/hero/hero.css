@@ -1,0 +1,52 @@
+/* Hero Component - Custom styles */
+
+/* Video mask support for older browsers */
+video {
+    object-fit: cover;
+}
+
+/* Mobile: shrink video container and all inner elements */
+@media (max-width: 640px) {
+    #hero-video-container {
+        max-width: 260px !important;
+        margin: 0 auto;
+    }
+
+    /* Play button */
+    #play-button {
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+
+    #play-button i {
+        font-size: 1.1rem !important;
+    }
+
+    /* Arrow icon top-left */
+    #hero-video-container .absolute.top-6.left-6 {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        top: 0.75rem !important;
+        left: 0.75rem !important;
+    }
+
+    #hero-video-container .absolute.top-6.left-6 i {
+        font-size: 0.8rem !important;
+    }
+
+    /* Social icons - keep inside container */
+    #hero-video-container .absolute.bottom-4.right-4 {
+        right: 0.5rem !important;
+        bottom: 0.5rem !important;
+        gap: 0.4rem !important;
+    }
+
+    #hero-video-container .absolute.bottom-4.right-4 a {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
+
+    #hero-video-container .absolute.bottom-4.right-4 i {
+        font-size: 0.8rem !important;
+    }
+}

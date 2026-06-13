@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سوق سيارة - Home Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1A3263",
+              "primary-dark": "#0f1f3d",
+              "primary-light": "#2a4a8f",
+              gold: "#d4a017",
+            },
+            fontFamily: {
+              tajawal: ["Tajawal", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link
+      rel="stylesheet"
+      href="assets/components/car-carousel/car-carousel.css"
+    />
+    <link rel="stylesheet" href="assets/components/top-bar/top-bar.css" />
+    <link rel="stylesheet" href="assets/components/header/header.css" />
+    <link rel="stylesheet" href="assets/components/hero/hero.css" />
+    <link
+      rel="stylesheet"
+      href="assets/components/search-filter/search-filter.css"
+    />
+    <link
+      rel="stylesheet"
+      href="assets/components/featured-cars/featured-cars.css"
+    />
+    <link rel="stylesheet" href="assets/components/car-list/car-list.css" />
+    <link rel="stylesheet" href="assets/components/offers-grid/offers-grid.css" />
+    <link rel="stylesheet" href="assets/components/brands-carousel/brands-carousel.css" />
+    <link rel="stylesheet" href="assets/components/testimonials/testimonials.css" />
+    <link rel="stylesheet" href="assets/components/footer/footer.css" />
+    <link rel="stylesheet" href="assets/css/home.css" />
+    <script src="assets/scripts/carCarousel.js"></script>
+    <script src="assets/scripts/carData.js"></script>
+    <script src="assets/scripts/testimonialsData.js"></script>
+    <script src="assets/scripts/components.js"></script>
+  </head>
+  <body class="font-tajawal">
+    <!-- Top Bar Component -->
+    <div id="top-bar-container"></div>
+
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <!-- Hero Component -->
+    <div id="hero-container"></div>
+
+    <!-- Search Filter Component -->
+    <div id="search-filter-container"></div>
+
+    <!-- Featured Cars Component -->
+    <div id="featured-cars-container"></div>
+
+    <!-- Car List Component -->
+    <div id="car-list-container"></div>
+
+    <!-- Offers Grid Component -->
+    <div id="offers-grid-container"></div>
+
+    <!-- Brands Carousel Component -->
+    <div id="brands-carousel-container"></div>
+
+    <!-- Testimonials Component -->
+    <div id="testimonials-container"></div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+  </body>
+</html>

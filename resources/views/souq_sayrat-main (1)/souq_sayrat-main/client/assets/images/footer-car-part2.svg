@@ -1,0 +1,6 @@
+<svg width="800" height="150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lower part of car with logo -->
+  <rect x="300" y="20" width="200" height="80" rx="10" fill="#1A3263"/>
+  <text x="400" y="70" font-family="Arial" font-size="24" font-weight="bold" fill="white" text-anchor="middle">SOUQ SAYARAH</text>
+  <text x="400" y="95" font-family="Arial" font-size="14" fill="#d4a017" text-anchor="middle">??? ?????</text>
+</svg>

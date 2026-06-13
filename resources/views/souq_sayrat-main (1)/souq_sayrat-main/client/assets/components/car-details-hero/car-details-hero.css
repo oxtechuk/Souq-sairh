@@ -1,0 +1,161 @@
+.car-details-hero {
+    padding: 3rem 0;
+}
+
+.info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    height: fit-content;
+}
+
+.space-y-6>*+* {
+    margin-top: 1.5rem;
+}
+
+.main-image-box {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.thumbnail-item {
+    background: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 120px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-item:hover,
+.thumbnail-item.active {
+    border-color: #1A3263;
+}
+
+.colors-box {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.color-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid #E5E7EB;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+    border-color: #1A3263;
+}
+
+.color-btn.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.feature-badge {
+    background: #F0FDF4;
+    border: 2px solid #D1FAE5;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+}
+
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .car-details-hero {
+        padding: 2rem 0;
+    }
+
+    .thumbnail-item {
+        width: 100px;
+        height: 85px;
+    }
+}
+
+@media (max-width: 768px) {
+    .car-details-hero {
+        padding: 1.5rem 0;
+    }
+
+    .info-card {
+        padding: 1.5rem;
+    }
+
+    .main-image-box {
+        padding: 1rem;
+    }
+
+    .thumbnail-item {
+        width: 80px;
+        height: 70px;
+        padding: 0.25rem;
+    }
+
+    .colors-box {
+        padding: 1rem;
+    }
+
+    .color-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .feature-badge {
+        padding: 0.75rem;
+    }
+
+    .feature-badge i {
+        font-size: 1.25rem !important;
+    }
+
+    .feature-badge p {
+        font-size: 0.75rem !important;
+    }
+
+    /* Stack title and rating vertically on mobile */
+    .info-card h1 {
+        font-size: 1.5rem !important;
+    }
+
+    .info-card #car-price {
+        font-size: 2rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .thumbnail-item {
+        width: 70px;
+        height: 60px;
+    }
+
+    .color-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .space-y-6>*+* {
+        margin-top: 1rem;
+    }
+}

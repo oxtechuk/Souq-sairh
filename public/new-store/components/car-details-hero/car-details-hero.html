@@ -1,0 +1,162 @@
+<!-- Car Details Hero Component -->
+<section class="car-details-hero" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Right: Info -->
+      <div class="info-card space-y-6">
+        <!-- Rating & Title -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-extrabold text-primary text-right" id="car-title">Car Title</h1>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-star text-gold text-xl"></i>
+              <span class="text-2xl font-bold text-primary" id="car-rating">0</span>
+              <span class="text-sm text-gray-500" id="rating-count">(0 تقييم)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="border-t border-b border-gray-200 py-6">
+          <p class="text-sm text-gray-500 text-right mb-2">السعر النقدي</p>
+          <p class="text-4xl font-extrabold text-primary text-right mb-2" id="car-price">0 ₪</p>
+          <p class="text-sm text-gray-500 text-right" id="monthly-payment">من أو 0 ريس شهرياً</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-4">
+          <button class="flex-1 bg-primary text-white py-4 rounded-lg font-bold text-lg hover:bg-primary-dark transition-all">
+            اطلبها الآن
+          </button>
+          <button class="bg-white text-primary border-2 border-primary py-4 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+            <i class="fas fa-code-compare"></i>
+            أضف للمقارنة
+          </button>
+        </div>
+
+        <!-- Separator -->
+        <div class="border-t border-gray-200"></div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="feature-badge">
+            <i class="fas fa-medal text-green-500 text-2xl mb-2"></i>
+            <p class="text-sm font-bold text-primary">ضمان شامل</p>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-shield-alt text-green-500 text-2xl mb-2"></i>
+            <p class="text-sm font-bold text-primary">جودة مضمونة</p>
+          </div>
+          <div class="feature-badge">
+            <i class="fas fa-check-circle text-green-500 text-2xl mb-2"></i>
+            <p class="text-sm font-bold text-primary">توصيل مجاني</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left: Images -->
+      <div class="space-y-6">
+        <!-- Main Image with Thumbnails -->
+        <div class="flex gap-4">
+          <!-- Thumbnails - Vertical -->
+          <div id="hero-thumbnails" class="flex flex-col gap-4">
+            <!-- Thumbnails will be inserted here -->
+          </div>
+
+          <!-- Main Image -->
+          <div class="main-image-box flex-1">
+            <img id="mainImage" src="" alt="Car" class="w-full h-auto object-contain" />
+          </div>
+        </div>
+
+        <!-- Colors -->
+        <div class="colors-box">
+          <h3 class="text-lg font-bold text-primary text-center mb-4">الألوان المتاحة</h3>
+          <div id="color-options" class="flex gap-3 justify-center flex-row">
+            <!-- Colors will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function changeImage(thumb, src) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+      mainImage.src = src;
+    }
+    document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+  }
+
+  function selectColor(btn) {
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function renderCarDetailsHero(carData) {
+    if (!carData) return;
+
+    // Set title
+    const titleEl = document.getElementById('car-title');
+    if (titleEl) titleEl.textContent = carData.title || '';
+
+    // Set rating
+    const ratingEl = document.getElementById('car-rating');
+    if (ratingEl) ratingEl.textContent = carData.rating || '0';
+
+    const ratingCountEl = document.getElementById('rating-count');
+    if (ratingCountEl) ratingCountEl.textContent = '(' + (carData.ratingCount || 0) + ' تقييم)';
+
+    // Set price
+    const priceEl = document.getElementById('car-price');
+    if (priceEl) priceEl.textContent = (carData.price || '0') + ' ₪';
+
+    const monthlyEl = document.getElementById('monthly-payment');
+    if (monthlyEl) monthlyEl.textContent = 'من أو ' + (carData.monthlyPayment || '0') + ' ريس شهرياً';
+
+    // Set main image
+    const mainImageEl = document.getElementById('mainImage');
+    if (mainImageEl && carData.images && carData.images.length > 0) {
+      mainImageEl.src = carData.images[0];
+    }
+
+    // Render thumbnails
+    const thumbnailsContainer = document.getElementById('hero-thumbnails');
+    if (thumbnailsContainer && carData.images) {
+      thumbnailsContainer.innerHTML = '';
+      carData.images.forEach((imageSrc, index) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumbnail-item' + (index === 0 ? ' active' : '');
+        thumb.innerHTML = '<img src="' + imageSrc + '" alt="View ' + (index + 1) + '" class="w-full h-auto object-contain" />';
+        thumb.onclick = () => changeImage(thumb, imageSrc);
+        thumbnailsContainer.appendChild(thumb);
+      });
+    }
+
+    // Render colors
+    const colorsContainer = document.getElementById('color-options');
+    if (colorsContainer && carData.colors) {
+      colorsContainer.innerHTML = '';
+      carData.colors.forEach((color, index) => {
+        const colorBtn = document.createElement('button');
+        colorBtn.className = 'color-btn' + (index === 0 ? ' selected' : '');
+        colorBtn.style.background = color;
+        if (color === '#FFFFFF') {
+          colorBtn.style.borderColor = '#000';
+        }
+        colorBtn.onclick = () => selectColor(colorBtn);
+        colorsContainer.appendChild(colorBtn);
+      });
+    }
+  }
+
+  // Initialize when data is available
+  setTimeout(() => {
+    if (window.carDetailsData) {
+      renderCarDetailsHero(window.carDetailsData);
+    }
+  }, 100);
+</script>

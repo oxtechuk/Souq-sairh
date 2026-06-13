@@ -1,0 +1,65 @@
+<!-- Car Comparison Component -->
+<section class="car-comparison-section py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold text-primary mb-2">
+        قارن <span class="text-gold">بين السيارات</span>
+      </h2>
+      <p class="text-gray-600">قارن بين سيارتين لتحدد اختيارك</p>
+    </div>
+
+    <!-- Comparison Grid -->
+    <div class="comparison-grid">
+      <!-- Selected Car Card -->
+      <div class="comparison-slot car-comparison-card">
+        <div class="comparison-card-image-section">
+          <span class="year-badge-left">2024</span>
+          <img src="../assets/images/car-1.png" alt="Car" class="comparison-main-image" />
+          <button class="change-car-badge">
+            <i class="fas fa-sync-alt"></i>
+            <span>تغيير السيارة</span>
+          </button>
+        </div>
+
+        <div class="comparison-card-title">
+          <button class="remove-btn-left" onclick="removeComparisonCar(1)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+          <h3 class="comparison-car-title">كيا سبورتاج GLS 1. 6L</h3>
+        </div>
+
+        <div class="comparison-price-grid">
+          <div class="comparison-price-col">
+            <p class="comparison-price-label">سعر الكاش</p>
+            <p class="comparison-price-amount">92,000 ₪</p>
+            <p class="comparison-price-strike">92,000 ₪</p>
+          </div>
+          <div class="comparison-price-divider"></div>
+          <div class="comparison-price-col">
+            <p class="comparison-price-label">القسط الشهري</p>
+            <p class="comparison-price-amount">92,000 ₪</p>
+            <p class="comparison-price-note">تقديري</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Car Slot -->
+      <div class="comparison-slot add-car-slot">
+        <div class="add-car-content">
+          <div class="add-car-icon">
+            <i class="fas fa-plus"></i>
+          </div>
+          <p class="add-car-text">أضف سيارة للمقارنة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function removeComparisonCar(carId) {
+    console.log('Remove car:', carId);
+    // Add logic to remove car from comparison
+  }
+</script>

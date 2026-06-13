@@ -1,0 +1,125 @@
+<!-- Financing Partners Component -->
+<section class="financing-partners-section py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section Header -->
+    <div class="financing-partners-header">
+      <h2 class="financing-partners-title">
+        شركاء التيسير.. <span class="text-gold">حلول تمويلية معتمدة</span>
+      </h2>
+      <p class="financing-partners-subtitle">
+        نتعاون مع كبرى الجهات التمويلية والبنوك لنضمن لك أفضل نسبة تمويل وأسرع إجراءات.
+      </p>
+    </div>
+
+    <!-- Desktop: static grid -->
+    <div class="financing-partners-container partners-desktop">
+      <div class="partners-grid">
+        <div class="partner-logo"><img src="../assets/images/partners/bsf.png" alt="BSF" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/alinma.png" alt="Alinma Bank" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/albilad.png" alt="Bank AlBilad" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/alrajhi.png" alt="Al Rajhi Bank" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/abdul-latif.png" alt="Abdul Latif Jameel" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/bsf.png" alt="BSF" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/alinma.png" alt="Alinma Bank" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/albilad.png" alt="Bank AlBilad" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/alrajhi.png" alt="Al Rajhi Bank" /></div>
+        <div class="partner-logo"><img src="../assets/images/partners/abdul-latif.png" alt="Abdul Latif Jameel" /></div>
+      </div>
+    </div>
+
+    <!-- Mobile: 2x2 carousel -->
+    <div class="partners-mobile-carousel">
+      <div class="partners-mobile-viewport">
+        <div class="partners-mobile-track" id="partners-mobile-track"></div>
+      </div>
+      <div class="flex items-center justify-center gap-8 mt-6">
+        <button class="partners-prev w-[44px] h-[44px] bg-primary text-white rounded-full flex items-center justify-center">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <div class="partners-dots flex gap-2" id="partners-dots"></div>
+        <button class="partners-next w-[44px] h-[44px] bg-primary text-white rounded-full flex items-center justify-center">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    const partnersData = [
+      { src: '../assets/images/partners/bsf.png', alt: 'BSF' },
+      { src: '../assets/images/partners/alinma.png', alt: 'Alinma Bank' },
+      { src: '../assets/images/partners/albilad.png', alt: 'Bank AlBilad' },
+      { src: '../assets/images/partners/alrajhi.png', alt: 'Al Rajhi Bank' },
+      { src: '../assets/images/partners/abdul-latif.png', alt: 'Abdul Latif Jameel' },
+      { src: '../assets/images/partners/bsf.png', alt: 'BSF' },
+      { src: '../assets/images/partners/alinma.png', alt: 'Alinma Bank' },
+      { src: '../assets/images/partners/albilad.png', alt: 'Bank AlBilad' },
+    ];
+
+    if (window.innerWidth > 768) return;
+
+    const track = document.getElementById('partners-mobile-track');
+    const dotsContainer = document.getElementById('partners-dots');
+    const prevBtn = document.querySelector('.partners-prev');
+    const nextBtn = document.querySelector('.partners-next');
+    if (!track) return;
+
+    const perPage = 4;
+    const totalPages = Math.ceil(partnersData.length / perPage);
+    let pageIndex = 0;
+
+    // Build pages (doubled)
+    function buildPages(data) {
+      let html = '';
+      const pages = Math.ceil(data.length / perPage);
+      for (let i = 0; i < pages; i++) {
+        html += '<div class="partners-mobile-page">';
+        data.slice(i * perPage, i * perPage + perPage).forEach(p => {
+          html += '<div class="partner-logo"><img src="' + p.src + '" alt="' + p.alt + '" /></div>';
+        });
+        html += '</div>';
+      }
+      return html;
+    }
+
+    track.innerHTML = buildPages(partnersData) + buildPages(partnersData);
+    track.style.transform = 'translateX(0)';
+    track.style.transition = 'none';
+
+    // Dots
+    for (let d = 0; d < totalPages; d++) {
+      const dot = document.createElement('span');
+      dot.className = 'partners-dot' + (d === 0 ? ' active' : '');
+      dotsContainer.appendChild(dot);
+    }
+
+    function syncDots() {
+      dotsContainer.querySelectorAll('.partners-dot').forEach(function(dot, i) {
+        dot.classList.toggle('active', i === (pageIndex % totalPages));
+      });
+    }
+
+    function goTo(index) {
+      pageIndex = index;
+      track.style.transition = 'transform 0.5s ease-in-out';
+      track.style.transform = 'translateX(' + (pageIndex * 100) + '%)';
+      syncDots();
+      if (pageIndex >= totalPages) {
+        setTimeout(function() {
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(0)';
+          pageIndex = 0;
+        }, 500);
+      }
+    }
+
+    prevBtn.onclick = function() { goTo(pageIndex <= 0 ? totalPages - 1 : pageIndex - 1); };
+    nextBtn.onclick = function() { goTo(pageIndex + 1); };
+    setInterval(function() { goTo(pageIndex + 1); }, 3000);
+    syncDots();
+  })();
+</script>

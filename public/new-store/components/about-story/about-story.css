@@ -1,0 +1,48 @@
+/* About Story Section */
+.about-story-section {
+    background: white;
+}
+
+.about-story-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-story-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1A3263;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.about-story-description {
+    font-size: 1.125rem;
+    color: #6B7280;
+    line-height: 1.9;
+    font-weight: 400;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .about-story-title {
+        font-size: 1.875rem;
+    }
+
+    .about-story-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-story-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .about-story-description {
+        font-size: 0.9375rem;
+        line-height: 1.7;
+    }
+}

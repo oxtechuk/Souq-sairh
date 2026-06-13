@@ -1,0 +1,140 @@
+<!-- Footer Component -->
+<footer class="footer-wrapper" dir="rtl">
+  <!-- Car + Mask Illustrations -->
+  <div class="footer-illustrations">
+    <div class="footer-car-illustration">
+      <img src="assets/images/footer-car.svg" alt="Car Illustration" />
+    </div>
+    <div class="footer-mask-illustration">
+      <img src="assets/images/Mask group.svg" alt="Souq Sayarah" />
+    </div>
+  </div>
+
+  <!-- Main Footer -->
+  <div class="footer-main">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="footer-grid">
+        <!-- Column 1: Quick Links -->
+        <div class="footer-column">
+          <h3 class="footer-heading">
+            <span class="footer-divider">|</span>
+            روابط سريعة
+          </h3>
+          <ul class="footer-links">
+            <li><a data-page="index.html" href="#"><span class="link-bullet">●</span> الرئيسية</a></li>
+            <li><a data-page="pages/contact.html" href="#"><span class="link-bullet">●</span> تمويل السيارات</a></li>
+            <li><a data-page="pages/offers.html" href="#"><span class="link-bullet">●</span> عروضنا</a></li>
+            <li><a data-page="pages/about.html" href="#"><span class="link-bullet">●</span> من نحن</a></li>
+            <li><a data-page="pages/articles.html" href="#"><span class="link-bullet">●</span> المقالات</a></li>
+          </ul>
+
+          <script>
+            (function () {
+              const isInPages = window.location.pathname.includes('/pages/');
+              document.querySelectorAll('.footer-links a[data-page]').forEach(function (link) {
+                const page = link.getAttribute('data-page');
+                if (page) {
+                  if (isInPages) {
+                    link.href = page === 'index.html' ? '../index.html' : page.replace('pages/', '');
+                  } else {
+                    link.href = page;
+                  }
+                }
+              });
+            })();
+          </script>
+        </div>
+
+        <!-- Column 2: Our Services -->
+        <div class="footer-column">
+          <h3 class="footer-heading">
+            <span class="footer-divider">|</span>
+            خدماتنا
+          </h3>
+          <ul class="footer-links">
+            <li><a href="#"><span class="link-bullet">●</span> صيانة دورية</a></li>
+            <li><a href="#"><span class="link-bullet">●</span> إصلاح الأعطال</a></li>
+            <li><a href="#"><span class="link-bullet">●</span> تجديد الرخصات</a></li>
+            <li><a href="#"><span class="link-bullet">●</span> تحسين الأداء</a></li>
+            <li><a href="#"><span class="link-bullet">●</span> تنظيف الأجزاء</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Contact Us -->
+        <div class="footer-column">
+          <h3 class="footer-heading">
+            <span class="footer-divider">|</span>
+            تواصل معنا
+          </h3>
+          <ul class="footer-contact">
+            <li>
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <i class="fas fa-phone"></i>
+                </div>
+                <div class="contact-text">
+                  <p class="contact-label">اتصل بنا</p>
+                  <p class="contact-value">056 9567 947</p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="contact-text">
+                  <p class="contact-label">راسلنا</p>
+                  <p class="contact-value">Test@Test.com</p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-text">
+                  <p class="contact-label">الموقع</p>
+                  <p class="contact-value">الرياض، المملكة العربية السعودية</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Follow Us -->
+        <div class="footer-column">
+          <h3 class="footer-heading">
+            <span class="footer-divider">|</span>
+            تابعنا
+          </h3>
+          <div class="social-icons">
+            <a href="#" class="social-icon social-tiktok">
+              <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="#" class="social-icon social-facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-icon social-instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="footer-bottom-content">
+        <p class="copyright">© 2026 SOUQ SAYARAH. جميع الحقوق محفوظة</p>
+        <div class="footer-bottom-links">
+          <a href="#">سياسة الخصوصية</a>
+          <a href="#">الشروط والأحكام</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

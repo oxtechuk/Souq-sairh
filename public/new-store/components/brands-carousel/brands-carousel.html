@@ -1,0 +1,138 @@
+<!-- Brands Carousel Component -->
+<section class="bg-white py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4" dir="rtl">
+      <div class="flex-1">
+        <h2 class="text-[24px] sm:text-[32px] font-extrabold mb-3">
+          <span class="text-primary">تختار براندك.. خيارات</span>
+          <span class="text-gold"> لا محدودة</span>
+        </h2>
+        <p class="text-gray-600 text-[15px] leading-relaxed max-w-2xl">
+          أكثر من بين دفة صناع السيارات حول العالم، توفرلك أقوى الأسماء التي تجتمع فيها الثقة بالأداء
+        </p>
+      </div>
+      <button
+        class="bg-primary text-white px-8 py-3 rounded-md font-bold text-[15px] hover:bg-primary-dark transition-all whitespace-nowrap w-full sm:w-auto"
+      >
+        عرض جميع العلامات التجارية
+      </button>
+    </div>
+
+    <!-- Brands Carousel Container -->
+    <div id="brands-carousel" class="brands-carousel-wrapper">
+      <div class="brands-carousel-viewport overflow-hidden">
+        <div class="brands-carousel-track">
+          <!-- Brand cards will be inserted here dynamically -->
+        </div>
+      </div>
+
+      <!-- Bottom Controls -->
+      <div class="flex items-center justify-center gap-12 mt-14">
+        <button
+          type="button"
+          class="brands-carousel-prev w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+        >
+          <i class="fas fa-arrow-right text-[22px]"></i>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <span class="brands-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></span>
+          <span class="brands-dot w-3 h-3 rounded-full bg-primary transition-all"></span>
+          <span class="brands-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></span>
+        </div>
+
+        <button
+          type="button"
+          class="brands-carousel-next w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+        >
+          <i class="fas fa-arrow-left text-[22px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const brandsData = [
+    { id: 1, name: 'إم جي', logo: 'assets/images/brands/brand-1.svg' },
+    { id: 2, name: 'إم جي', logo: 'assets/images/brands/brand-2.svg' },
+    { id: 3, name: 'إم جي', logo: 'assets/images/brands/brand-3.svg' },
+    { id: 4, name: 'إم جي', logo: 'assets/images/brands/brand-4.svg' },
+    { id: 5, name: 'إم جي', logo: 'assets/images/brands/brand-5.svg' },
+    { id: 6, name: 'إم جي', logo: 'assets/images/brands/brand-6.svg' },
+    { id: 7, name: 'إم جي', logo: 'assets/images/brands/brand-7.svg' },
+    { id: 8, name: 'إم جي', logo: 'assets/images/brands/brand-8.svg' },
+    { id: 9, name: 'إم جي', logo: 'assets/images/brands/brand-9.svg' },
+    { id: 10, name: 'إم جي', logo: 'assets/images/brands/brand-10.svg' }
+  ];
+
+  function generateBrandCard(brand) {
+    return `<div class="brand-card">
+      <div class="brand-logo-container"><img src="${brand.logo}" alt="${brand.name}" /></div>
+      <p class="brand-name">${brand.name}</p>
+    </div>`;
+  }
+
+  function buildBrandsCarousel() {
+    const track = document.querySelector('#brands-carousel .brands-carousel-track');
+    const prevBtn = document.querySelector('#brands-carousel .brands-carousel-prev');
+    const nextBtn = document.querySelector('#brands-carousel .brands-carousel-next');
+    const dots = document.querySelectorAll('#brands-carousel .brands-dot');
+    if (!track) return;
+
+    const isMobile = window.innerWidth <= 768;
+    const perPage = isMobile ? 4 : 10;
+    const cls = isMobile ? 'brands-page' : 'brands-page-desktop';
+    const totalPages = Math.ceil(brandsData.length / perPage);
+
+    function buildPages(data) {
+      let html = '';
+      const pages = Math.ceil(data.length / perPage);
+      for (let i = 0; i < pages; i++) {
+        html += `<div class="${cls}">`;
+        data.slice(i * perPage, i * perPage + perPage).forEach(b => { html += generateBrandCard(b); });
+        html += '</div>';
+      }
+      return html;
+    }
+
+    // Duplicate for seamless loop
+    track.innerHTML = buildPages(brandsData) + buildPages(brandsData);
+    track.style.transform = 'translateX(0)';
+    track.style.transition = 'none';
+
+    let pageIndex = 0;
+
+    function syncDots() {
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-primary', i === (pageIndex % totalPages));
+        dot.classList.toggle('bg-gray-300', i !== (pageIndex % totalPages));
+      });
+    }
+
+    function goTo(index) {
+      pageIndex = index;
+      track.style.transition = 'transform 0.5s ease-in-out';
+      track.style.transform = `translateX(${pageIndex * 100}%)`;
+      syncDots();
+
+      // When we reach the cloned set, silently jump back
+      if (pageIndex >= totalPages) {
+        setTimeout(() => {
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(0)';
+          pageIndex = 0;
+        }, 500);
+      }
+    }
+
+    if (prevBtn) prevBtn.onclick = () => goTo(pageIndex <= 0 ? totalPages - 1 : pageIndex - 1);
+    if (nextBtn) nextBtn.onclick = () => goTo(pageIndex + 1);
+
+    setInterval(() => goTo(pageIndex + 1), 3000);
+    syncDots();
+  }
+
+  setTimeout(buildBrandsCarousel, 100);
+</script>

@@ -1,0 +1,139 @@
+<!-- Reusable Car Carousel Component -->
+<div class="car-carousel-wrapper">
+  <!-- Carousel Viewport -->
+  <div class="car-carousel-viewport overflow-hidden">
+    <div class="car-carousel-track flex gap-10 transition-transform duration-500 ease-in-out">
+      <!-- Cards will be inserted here dynamically -->
+    </div>
+  </div>
+
+  <!-- Bottom Controls -->
+  <div class="flex items-center justify-center gap-12 mt-14">
+    <!-- Right Arrow (Previous in RTL) -->
+    <button
+      type="button"
+      class="car-carousel-prev w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+    >
+      <i class="fas fa-arrow-right text-[22px]"></i>
+    </button>
+
+    <!-- Progress Indicator -->
+    <div class="relative w-[112px] h-[8px] bg-gray-300 rounded-full overflow-hidden">
+      <span class="car-carousel-progress absolute top-0 right-0 h-full w-[42px] bg-primary rounded-full transition-all duration-300"></span>
+    </div>
+
+    <!-- Left Arrow (Next in RTL) -->
+    <button
+      type="button"
+      class="car-carousel-next w-[52px] h-[52px] bg-primary hover:bg-primary-dark text-white rounded-full flex items-center justify-center transition-all hover:scale-105"
+    >
+      <i class="fas fa-arrow-left text-[22px]"></i>
+    </button>
+  </div>
+</div>
+
+<script>
+  // Reusable Carousel Class
+  class CarCarousel {
+    constructor(containerSelector) {
+      this.container = document.querySelector(containerSelector);
+      if (!this.container) return;
+
+      this.viewport = this.container.querySelector('.car-carousel-viewport');
+      this.track = this.container.querySelector('.car-carousel-track');
+      this.prevButton = this.container.querySelector('.car-carousel-prev');
+      this.nextButton = this.container.querySelector('.car-carousel-next');
+      this.progress = this.container.querySelector('.car-carousel-progress');
+      
+      this.currentSlide = 0;
+      
+      this.init();
+    }
+
+    init() {
+      if (this.prevButton) {
+        this.prevButton.addEventListener('click', () => this.prev());
+      }
+
+      if (this.nextButton) {
+        this.nextButton.addEventListener('click', () => this.next());
+      }
+
+      window.addEventListener('resize', () => this.update());
+      this.update();
+    }
+
+    getCards() {
+      return this.track ? Array.from(this.track.children) : [];
+    }
+
+    getCardStep() {
+      const cards = this.getCards();
+      if (!cards.length) return 0;
+
+      const cardWidth = cards[0].offsetWidth;
+      const gap = parseFloat(getComputedStyle(this.track).gap) || 0;
+
+      return cardWidth + gap;
+    }
+
+    getMaxSlide() {
+      if (!this.viewport || !this.track) return 0;
+
+      const cards = this.getCards();
+      if (!cards.length) return 0;
+
+      const cardStep = this.getCardStep();
+      const totalWidth =
+        cards.length * cards[0].offsetWidth +
+        (cards.length - 1) * (parseFloat(getComputedStyle(this.track).gap) || 0);
+
+      const visibleWidth = this.viewport.offsetWidth;
+      const maxMove = Math.max(0, totalWidth - visibleWidth);
+
+      return Math.ceil(maxMove / cardStep);
+    }
+
+    update() {
+      if (!this.track) return;
+
+      const maxSlide = this.getMaxSlide();
+      this.currentSlide = Math.max(0, Math.min(this.currentSlide, maxSlide));
+
+      const move = this.currentSlide * this.getCardStep();
+      this.track.style.transform = `translateX(${move}px)`;
+
+      if (this.progress) {
+        const progressPercent = maxSlide > 0 ? this.currentSlide / maxSlide : 0;
+        const progressWidth = 42;
+        const trackWidth = 112;
+        const maxProgressMove = trackWidth - progressWidth;
+
+        const progressMove = progressPercent * maxProgressMove;
+        this.progress.style.right = `${progressMove}px`;
+        this.progress.style.left = 'auto';
+      }
+    }
+
+    prev() {
+      this.currentSlide = Math.max(0, this.currentSlide - 1);
+      this.update();
+    }
+
+    next() {
+      this.currentSlide = Math.min(this.getMaxSlide(), this.currentSlide + 1);
+      this.update();
+    }
+
+    addCards(cardsHTML) {
+      if (this.track) {
+        this.track.innerHTML = cardsHTML;
+        this.currentSlide = 0;
+        this.update();
+      }
+    }
+  }
+
+  // Export for use in other components
+  window.CarCarousel = CarCarousel;
+</script>

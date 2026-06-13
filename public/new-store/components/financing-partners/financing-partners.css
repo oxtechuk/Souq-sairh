@@ -1,0 +1,165 @@
+/* Financing Partners Section */
+.financing-partners-section {
+    background: white;
+}
+
+/* Section Header */
+.financing-partners-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.financing-partners-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1A3263;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.financing-partners-subtitle {
+    font-size: 1rem;
+    color: #6B7280;
+    line-height: 1.6;
+}
+
+/* Partners Container */
+.financing-partners-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.partners-grid {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3rem 2rem;
+    align-items: center;
+    justify-items: center;
+}
+
+.partner-logo {
+    width: 100%;
+    max-width: 280px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.partner-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(0%);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.partner-logo:hover img {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .financing-partners-title {
+        font-size: 1.875rem;
+    }
+
+    .partners-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem 1.5rem;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .partner-logo {
+        max-width: 220px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .financing-partners-header {
+        margin-bottom: 2rem;
+    }
+
+    .financing-partners-title {
+        font-size: 1.5rem;
+    }
+
+    .financing-partners-subtitle {
+        font-size: 0.9375rem;
+    }
+
+    .partners-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .partner-logo {
+        max-width: 200px;
+        height: 90px;
+    }
+}
+
+/* Mobile Carousel */
+.partners-mobile-carousel {
+    display: none;
+}
+
+.partners-mobile-viewport {
+    overflow: hidden;
+}
+
+.partners-mobile-track {
+    display: flex;
+    flex-wrap: nowrap;
+    transition: transform 0.5s ease-in-out;
+}
+
+.partners-mobile-page {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1rem;
+    min-width: 100%;
+    box-sizing: border-box;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px;
+    padding: 1.5rem;
+}
+
+.partners-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #D1D5DB;
+    transition: all 0.3s ease;
+}
+
+.partners-dot.active {
+    background: #1A3263;
+    width: 28px;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .partners-desktop {
+        display: none;
+    }
+
+    .partners-mobile-carousel {
+        display: block;
+    }
+
+    .partner-logo {
+        height: 80px;
+    }
+}

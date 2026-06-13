@@ -1,0 +1,106 @@
+<!-- Header Component -->
+
+<!-- Overlay -->
+<div class="mobile-drawer-overlay" id="drawer-overlay"></div>
+
+<!-- Drawer -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="mobile-drawer-header">
+    <button class="mobile-drawer-close" id="drawer-close">
+      <i class="fas fa-times"></i>
+    </button>
+    <a id="drawer-logo-link" href="#">
+      <img src="assets/images/Logo.svg" alt="Souq Sayarah" style="height:48px;" />
+    </a>
+  </div>
+  <nav>
+    <a href="#" data-page="index.html" class="nav-link-mobile">الرئيسية</a>
+    <a href="#" data-page="pages/all-cars.html" class="nav-link-mobile">جميع السيارات</a>
+    <a href="#" data-page="pages/offers.html" class="nav-link-mobile">العروض</a>
+    <a href="#" data-page="pages/about.html" class="nav-link-mobile">من نحن</a>
+    <a href="#" data-page="pages/articles.html" class="nav-link-mobile">المقالات</a>
+    <a href="#" data-page="pages/contact.html" class="nav-link-mobile">تواصل معنا</a>
+  </nav>
+  <button class="mobile-drawer-btn" onclick="(function(){ const isInPages = window.location.pathname.includes('/pages/'); window.location.href = isInPages ? 'contact.html' : 'pages/contact.html'; })()">
+    تواصل معنا
+  </button>
+</div>
+
+<header class="bg-white shadow-md py-4 sm:py-5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-row-reverse justify-between items-center gap-4">
+
+      <!-- Contact Button (Desktop) -->
+      <button
+        onclick="(function(){ const isInPages = window.location.pathname.includes('/pages/'); window.location.href = isInPages ? 'contact.html' : 'pages/contact.html'; })()"
+        class="hidden sm:block bg-primary hover:bg-primary-dark text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg transition-colors"
+      >
+        تواصل معنا
+      </button>
+
+      <!-- Navigation (Desktop) -->
+      <nav class="hidden sm:flex flex-wrap justify-center gap-4 sm:gap-8 flex-1" id="main-nav">
+        <a href="#" data-page="index.html" class="nav-link text-primary font-medium text-sm sm:text-base">الرئيسية</a>
+        <a href="#" data-page="pages/all-cars.html" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors text-sm sm:text-base">جميع السيارات</a>
+        <a href="#" data-page="pages/offers.html" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors text-sm sm:text-base">العروض</a>
+        <a href="#" data-page="pages/about.html" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors text-sm sm:text-base">من نحن</a>
+        <a href="#" data-page="pages/articles.html" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors text-sm sm:text-base">المقالات</a>
+      </nav>
+
+      <!-- Hamburger (Mobile) -->
+      <button id="mobile-menu-btn" class="sm:hidden text-primary text-2xl">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Logo -->
+      <div>
+        <a id="logo-link" href="#">
+          <img src="assets/images/Logo.svg" alt="Souq Sayarah" class="h-12 sm:h-16" />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const isInPages = window.location.pathname.includes("/pages/");
+
+      // Fix nav links
+      document.querySelectorAll(".nav-link, .nav-link-mobile").forEach(function(link) {
+        const page = link.getAttribute("data-page");
+        if (page && page !== "#") {
+          if (isInPages) {
+            link.href = page === "index.html" ? "../index.html" : page.replace("pages/", "");
+          } else {
+            link.href = page;
+          }
+        }
+      });
+
+      // Logo links
+      const logoHref = isInPages ? '../index.html' : 'index.html';
+      document.getElementById('logo-link').href = logoHref;
+      document.getElementById('drawer-logo-link').href = logoHref;
+
+      // Drawer toggle
+      const drawer = document.getElementById('mobile-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+
+      function openDrawer() {
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      document.getElementById('mobile-menu-btn').addEventListener('click', openDrawer);
+      document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+      overlay.addEventListener('click', closeDrawer);
+    })();
+  </script>
+</header>

@@ -1,0 +1,21 @@
+/* Reusable Car Carousel Component - Custom styles */
+
+.car-carousel-wrapper {
+    position: relative;
+}
+
+.car-carousel-viewport {
+    overflow: hidden;
+}
+
+.car-carousel-track {
+    display: flex;
+    gap: 2.5rem;
+    transition: transform 0.5s ease-in-out;
+}
+
+.car-carousel-track .car-card,
+.car-carousel-track .car-list-card {
+    flex-shrink: 0;
+    width: 280px;
+}

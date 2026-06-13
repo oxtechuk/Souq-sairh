@@ -1,0 +1,25 @@
+<!-- Articles Related Component -->
+<section class="articles-related-section" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-12">
+      <h2 class="text-[32px] font-extrabold mb-3">
+        <span class="text-primary">مقالات</span>
+        <span class="text-gold"> مشابهة</span>
+      </h2>
+      <p class="text-[15px]" style="color: #1A3263;">اطلع على المقالات المشابهة</p>
+    </div>
+
+    <div class="articles-grid" id="articles-related-grid"></div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    const grid = document.getElementById('articles-related-grid');
+    if (grid && window.articlesData && window.generateArticleCard) {
+      grid.innerHTML = window.articlesData.slice(0, 3).map(window.generateArticleCard).join('');
+    }
+  })();
+</script>

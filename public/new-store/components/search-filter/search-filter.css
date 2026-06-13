@@ -1,0 +1,91 @@
+/* Search Filter Component - Custom Styles */
+
+/* Custom select - remove default arrow */
+select {
+    background-image: none;
+}
+
+/* ==========================================
+   RTL FIX - Chevron Position
+========================================== */
+.select-wrapper {
+    position: relative;
+}
+
+/* في RTL: السهم على اليسار */
+html[dir="rtl"] .select-wrapper .fa-chevron-down,
+.select-wrapper .fa-chevron-down {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #9CA3AF;
+    font-size: 12px;
+    z-index: 2;
+}
+
+/* padding الـ select ليعطي مكان للسهم */
+html[dir="rtl"] .select-wrapper select {
+    padding-right: 1rem !important;
+    padding-left: 2.5rem !important;
+}
+
+/* ==========================================
+   MOBILE - Responsive
+========================================== */
+@media (max-width: 640px) {
+    /* على الموبايل الصغير: عمود واحد */
+    .search-grid-2-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    /* تصغير الـ select box */
+    .search-select-box {
+        padding: 0.6rem 0.75rem;
+        font-size: 13px;
+    }
+
+    /* زر البحث */
+    .search-submit-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* عمود واحد على الجوال الصغير جداً */
+    .search-grid-2-4 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ==========================================
+   SELECT BOXES - General Improvements
+========================================== */
+.search-select-box,
+.filter-select {
+    height: 48px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    width: 100%;
+}
+
+.search-select-box:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: #1A3263;
+    box-shadow: 0 0 0 3px rgba(26, 50, 99, 0.1);
+}
+
+/* label text */
+.filter-label-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.4rem;
+    display: block;
+}

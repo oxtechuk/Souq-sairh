@@ -1,0 +1,137 @@
+/* About Stats Section */
+.about-stats-section {
+    background: white;
+}
+
+/* Section Header */
+.about-stats-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.about-stats-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1A3263;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.about-stats-subtitle {
+    font-size: 1rem;
+    color: #6B7280;
+    line-height: 1.6;
+}
+
+/* Stats Grid */
+.about-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: #FFF1C2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.stat-icon i {
+    font-size: 1.75rem;
+    color: #FDB913;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1A3263;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9375rem;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .about-stats-title {
+        font-size: 1.875rem;
+    }
+
+    .about-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-stats-header {
+        margin-bottom: 2rem;
+    }
+
+    .about-stats-title {
+        font-size: 1.5rem;
+    }
+
+    .about-stats-subtitle {
+        font-size: 0.9375rem;
+    }
+
+    .about-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon i {
+        font-size: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+    }
+}

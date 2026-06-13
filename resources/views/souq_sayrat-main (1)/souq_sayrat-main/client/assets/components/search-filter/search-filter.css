@@ -1,0 +1,6 @@
+/* Search Filter Component - Minimal custom styles (Tailwind handles most) */
+
+/* Custom select arrow positioning */
+select {
+    background-image: none;
+}

@@ -1,0 +1,57 @@
+/* Offers Hero Component */
+
+.offers-hero {
+    background: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.offers-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.offers-hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1A3263;
+    line-height: 1.4;
+    margin-bottom: 1.25rem;
+}
+
+.offers-hero-highlight {
+    color: #FEC303;
+}
+
+.offers-hero-subtitle {
+    font-size: 1rem;
+    color: #1A3263;
+    line-height: 1.8;
+    font-weight: 400;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .offers-hero {
+        padding: 3rem 0;
+    }
+
+    .offers-hero-title {
+        font-size: 1.8rem;
+    }
+
+    .offers-hero-subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .offers-hero {
+        padding: 2.5rem 0;
+    }
+
+    .offers-hero-title {
+        font-size: 1.5rem;
+    }
+}

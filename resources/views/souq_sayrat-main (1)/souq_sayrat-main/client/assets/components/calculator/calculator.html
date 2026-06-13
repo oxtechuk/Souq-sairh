@@ -1,0 +1,291 @@
+<!-- Calculator Component -->
+<section class="calculator-section" dir="rtl">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Stepper -->
+    <div class="calc-stepper">
+      <div class="calc-step" id="step-indicator-2">
+        <div class="calc-step-circle">02</div>
+        <div class="calc-step-label">إحسب تمويلك</div>
+      </div>
+      <div class="calc-step-line"></div>
+      <div class="calc-step active" id="step-indicator-1">
+        <div class="calc-step-circle">01</div>
+        <div class="calc-step-label">أدخل بياناتك</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Personal Data -->
+    <div id="calc-step-1">
+      <div class="calculator-header">
+        <h2>إحسب تمويل سيارتك</h2>
+        <p>أملأ البيانات التالية وأنتقل لحساب تمويلك</p>
+      </div>
+
+      <!-- Type Tabs -->
+      <div class="contact-type-tabs mb-6">
+        <button class="contact-type-tab active" data-type="individuals">
+          <i class="fas fa-user"></i>
+          أفراد
+        </button>
+        <button class="contact-type-tab" data-type="companies">
+          <i class="fas fa-building"></i>
+          شركات
+        </button>
+        <button class="contact-type-tab" data-type="financing">
+          <i class="fas fa-credit-card"></i>
+          تمويل
+        </button>
+      </div>
+
+      <!-- Row 1 -->
+      <div class="contact-form-grid">
+        <div class="contact-form-group">
+          <label>الاسم الكامل <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="أدخل الاسم الكامل" />
+          </div>
+        </div>
+        <div class="contact-form-group">
+          <label>رقم الجوال <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="tel" placeholder="05xxxxxxxx" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="contact-form-grid">
+        <div class="contact-form-group">
+          <label>موديل السيارة المطلوب <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-car"></i>
+            <select>
+              <option value="" disabled selected>مثال: Mercedes S-Class 2024</option>
+              <option>Mercedes S-Class 2024</option>
+              <option>Toyota Camry 2024</option>
+              <option>Hyundai Sonata 2024</option>
+              <option>Kia Sportage 2024</option>
+            </select>
+          </div>
+        </div>
+        <div class="contact-form-group">
+          <label>المدينة <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-map-marker-alt"></i>
+            <select>
+              <option value="" disabled selected></option>
+              <option>الرياض</option>
+              <option>جدة</option>
+              <option>الدمام</option>
+              <option>مكة المكرمة</option>
+              <option>المدينة المنورة</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Salary + Obligations -->
+      <div class="contact-ranges-row">
+        <div class="contact-range-group">
+          <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الراتب <span style="color:#e53e3e;">*</span></label>
+          <div class="contact-range-grid" id="calc-salary-group">
+            <button type="button" class="contact-range-btn active" data-group="calc-salary">أقل من 2,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-salary">2,000-2,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-salary">2,600-3,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-salary">3,000-3,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-salary">3,600-4,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-salary">أكثر من 4,000 ﷼</button>
+          </div>
+        </div>
+        <div class="contact-range-group">
+          <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الإلتزامات الشهرية <span style="color:#e53e3e;">*</span></label>
+          <div class="contact-range-grid" id="calc-obligations-group">
+            <button type="button" class="contact-range-btn active" data-group="calc-obligations">أقل من 1,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-obligations">700-1500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-obligations">1,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-obligations">1,700-2000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-obligations">1,800-2000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="calc-obligations">أكثر من 2,000 ﷼</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Notes + Next Button -->
+      <div class="contact-notes-row mt-4">
+        <div class="contact-notes-group">
+          <label>ملاحظات إضافية</label>
+          <textarea placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
+        </div>
+        <div class="flex items-end">
+          <button class="contact-submit-btn" onclick="goToStep2()">
+            <i class="fas fa-calculator"></i>
+            أنتقل الى الحاسبة
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Calculator -->
+    <div id="calc-step-2" style="display:none;">
+      <div class="calculator-header">
+        <h2>إحسب تمويل سيارتك</h2>
+        <p>إختر ما يناسبك لتمويلك</p>
+      </div>
+
+      <div class="calc2-grid">
+
+        <!-- Right Column -->
+        <div class="calc2-col">
+          <!-- Car Model -->
+          <div class="contact-form-group mb-4">
+            <label>موديل السيارة المطلوب <span>*</span></label>
+            <div class="contact-input-wrapper">
+              <i class="fas fa-car"></i>
+              <select id="calc2-car" onchange="updateCarPrice()">
+                <option value="400000">مثال: Mercedes S-Class 2024</option>
+                <option value="120000">Toyota Camry 2024</option>
+                <option value="95000">Hyundai Sonata 2024</option>
+                <option value="85000">Kia Sportage 2024</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Car Base Price -->
+          <div class="calc2-price-box">
+            <p class="calc2-price-label">سعر السيارة الاساسي</p>
+            <p class="calc2-price-value" id="calc2-car-price">﷼ 400,000</p>
+          </div>
+
+          <!-- Bank Selection -->
+          <div class="contact-range-group mt-4">
+            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">إختر البنك <span style="color:#e53e3e;">*</span></label>
+            <div class="contact-range-grid" id="calc2-bank-group">
+              <button type="button" class="contact-range-btn active" data-group="calc2-bank" data-rate="3.5">مصرف الراجحي<br/><small>معدل 3.5%</small></button>
+              <button type="button" class="contact-range-btn" data-group="calc2-bank" data-rate="4.0">مصرف الراجحي<br/><small>معدل 4.0%</small></button>
+              <button type="button" class="contact-range-btn" data-group="calc2-bank" data-rate="4.5">مصرف الراجحي<br/><small>معدل 4.5%</small></button>
+              <button type="button" class="contact-range-btn" data-group="calc2-bank" data-rate="5.0">مصرف الراجحي<br/><small>معدل 5.0%</small></button>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="calc2-summary-row mt-4">
+            <div class="calc2-summary-box">
+              <p class="calc2-summary-label">إجمالي المبلغ</p>
+              <p class="calc2-summary-value" id="calc2-grand">﷼ 0</p>
+            </div>
+            <div class="calc2-summary-box">
+              <p class="calc2-summary-label">مبلغ التمويل</p>
+              <p class="calc2-summary-value" id="calc2-total">﷼ 0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left Column -->
+        <div class="calc2-col">
+          <!-- Financing Period -->
+          <div class="contact-range-group mb-4">
+            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">مدة التمويل <span style="color:#e53e3e;">*</span></label>
+            <div class="contact-range-grid" id="calc2-period-group">
+              <button type="button" class="contact-range-btn active" data-group="calc2-period" data-months="36">أقل من 3 أعوام</button>
+              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="60">5-3 سنوات</button>
+              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="84">7-5 سنوات</button>
+              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="84">7-5 سنوات</button>
+              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="108">9-8 سنوات</button>
+              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="120">أكثر من 10 أعوام</button>
+            </div>
+          </div>
+
+          <!-- Monthly Payment Result -->
+          <div class="calc2-result-box" id="calc2-result-box">
+            <p class="calc2-result-label">القسط الشهري التقريبي</p>
+            <p class="calc2-result-amount" id="calc2-monthly">﷼ 0</p>
+          </div>
+          <p class="calc2-disclaimer">هذا الحسبة تقديرية ومن الممكن أن تختلف لعدة عوامل</p>
+
+          <!-- Submit -->
+          <button class="contact-submit-btn mt-4" onclick="runCalc2()">
+            <i class="fas fa-calculator"></i>
+            أنتقل الى الحاسبة
+          </button>
+        </div>
+
+      </div>
+
+      <button class="calc-back-btn mt-4" onclick="goToStep1()">
+        <i class="fas fa-arrow-right"></i>
+        العودة للبيانات
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // Type tabs
+  document.querySelectorAll('.contact-type-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.contact-type-tab').forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+    });
+  });
+
+  // Range buttons
+  document.querySelectorAll('.contact-range-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var group = btn.dataset.group;
+      document.querySelectorAll('.contact-range-btn[data-group="' + group + '"]').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+
+  function goToStep2() {
+    document.getElementById('calc-step-1').style.display = 'none';
+    document.getElementById('calc-step-2').style.display = 'block';
+    document.getElementById('step-indicator-1').classList.remove('active');
+    document.getElementById('step-indicator-1').classList.add('done');
+    document.getElementById('step-indicator-2').classList.add('active');
+    runCalc2();
+  }
+
+  function goToStep1() {
+    document.getElementById('calc-step-2').style.display = 'none';
+    document.getElementById('calc-step-1').style.display = 'block';
+    document.getElementById('step-indicator-2').classList.remove('active');
+    document.getElementById('step-indicator-1').classList.remove('done');
+    document.getElementById('step-indicator-1').classList.add('active');
+  }
+
+  function updateCarPrice() {
+    var sel = document.getElementById('calc2-car');
+    var price = parseInt(sel.value) || 0;
+    document.getElementById('calc2-car-price').textContent = '﷼ ' + price.toLocaleString('ar-SA');
+    runCalc2();
+  }
+
+  function runCalc2() {
+    var price = parseInt(document.getElementById('calc2-car').value) || 0;
+    var monthsBtn = document.querySelector('.contact-range-btn.active[data-group="calc2-period"]');
+    var bankBtn = document.querySelector('.contact-range-btn.active[data-group="calc2-bank"]');
+    var months = monthsBtn ? parseInt(monthsBtn.dataset.months) : 36;
+    var rate = bankBtn ? parseFloat(bankBtn.dataset.rate) : 3.5;
+    var monthlyRate = rate / 100 / 12;
+    var monthly = monthlyRate === 0
+      ? price / months
+      : price * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+    var totalPaid = monthly * months;
+    function fmt(n) { return '﷼ ' + Math.round(n).toLocaleString('ar-SA'); }
+    document.getElementById('calc2-monthly').textContent = fmt(monthly);
+    document.getElementById('calc2-total').textContent = fmt(price);
+    document.getElementById('calc2-grand').textContent = fmt(totalPaid);
+  }
+
+  // Wire range buttons to auto-recalculate
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('contact-range-btn')) {
+      setTimeout(runCalc2, 50);
+    }
+  });
+</script>

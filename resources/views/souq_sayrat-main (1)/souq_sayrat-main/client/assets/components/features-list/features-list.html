@@ -1,0 +1,42 @@
+<!-- Features and Specifications Component -->
+<section class="py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-extrabold text-primary text-right mb-8">المميزات والخصائص</h2>
+    <div id="features-list-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Feature cards will be inserted here by JavaScript -->
+    </div>
+  </div>
+</section>
+
+<script>
+  function renderFeaturesList(featuresGroups) {
+    const grid = document.getElementById('features-list-grid');
+    if (!grid || !featuresGroups) return;
+
+    grid.innerHTML = '';
+    
+    featuresGroups.forEach(group => {
+      const card = document.createElement('div');
+      card.className = 'feature-list-card';
+      
+      group.forEach(feature => {
+        const item = document.createElement('div');
+        item.className = 'feature-list-item';
+        item.innerHTML = `
+          <i class="fas fa-check-circle feature-check-icon"></i>
+          <p class="feature-list-text">${feature}</p>
+        `;
+        card.appendChild(item);
+      });
+      
+      grid.appendChild(card);
+    });
+  }
+
+  // Initialize when data is available
+  setTimeout(() => {
+    if (window.carDetailsData && window.carDetailsData.features) {
+      renderFeaturesList(window.carDetailsData.features);
+    }
+  }, 100);
+</script>

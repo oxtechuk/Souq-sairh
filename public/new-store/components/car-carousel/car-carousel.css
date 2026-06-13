@@ -1,0 +1,112 @@
+/* Reusable Car Carousel Component - Custom styles */
+
+.car-carousel-wrapper {
+    position: relative;
+}
+
+.car-carousel-viewport {
+    overflow: hidden;
+}
+
+.car-carousel-track {
+    display: flex;
+    gap: 2.5rem;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+}
+
+.car-carousel-track .car-card,
+.car-carousel-track .car-list-card {
+    flex-shrink: 0;
+    width: 280px;
+}
+
+/* ==========================================
+   PROGRESS BAR
+========================================== */
+.car-carousel-progress-bar {
+    position: relative;
+    width: 112px;
+    height: 8px;
+    background: #E5E7EB;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.car-carousel-progress {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 42px;
+    background: #1A3263;
+    border-radius: 100px;
+    transition: width 0.4s ease, right 0.4s ease;
+}
+
+/* ==========================================
+   NAVIGATION BUTTONS
+========================================== */
+.car-carousel-prev,
+.car-carousel-next {
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.car-carousel-prev:hover,
+.car-carousel-next:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(26, 50, 99, 0.3);
+}
+
+/* ==========================================
+   MOBILE RESPONSIVE
+========================================== */
+@media (max-width: 1024px) {
+    .car-carousel-track .car-card,
+    .car-carousel-track .car-list-card {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .car-carousel-track {
+        gap: 1.25rem;
+    }
+
+    .car-carousel-track .car-card,
+    .car-carousel-track .car-list-card {
+        width: calc(85vw - 2rem);
+        max-width: 300px;
+    }
+
+    /* تصغير أزرار التنقل */
+    .car-carousel-prev,
+    .car-carousel-next {
+        width: 42px !important;
+        height: 42px !important;
+    }
+
+    .car-carousel-prev i,
+    .car-carousel-next i {
+        font-size: 18px !important;
+    }
+
+    /* تقليل المسافة بين الأزرار */
+    .car-carousel-nav-row {
+        gap: 2rem !important;
+        margin-top: 2rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .car-carousel-track .car-card,
+    .car-carousel-track .car-list-card {
+        width: calc(100vw - 3rem);
+        max-width: 100%;
+    }
+
+    .car-carousel-track {
+        gap: 1rem;
+    }
+}

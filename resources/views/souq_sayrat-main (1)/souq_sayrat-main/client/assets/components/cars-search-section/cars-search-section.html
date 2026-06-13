@@ -1,0 +1,276 @@
+<!-- Cars Search Section Component -->
+<section class="cars-search-section bg-white py-12" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Title -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold text-primary mb-2">
+        اختر من <span class="text-gold">مجموعتنا المميزة</span>
+      </h2>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <!-- Filter Overlay (mobile) -->
+      <div class="filter-overlay" id="filter-overlay"></div>
+
+      <!-- Search Sidebar -->
+      <div class="lg:col-span-1 order-2 lg:order-1 search-sidebar-wrapper" id="search-sidebar-wrapper">
+        <div class="search-sidebar">
+          <!-- Search Header -->
+          <div class="search-header">
+            <button class="search-btn">
+              <i class="fas fa-search"></i>
+              <span>البحث</span>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="search-tabs">
+            <button class="search-tab active" data-tab="brands">
+              العلامات
+            </button>
+            <button class="search-tab" data-tab="other">
+              فلاتر أخرى
+            </button>
+          </div>
+
+          <!-- Brand List -->
+          <div class="brand-list" id="brand-list">
+            <!-- Brands will be inserted here -->
+          </div>
+
+          <!-- Other Filters -->
+          <div class="other-filters" id="other-filters" style="display: none;">
+            <!-- Price Range -->
+            <div class="filter-section">
+              <div class="filter-section-header">
+                <h4 class="filter-section-title">نطاق السعر</h4>
+                <i class="fas fa-sliders-h"></i>
+              </div>
+              <div class="price-range">
+                <div class="price-input-group">
+                  <label class="price-label">من</label>
+                  <div class="price-input-wrapper">
+                    <input type="text" value="0 ر.س" class="price-input" readonly />
+                    <i class="fas fa-pen price-edit-icon"></i>
+                  </div>
+                  <input type="range" min="0" max="500000" value="0" class="price-slider" id="price-min" />
+                </div>
+                <div class="price-input-group">
+                  <label class="price-label">إلى</label>
+                  <div class="price-input-wrapper">
+                    <input type="text" value="200,000 ر.س" class="price-input" readonly />
+                    <i class="fas fa-pen price-edit-icon"></i>
+                  </div>
+                  <input type="range" min="0" max="500000" value="200000" class="price-slider" id="price-max" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Engine Type -->
+            <div class="filter-section">
+              <h4 class="filter-section-title">نظام المحرك</h4>
+              <select class="filter-select">
+                <option value="">الكل</option>
+                <option value="petrol">بنزين</option>
+                <option value="diesel">ديزل</option>
+                <option value="hybrid">هايبرد</option>
+                <option value="electric">كهربائي</option>
+              </select>
+            </div>
+
+            <!-- Transmission -->
+            <div class="filter-section">
+              <h4 class="filter-section-title">ناقل الحركة</h4>
+              <select class="filter-select">
+                <option value="">الكل</option>
+                <option value="automatic">أوتوماتيك</option>
+                <option value="manual">يدوي</option>
+              </select>
+            </div>
+
+            <!-- Fuel Type -->
+            <div class="filter-section">
+              <h4 class="filter-section-title">نوع الوقود</h4>
+              <select class="filter-select">
+                <option value="">الكل</option>
+                <option value="petrol">بنزين</option>
+                <option value="diesel">ديزل</option>
+                <option value="electric">كهربائي</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Content Area -->
+      <div class="lg:col-span-3 order-1 lg:order-2">
+        <!-- Mobile Filter Toggle + Search Bar -->
+        <div class="flex gap-3 mb-6" dir="rtl">
+          <button id="mobile-filter-btn" class="mobile-filter-toggle lg:hidden">
+            <i class="fas fa-sliders-h"></i>
+            <span>الفلاتر</span>
+          </button>
+          <div class="search-input-wrapper flex-1">
+            <input
+              type="text"
+              placeholder="ابحث عن سيارة..."
+              class="search-input"
+            />
+          </div>
+          <button class="search-button">
+            <i class="fas fa-search"></i>
+            <span>بحث</span>
+          </button>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs-row mb-6" dir="rtl">
+          <button class="filter-tab active" data-filter="all">
+            الكل
+          </button>
+          <button class="filter-tab" data-filter="suv">
+            SUV
+          </button>
+          <button class="filter-tab" data-filter="sedan">
+            سيدان
+          </button>
+          <button class="filter-tab" data-filter="sports">
+            رياضية
+          </button>
+          <button class="filter-tab" data-filter="hatchback">
+            هاتشباك
+          </button>
+          <button class="filter-tab" data-filter="electric">
+            كهربائية
+          </button>
+        </div>
+
+        <!-- Results Count -->
+        <div class="flex items-center justify-end mb-6">
+          <p class="text-gray-600">
+            <span class="text-gold font-bold" id="results-count">325</span> سيارة متاحة
+          </p>
+        </div>
+
+        <!-- Cars Grid -->
+        <div id="cars-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Car cards will be inserted here -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+          <button class="bg-white text-primary border-2 border-primary px-8 py-3 rounded-lg font-bold hover:bg-primary hover:text-white transition-all">
+            تحميل المزيد
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Brand filters data
+  const brands = [
+    { name: 'شانجان', count: 52, icon: 'fas fa-circle' },
+    { name: 'فولكس فاجن', count: 52, icon: 'fas fa-circle' },
+    { name: 'تويوتا', count: 52, icon: 'fas fa-circle' },
+    { name: 'هيونداي', count: 52, icon: 'fas fa-circle' },
+    { name: 'نيسان', count: 52, icon: 'fas fa-circle' },
+    { name: 'كيا', count: 52, icon: 'fas fa-circle' },
+    { name: 'سوزوكي', count: 52, icon: 'fas fa-circle' },
+    { name: 'مازدا', count: 52, icon: 'fas fa-circle' },
+    { name: 'بيجو', count: 52, icon: 'fas fa-circle' }
+  ];
+
+  // Render brand filters
+  function renderBrandFilters() {
+    const container = document.getElementById('brand-list');
+    if (!container) return;
+
+    container.innerHTML = brands.map(brand => `
+      <div class="brand-item">
+        <div class="brand-info">
+          <div class="brand-icon">
+            <i class="fas fa-circle"></i>
+          </div>
+          <span class="brand-name">${brand.name}</span>
+        </div>
+        <span class="brand-count">${brand.count}</span>
+      </div>
+    `).join('');
+  }
+
+  // Render cars grid
+  function renderCarsGrid() {
+    const container = document.getElementById('cars-grid');
+    if (!container || !window.carsData || !window.generateCarCards) return;
+
+    // Generate 6 cars for display
+    const displayCars = window.carsData.slice(0, 6);
+    container.innerHTML = window.generateCarCards(displayCars, 'car-grid-card');
+  }
+
+  // Filter tabs functionality
+  function initializeFilterTabs() {
+    const tabs = document.querySelectorAll('.filter-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        // Add filter logic here
+      });
+    });
+  }
+
+  // Search tabs functionality
+  function initializeSearchTabs() {
+    const tabs = document.querySelectorAll('.search-tab');
+    const brandList = document.getElementById('brand-list');
+    const otherFilters = document.getElementById('other-filters');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        const tabType = tab.getAttribute('data-tab');
+        if (tabType === 'brands') {
+          brandList.style.display = 'block';
+          otherFilters.style.display = 'none';
+        } else {
+          brandList.style.display = 'none';
+          otherFilters.style.display = 'block';
+        }
+      });
+    });
+  }
+
+  // Mobile filter toggle
+  const filterBtn = document.getElementById('mobile-filter-btn');
+  const sidebarWrapper = document.getElementById('search-sidebar-wrapper');
+  const filterOverlay = document.getElementById('filter-overlay');
+
+  function openFilter() {
+    sidebarWrapper.classList.add('open');
+    filterOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeFilter() {
+    sidebarWrapper.classList.remove('open');
+    filterOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (filterBtn) filterBtn.addEventListener('click', openFilter);
+  if (filterOverlay) filterOverlay.addEventListener('click', closeFilter);
+
+  // Initialize
+  setTimeout(() => {
+    renderBrandFilters();
+    renderCarsGrid();
+    initializeFilterTabs();
+    initializeSearchTabs();
+  }, 100);
+</script>

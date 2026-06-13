@@ -1,0 +1,184 @@
+/* Comparison Table Section */
+.comparison-table-section {
+    background: white;
+}
+
+/* Table Header */
+.comparison-table-header {
+    background: linear-gradient(135deg, #3B6ED6 0%, #1A3263 100%);
+    border-radius: 20px 20px 0 0;
+    padding: 2rem;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.comparison-table-title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.comparison-table-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Comparison Table */
+.comparison-table {
+    border: none;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
+}
+
+/* Section Styles */
+.comparison-section {
+    border-bottom: none;
+}
+
+.comparison-section:last-child {
+    border-bottom: none;
+}
+
+.section-green {
+    background: #F0F9F4;
+    border-right: none;
+}
+
+.section-pink {
+    background: #FEF2F2;
+    border-right: none;
+}
+
+.section-beige {
+    background: #FEF3E7;
+    border-right: none;
+}
+
+/* Section Header */
+.section-header {
+    padding: 1.25rem 2rem;
+    text-align: right;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1A3263;
+}
+
+/* Comparison Row */
+.comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: none;
+    background: white;
+}
+
+.comparison-row:first-of-type {
+    border-top: none;
+}
+
+.row-label {
+    padding: 1.25rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1A3263;
+    text-align: right;
+    border-left: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #EBF4FF;
+}
+
+.row-value {
+    padding: 1.25rem 2rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #4B5563;
+    text-align: center;
+    border-left: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.row-value:last-child {
+    border-left: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .comparison-table-title {
+        font-size: 1.5rem;
+    }
+
+    .comparison-table-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+    }
+
+    .row-label,
+    .row-value {
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .comparison-table-header {
+        padding: 1.5rem;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .comparison-table-title {
+        font-size: 1.25rem;
+    }
+
+    .comparison-table-subtitle {
+        font-size: 0.8125rem;
+    }
+
+    .comparison-table {
+        border-radius: 0 0 15px 15px;
+    }
+
+    .section-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .comparison-row {
+        grid-template-columns: 1fr;
+    }
+
+    .row-label {
+        border-left: none;
+        border-bottom: 1px solid #E5E7EB;
+        background: #F9FAFB;
+        font-weight: 800;
+    }
+
+    .row-value {
+        border-left: none;
+        border-bottom: 1px solid #E5E7EB;
+        text-align: right;
+        justify-content: flex-end;
+        padding: 0.875rem 1.5rem;
+    }
+
+    .row-value:last-child {
+        border-bottom: none;
+    }
+
+    .comparison-row:last-child .row-value:last-child {
+        border-bottom: none;
+    }
+}

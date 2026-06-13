@@ -1,0 +1,112 @@
+.all-cars-hero {
+    background-image: url('../../images/all-cars-hero.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 600px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: ellipse(100% 100% at 50% 50%);
+    margin-top: 1px;
+    padding-top: 1px;
+}
+
+.all-cars-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: white;
+    border-radius: 0 0 50% 50%;
+    z-index: -1;
+}
+
+.all-cars-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: white;
+    border-radius: 50% 50% 0 0;
+    z-index: 10;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .all-cars-hero {
+        min-height: 500px;
+        margin-top: 1px;
+        padding-top: 80px;
+    }
+
+    .all-cars-hero::before,
+    .all-cars-hero::after {
+        height: 80px;
+    }
+
+    .all-cars-hero::after {
+        bottom: -40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .all-cars-hero {
+        min-height: 400px;
+        margin-top: 1px;
+        padding-top: 60px;
+    }
+
+    .hero-content {
+        padding: 0 1rem;
+    }
+
+    .all-cars-hero::before,
+    .all-cars-hero::after {
+        height: 60px;
+    }
+
+    .all-cars-hero::after {
+        bottom: -30px;
+    }
+}
+
+@media (max-width: 640px) {
+    .all-cars-hero {
+        min-height: 300px;
+        margin-top: 1px;
+        padding-top: 50px;
+    }
+
+    .all-cars-hero::before,
+    .all-cars-hero::after {
+        height: 50px;
+    }
+
+    .all-cars-hero::after {
+        bottom: -25px;
+    }
+}

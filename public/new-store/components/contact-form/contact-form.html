@@ -1,0 +1,145 @@
+<!-- Contact Form Component -->
+<section class="contact-form-section" dir="rtl">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="contact-form-header">
+      <h2 class="contact-form-title">طلب تمويل سيارة</h2>
+      <p class="contact-form-subtitle">املأ البيانات التالية</p>
+    </div>
+
+    <!-- Type Tabs -->
+    <div class="contact-type-tabs">
+      <button class="contact-type-tab active" data-type="individuals">
+        <i class="fas fa-user"></i>
+        أفراد
+      </button>
+      <button class="contact-type-tab" data-type="companies">
+        <i class="fas fa-building"></i>
+        شركات
+      </button>
+      <button class="contact-type-tab" data-type="financing">
+        <i class="fas fa-credit-card"></i>
+        تمويل
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form id="contact-form" onsubmit="return false;">
+
+      <!-- Row 1: Name + Phone -->
+      <div class="contact-form-grid">
+        <div class="contact-form-group">
+          <label>الاسم الكامل <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="أدخل الاسم الكامل" />
+          </div>
+        </div>
+        <div class="contact-form-group">
+          <label>رقم الجوال <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="tel" placeholder="05xxxxxxxx" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Car Model + City -->
+      <div class="contact-form-grid">
+        <div class="contact-form-group">
+          <label>موديل السيارة المطلوب <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-car"></i>
+            <select>
+              <option value="" disabled selected>مثال: Mercedes S-Class 2024</option>
+              <option>Mercedes S-Class 2024</option>
+              <option>Toyota Camry 2024</option>
+              <option>Hyundai Sonata 2024</option>
+              <option>Kia Sportage 2024</option>
+            </select>
+          </div>
+        </div>
+        <div class="contact-form-group">
+          <label>المدينة <span>*</span></label>
+          <div class="contact-input-wrapper">
+            <i class="fas fa-map-marker-alt"></i>
+            <select>
+              <option value="" disabled selected></option>
+              <option>الرياض</option>
+              <option>جدة</option>
+              <option>الدمام</option>
+              <option>مكة المكرمة</option>
+              <option>المدينة المنورة</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Salary + Monthly Obligations -->
+      <div class="contact-ranges-row">
+
+        <!-- Salary -->
+        <div class="contact-range-group">
+          <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الراتب <span style="color:#e53e3e;">*</span></label>
+          <div class="contact-range-grid" id="salary-group">
+            <button type="button" class="contact-range-btn active" data-group="salary">أقل من 1,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="salary">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="salary">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="salary">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="salary">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="salary">أكثر من 2,000 ﷼</button>
+          </div>
+        </div>
+
+        <!-- Monthly Obligations -->
+        <div class="contact-range-group">
+          <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الإلتزامات الشهرية <span style="color:#e53e3e;">*</span></label>
+          <div class="contact-range-grid" id="obligations-group">
+            <button type="button" class="contact-range-btn active" data-group="obligations">أقل من 1,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="obligations">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="obligations">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="obligations">أكثر من 2,000 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="obligations">700 - 1,500 ﷼</button>
+            <button type="button" class="contact-range-btn" data-group="obligations">700 - 1,500 ﷼</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 4: Notes + Submit -->
+      <div class="contact-notes-row">
+        <div class="contact-notes-group">
+          <label>ملاحظات إضافية</label>
+          <textarea placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
+        </div>
+        <div class="flex items-end">
+          <button type="submit" class="contact-submit-btn">
+            <i class="fas fa-paper-plane"></i>
+            إرسال الطلب
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<script>
+  // Type tab switching
+  document.querySelectorAll('.contact-type-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.contact-type-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Range button single-select per group
+  document.querySelectorAll('.contact-range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.dataset.group;
+      document.querySelectorAll(`.contact-range-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
