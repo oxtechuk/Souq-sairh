@@ -61,10 +61,15 @@ class DashboardController extends Controller
         $trackingGA = Setting::where('key', 'google_analytics_id')->first()?->value ?? '';
         $trackingPixel = Setting::where('key', 'meta_pixel_id')->first()?->value ?? '';
 
+        $siteNameSetting = Setting::where('key', 'site_name')->first()?->value;
+        $siteName = is_array($siteNameSetting)
+            ? ($siteNameSetting[app()->getLocale()] ?? $siteNameSetting['ar'] ?? 'GR Motors')
+            : ($siteNameSetting ?? 'GR Motors');
+
         return view('crm.dashboard', compact(
             'stats', 'topCars', 'weeklyBookings', 'recentBookings',
             'totalCars', 'totalBrands', 'totalEmployees',
-            'trackingGA', 'trackingPixel'
+            'trackingGA', 'trackingPixel', 'siteName'
         ));
     }
 }

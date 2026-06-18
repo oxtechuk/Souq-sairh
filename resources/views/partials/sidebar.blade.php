@@ -195,13 +195,6 @@
                 </a>
             </li>
 
-            <li class="pe-slide">
-                <a href="{{ route('crm.settings.designs.index') }}" class="pe-nav-link">
-                    <i class="bi bi-palette pe-nav-icon"></i>
-                    <span class="pe-nav-content">{{ __('معرض التصاميم') }}</span>
-                </a>
-            </li>
-
             {{-- ===== النظام ===== --}}
             <li class="pe-menu-title">{{ __('النظام') }}</li>
 

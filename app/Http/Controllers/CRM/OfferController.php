@@ -11,7 +11,7 @@ class OfferController extends Controller
 {
     public function index()
     {
-        $offers = Offer::with('car.brand')->latest()->paginate(20);
+        $offers = Offer::with(['car.brand', 'cars.brand'])->latest()->paginate(20);
         $cars = Car::where('is_active', true)->with('brand')->get();
 
         return view('crm.offers.index', compact('offers', 'cars'));
@@ -28,8 +28,8 @@ class OfferController extends Controller
             'description' => 'nullable|array',
             'description.ar' => 'nullable|string',
             'description.en' => 'nullable|string',
-            'discount_percent' => 'nullable|integer|min:1|max:100',
-            'special_price' => 'nullable|integer|min:0',
+            'discount_percent' => 'nullable|integer|min:1|max:100|prohibited_with:discount_value',
+            'discount_value' => 'nullable|integer|min:0|prohibited_with:discount_percent',
             'special_installment' => 'nullable|integer|min:0',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date|after:starts_at',
@@ -38,6 +38,12 @@ class OfferController extends Controller
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('offers', 'public');
+        }
+
+        if (!empty($data['discount_percent'])) {
+            $data['discount_value'] = null;
+        } elseif (!empty($data['discount_value'])) {
+            $data['discount_percent'] = null;
         }
 
         $offer = Offer::create($data);
@@ -57,8 +63,8 @@ class OfferController extends Controller
             'description' => 'nullable|array',
             'description.ar' => 'nullable|string',
             'description.en' => 'nullable|string',
-            'discount_percent' => 'nullable|integer|min:1|max:100',
-            'special_price' => 'nullable|integer|min:0',
+            'discount_percent' => 'nullable|integer|min:1|max:100|prohibited_with:discount_value',
+            'discount_value' => 'nullable|integer|min:0|prohibited_with:discount_percent',
             'special_installment' => 'nullable|integer|min:0',
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date',
@@ -67,8 +73,13 @@ class OfferController extends Controller
         ]);
         $data['is_active'] = $request->boolean('is_active');
 
+        if (!empty($data['discount_percent'])) {
+            $data['discount_value'] = null;
+        } elseif (!empty($data['discount_value'])) {
+            $data['discount_percent'] = null;
+        }
+
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($offer->image && \Storage::disk('public')->exists($offer->image)) {
                 \Storage::disk('public')->delete($offer->image);
             }

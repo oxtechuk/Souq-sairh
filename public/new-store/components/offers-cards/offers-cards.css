@@ -90,6 +90,37 @@
     border-radius: 6px;
 }
 
+/* Discount Badge */
+.offer-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(220,38,38,.35);
+    z-index: 2;
+    line-height: 1.4;
+}
+.offer-badge-value {
+    font-size: 11px;
+}
+.offer-installment {
+    font-size: 13px;
+    font-weight: 700;
+    color: #b8860b;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.offer-installment i {
+    font-size: 14px;
+}
+
 /* Button */
 .offer-card-btn {
     width: 100%;

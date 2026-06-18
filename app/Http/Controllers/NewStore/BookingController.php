@@ -5,6 +5,8 @@ namespace App\Http\Controllers\NewStore;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Car;
+use App\Models\Offer;
+use App\Services\OrderDistributionService;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -17,11 +19,20 @@ class BookingController extends Controller
             ->get(['id', 'brand_id', 'name', 'year', 'cash_price', 'min_installment', 'thumbnail']);
 
         $selectedCar = null;
-        if ($request->filled('car_id')) {
+        $selectedOffer = null;
+
+        if ($request->filled('offer_id')) {
+            $selectedOffer = Offer::with('cars.brand')->find($request->offer_id);
+            if ($selectedOffer) {
+                $offerCarIds = $selectedOffer->cars->pluck('id')->toArray();
+                $cars = $cars->whereIn('id', $offerCarIds);
+                $selectedCar = $selectedOffer->cars->first();
+            }
+        } elseif ($request->filled('car_id')) {
             $selectedCar = $cars->find($request->car_id);
         }
 
-        return view('new-store.booking', compact('cars', 'selectedCar'));
+        return view('new-store.booking', compact('cars', 'selectedCar', 'selectedOffer'));
     }
 
     public function store(Request $request)
@@ -59,6 +70,8 @@ class BookingController extends Controller
             'source' => 'website',
             'status' => 'new',
         ]);
+
+        app(OrderDistributionService::class)->distribute($booking);
 
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {

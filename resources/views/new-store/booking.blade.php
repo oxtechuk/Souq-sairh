@@ -78,10 +78,17 @@
           <label>موديل السيارة المطلوب <span>*</span></label>
           <div class="contact-input-wrapper">
             <i class="fas fa-car"></i>
-            <select name="car_id">
+            <select name="car_id" id="booking-car-select">
               <option value="">{{ __('اختر سيارة (اختياري)') }}</option>
               @foreach($cars as $car)
-                <option value="{{ $car->id }}" {{ $selectedCar && $selectedCar->id == $car->id ? 'selected' : '' }}>
+                <option value="{{ $car->id }}"
+                  data-thumbnail="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
+                  data-brand="{{ $car->brand->name ?? '' }}"
+                  data-name="{{ $car->name }}"
+                  data-year="{{ $car->year ?? '' }}"
+                  data-price="{{ $car->cash_price }}"
+                  data-installment="{{ $car->min_installment ?? '' }}"
+                  {{ $selectedCar && $selectedCar->id == $car->id ? 'selected' : '' }}>
                   {{ $car->brand->name ?? '' }} {{ $car->name }} {{ $car->year ? '(' . $car->year . ')' : '' }}
                 </option>
               @endforeach
@@ -107,21 +114,34 @@
         </div>
       </div>
 
-      {{-- Selected Car Preview --}}
-      @if($selectedCar)
-      <div class="bg-gray-50 rounded-xl p-4 flex items-center gap-4 border border-gray-200 mb-4">
-        <div class="w-20 h-20 rounded-lg overflow-hidden bg-white flex-shrink-0">
-          <img src="{{ $selectedCar->thumbnail ? asset('storage/'.$selectedCar->thumbnail) : asset('new-store/images/car-1.png') }}" alt="{{ $selectedCar->name }}" class="w-full h-full object-contain">
+      {{-- Selected Offer Banner --}}
+      @if($selectedOffer)
+      <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-xl p-4 flex items-center gap-3 border border-red-200 mb-4">
+        <div class="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center flex-shrink-0" style="font-size:20px;">
+          <i class="fas fa-tag"></i>
         </div>
-        <div>
-          <p class="font-bold text-primary">{{ $selectedCar->brand->name ?? '' }} {{ $selectedCar->name }}</p>
-          <p class="text-sm text-gray-500">{{ number_format($selectedCar->cash_price) }} ريال</p>
-          @if($selectedCar->min_installment)
-            <p class="text-sm text-gold">من {{ number_format($selectedCar->min_installment) }} ريال / شهرياً</p>
+        <div class="flex-1">
+          <p class="font-bold text-red-700 text-sm">{{ $selectedOffer->title }}</p>
+          @if($selectedOffer->discount_percent)
+            <p class="text-sm text-red-600 font-bold">{{ __('خصم') }} {{ $selectedOffer->discount_percent }}%</p>
+          @elseif($selectedOffer->discount_value)
+            <p class="text-sm text-red-600 font-bold">{{ __('خصم') }} {{ number_format($selectedOffer->discount_value) }} {{ __('ريال') }}</p>
           @endif
         </div>
       </div>
       @endif
+
+      {{-- Selected Car Preview --}}
+      <div id="booking-car-preview" class="bg-gray-50 rounded-xl p-4 flex items-center gap-4 border border-gray-200 mb-4" style="display:{{ $selectedCar ? '' : 'none' }}">
+        <div class="w-20 h-20 rounded-lg overflow-hidden bg-white flex-shrink-0">
+          <img id="preview-thumb" src="{{ $selectedCar ? ($selectedCar->thumbnail ? asset('storage/'.$selectedCar->thumbnail) : asset('new-store/images/car-1.png')) : '' }}" alt="" class="w-full h-full object-contain">
+        </div>
+        <div>
+          <p id="preview-title" class="font-bold text-primary">{{ $selectedCar ? ($selectedCar->brand->name ?? '') . ' ' . $selectedCar->name : '' }}</p>
+          <p id="preview-price" class="text-sm text-gray-500">{{ $selectedCar ? number_format($selectedCar->cash_price) . ' ريال' : '' }}</p>
+          <p id="preview-installment" class="text-sm text-gold" style="display:{{ $selectedCar && $selectedCar->min_installment ? '' : 'none' }}">{{ $selectedCar && $selectedCar->min_installment ? 'من ' . number_format($selectedCar->min_installment) . ' ريال / شهرياً' : '' }}</p>
+        </div>
+      </div>
 
       {{-- Row 3: Salary + Obligations (visible for all tabs) --}}
       <div class="contact-ranges-row">
@@ -302,6 +322,33 @@
       div.innerHTML = '<i class="fas fa-file"></i> ' + file.name;
       preview.appendChild(div);
     });
+  });
+
+  // Live car preview on select change
+  const carSelect = document.getElementById('booking-car-select');
+  const previewCard = document.getElementById('booking-car-preview');
+  const previewThumb = document.getElementById('preview-thumb');
+  const previewTitle = document.getElementById('preview-title');
+  const previewPrice = document.getElementById('preview-price');
+  const previewInstallment = document.getElementById('preview-installment');
+
+  carSelect.addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    if (opt && opt.value) {
+      previewThumb.src = opt.dataset.thumbnail || '';
+      previewThumb.alt = opt.dataset.name || '';
+      previewTitle.textContent = (opt.dataset.brand || '') + ' ' + (opt.dataset.name || '');
+      previewPrice.textContent = opt.dataset.price ? Number(opt.dataset.price).toLocaleString('en-US') + ' ريال' : '';
+      if (opt.dataset.installment) {
+        previewInstallment.textContent = 'من ' + Number(opt.dataset.installment).toLocaleString('en-US') + ' ريال / شهرياً';
+        previewInstallment.style.display = '';
+      } else {
+        previewInstallment.style.display = 'none';
+      }
+      previewCard.style.display = '';
+    } else {
+      previewCard.style.display = 'none';
+    }
   });
 </script>
 @endpush

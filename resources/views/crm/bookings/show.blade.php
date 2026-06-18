@@ -127,16 +127,11 @@
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <form action="{{ route('crm.bookings.status', $booking) }}" method="POST" class="d-flex align-items-center gap-2 w-100">
                                 @csrf @method('PATCH')
-                                <select name="status" class="form-select form-select-sm border-0 shadow-none" style="background:#fff;border-radius:8px;font-size:13px;font-weight:700;">
+                                <select name="status" onchange="this.form.submit()" class="form-select form-select-sm border-0 shadow-none" style="background:#fff;border-radius:8px;font-size:13px;font-weight:700;">
                                     @foreach($statuses as $key => $s)
                                     <option value="{{ $key }}" {{ $booking->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
                                     @endforeach
                                 </select>
-                                @can('bookings.edit')
-                                <button type="submit" class="btn btn-sm fw-bold rounded-2 text-white flex-shrink-0" style="background:var(--crm-red);font-size:12px;white-space:nowrap;">
-                                    {{ __('تقرير الإجابة') }}
-                                </button>
-                                @endcan
                             </form>
                         </div>
                         <div class="d-flex justify-content-between mb-2">

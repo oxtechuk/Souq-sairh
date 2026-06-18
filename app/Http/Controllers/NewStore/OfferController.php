@@ -13,7 +13,7 @@ class OfferController extends Controller
         $offers = Offer::active()
             ->with('cars.brand:id,name,slug')
             ->latest()
-            ->get(['id', 'title', 'description', 'image', 'special_price']);
+            ->get(['id', 'title', 'description', 'image', 'discount_percent', 'discount_value', 'special_installment']);
 
         return view('new-store.offers.index', compact('offers'));
     }

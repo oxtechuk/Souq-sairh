@@ -33,15 +33,25 @@
         <div class="offer-card">
           <div class="offer-card-image">
             <img src="{{ $offer->image ? asset('storage/'.$offer->image) : asset('new-store/images/offer-card-1.jpg') }}" alt="{{ $offer->title }}" loading="lazy" />
+            @if($offer->discount_percent)
+              <div class="offer-badge">{{ $offer->discount_percent }}%</div>
+            @elseif($offer->discount_value)
+              <div class="offer-badge offer-badge-value">{{ __('خصم') }} {{ number_format($offer->discount_value) }} {{ __('ريال') }}</div>
+            @endif
           </div>
           <div class="offer-card-content">
             <h3 class="offer-card-title">{{ $offer->title }}</h3>
             <p class="offer-card-subtitle">{{ $offer->description }}</p>
 
-
+            @if($offer->special_installment)
+              <div class="offer-installment">
+                <i class="fas fa-credit-card"></i>
+                {{ __('قسط يبدأ من') }} <strong>{{ number_format($offer->special_installment) }}</strong> {{ __('ريال / شهر') }}
+              </div>
+            @endif
 
             <a href="{{ route('new.booking', ['offer_id' => $offer->id]) }}" class="offer-card-btn">
-              احصل على العرض
+              {{ __('احصل على العرض') }}
             </a>
           </div>
         </div>

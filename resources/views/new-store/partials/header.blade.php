@@ -61,6 +61,10 @@
                    class="nav-link font-medium text-sm sm:text-base transition-colors {{ $currentRoute === 'new.about' ? 'text-primary' : 'text-gray-700 hover:text-primary' }}">
                    من نحن
                 </a>
+                <a href="{{ route('new.contact') }}"
+                   class="nav-link font-medium text-sm sm:text-base transition-colors {{ $currentRoute === 'new.contact' ? 'text-primary' : 'text-gray-700 hover:text-primary' }}">
+                   تواصل معنا
+                </a>
                 <a href="{{ route('new.blog.index') }}"
                    class="nav-link font-medium text-sm sm:text-base transition-colors {{ Str::startsWith($currentRoute, 'new.blog') ? 'text-primary' : 'text-gray-700 hover:text-primary' }}">
                    المقالات

@@ -14,7 +14,8 @@ class Offer extends Model
 
     protected $fillable = [
         'car_id', 'image', 'title', 'description', 'discount_percent',
-        'special_price', 'special_installment', 'starts_at', 'ends_at', 'is_active',
+        'discount_value', 'special_installment',
+        'starts_at', 'ends_at', 'is_active',
     ];
 
     protected $casts = [

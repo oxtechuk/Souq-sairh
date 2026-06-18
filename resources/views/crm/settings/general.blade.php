@@ -57,6 +57,11 @@
                                         <i class="bi bi-whatsapp me-2"></i> {{ __('واتساب Twilio') }}
                                     </button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link fw-bold py-3 rounded-3" id="distribution-tab" data-bs-toggle="tab" data-bs-target="#distribution" type="button" role="tab">
+                                        <i class="bi bi-diagram-3 me-2"></i> {{ __('التوزيع التلقائي') }}
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -587,6 +592,31 @@
                                         </div>
                                     </div>
 
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Tab 6: التوزيع التلقائي --}}
+                        <div class="tab-pane fade" id="distribution" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-4"><i class="bi bi-diagram-3 text-primary me-2"></i>{{ __('التوزيع التلقائي للطلبات') }}</h5>
+                                    <p class="text-muted small mb-4">{{ __('حدد طريقة التوزيع التلقائي للطلبات الجديدة على الموظفين.') }}</p>
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold small text-muted">{{ __('طريقة التوزيع') }}</label>
+                                            <select name="order_distribution_method" class="form-control bg-light border-0 shadow-none">
+                                                <option value="disabled" {{ ($settings['order_distribution_method'] ?? 'disabled') === 'disabled' ? 'selected' : '' }}>{{ __('معطل') }}</option>
+                                                <option value="round_robin" {{ ($settings['order_distribution_method'] ?? '') === 'round_robin' ? 'selected' : '' }}>{{ __('توزيع دوري (Round Robin)') }}</option>
+                                                <option value="least_loaded" {{ ($settings['order_distribution_method'] ?? '') === 'least_loaded' ? 'selected' : '' }}>{{ __('الأقل عبئاً (Least Loaded)') }}</option>
+                                            </select>
+                                            <div class="mt-3 p-3 bg-info-subtle text-info rounded-3 text-start small">
+                                                <i class="bi bi-info-circle-fill me-1"></i>
+                                                <strong>{{ __('دوري:') }}</strong> {{ __('يتم توزيع الطلبات بالتساوي على الموظفين واحداً تلو الآخر.') }}<br>
+                                                <strong>{{ __('الأقل عبئاً:') }}</strong> {{ __('يتم تعيين الطلب للموظف الذي لديه أقل عدد من الطلبات النشطة.') }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

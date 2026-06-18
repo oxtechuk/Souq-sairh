@@ -78,26 +78,18 @@
       <div class="p-10 sm:p-12">
         <h2 class="text-3xl font-bold text-primary mb-8">أرسل لنا رسالة</h2>
         
-        @if(session('success'))
-          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
-            {{ session('success') }}
-          </div>
-        @endif
-
-        <form action="{{ route('new.contact.store') }}" method="POST" class="space-y-6">
+        <form id="contact-form" action="{{ route('new.contact.store') }}" method="POST" class="space-y-6">
           @csrf
           
           <div>
             <label class="block text-sm font-bold text-primary mb-2">الاسم الكامل <span class="text-red-500">*</span></label>
             <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-gray-50 hover:bg-white" placeholder="أدخل اسمك الكامل">
-            @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-bold text-primary mb-2">رقم الجوال <span class="text-red-500">*</span></label>
               <input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-gray-50 hover:bg-white" placeholder="05xxxxxxxx" dir="ltr" style="text-align: right;">
-              @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
             <div>
               <label class="block text-sm font-bold text-primary mb-2">البريد الإلكتروني</label>
@@ -108,10 +100,9 @@
           <div>
             <label class="block text-sm font-bold text-primary mb-2">رسالتك <span class="text-red-500">*</span></label>
             <textarea name="message" rows="4" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-gray-50 hover:bg-white" placeholder="اكتب تفاصيل استفسارك هنا..."></textarea>
-            @error('message') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
           </div>
 
-          <button type="submit" class="w-full bg-gold hover:bg-yellow-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          <button type="submit" id="contact-submit-btn" class="w-full bg-gold hover:bg-yellow-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             إرسال الرسالة
           </button>
         </form>
@@ -131,3 +122,61 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+  function showToast(message) {
+    var toast = document.createElement('div');
+    toast.id = 'success-toast';
+    toast.innerHTML =
+      '<div style="position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:9999;background:#1A3263;color:white;padding:16px 32px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;direction:rtl;max-width:90vw;" dir="rtl">' +
+      '<i class="fas fa-check-circle" style="color:#d4a017;font-size:22px;"></i>' +
+      '<span>' + message + '</span>' +
+      '<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,0.15);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;margin-right:8px;flex-shrink:0;">✕</button>' +
+      '</div>';
+
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      var el = document.getElementById('success-toast');
+      if (el) {
+        el.style.transition = 'opacity 0.4s';
+        el.style.opacity = '0';
+        setTimeout(function() { el.remove(); }, 400);
+      }
+    }, 5000);
+  }
+
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var btn = document.getElementById('contact-submit-btn');
+    var origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+    var form = this;
+    var formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        form.reset();
+        showToast(data.message);
+      }
+    })
+    .catch(function() {
+      showToast('حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    });
+  });
+</script>
+@endpush

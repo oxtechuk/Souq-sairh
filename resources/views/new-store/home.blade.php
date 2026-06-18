@@ -602,13 +602,13 @@
                         {{-- Page 1: First 10 brands --}}
                         <div class="brands-page-desktop">
                             @foreach($brands->take(10) as $brand)
-                                <div class="brand-card">
+                                <a href="{{ route('new.cars.index', ['brand_id' => $brand->id]) }}" class="brand-card">
                                     <div class="brand-logo-container">
                                         <img src="{{ $brand->logo ? asset('storage/'.$brand->logo) : asset('new-store/images/brands/brand-1.svg') }}"
                                              alt="{{ $brand->name }}" loading="lazy" />
                                     </div>
                                     <p class="brand-name">{{ $brand->name }}</p>
-                                </div>
+                                </a>
                             @endforeach
                         </div>
 
@@ -616,13 +616,13 @@
                         @if($brands->count() > 10)
                             <div class="brands-page-desktop">
                                 @foreach($brands->skip(10)->take(10) as $brand)
-                                    <div class="brand-card">
+                                    <a href="{{ route('new.cars.index', ['brand_id' => $brand->id]) }}" class="brand-card">
                                         <div class="brand-logo-container">
                                             <img src="{{ $brand->logo ? asset('storage/'.$brand->logo) : asset('new-store/images/brands/brand-1.svg') }}"
                                                  alt="{{ $brand->name }}" loading="lazy" />
                                         </div>
                                         <p class="brand-name">{{ $brand->name }}</p>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @endif

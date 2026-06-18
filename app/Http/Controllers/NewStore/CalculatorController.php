@@ -15,9 +15,11 @@ class CalculatorController extends Controller
     public function index(CacheService $cache)
     {
         $banks = CalculatorBank::orderBy('name')
-            ->get(['id', 'name', 'interest_rate']);
+            ->get(['id', 'name', 'annual_rate']);
 
-        $factors = CalculatorFactor::with('bank')
+        $factors = CalculatorFactor::orderBy('type')
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->get();
 
         $cars = Car::where('is_active', true)

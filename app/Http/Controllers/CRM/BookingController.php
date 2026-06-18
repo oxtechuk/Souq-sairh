@@ -8,6 +8,7 @@ use App\Models\BookingNote;
 use App\Models\Car;
 use App\Models\Employee;
 use App\Notifications\NewBookingNotification;
+use App\Services\OrderDistributionService;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -75,6 +76,8 @@ class BookingController extends Controller
             'status' => 'new',
             'assigned_to' => auth('employee')->id(), // assign to the creator by default
         ]);
+
+        app(OrderDistributionService::class)->distribute($booking);
 
         return back()->with('success', 'تم إنشاء الطلب بنجاح');
     }

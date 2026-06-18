@@ -182,8 +182,8 @@
             <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">إختر البنك <span style="color:#e53e3e;">*</span></label>
             <div class="contact-range-grid" id="calc2-bank-group">
               @foreach($banks as $index => $bank)
-                <button type="button" class="contact-range-btn {{ $index === 0 ? 'active' : '' }}" data-group="calc2-bank" data-rate="{{ $bank->interest_rate ?? 5 }}">
-                  {{ $bank->name }}<br/><small>معدل {{ $bank->interest_rate ?? 5 }}%</small>
+                <button type="button" class="contact-range-btn {{ $index === 0 ? 'active' : '' }}" data-group="calc2-bank" data-rate="{{ $bank->annual_rate ?? 5 }}">
+                  {{ $bank->name }}<br/><small>معدل {{ $bank->annual_rate ?? 5 }}%</small>
                 </button>
               @endforeach
             </div>

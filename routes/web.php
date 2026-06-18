@@ -158,6 +158,10 @@ Route::prefix('Souq-admin')->name('crm.')->middleware(['auth:employee', 'guard.e
         Route::get('reports/bookings', [ReportController::class, 'bookings'])->name('reports.bookings');
         Route::get('reports/sources', [ReportController::class, 'sources'])->name('reports.sources');
         Route::get('reports/monthly', [ReportController::class, 'monthly'])->name('reports.monthly');
+
+        Route::post('reports/export-bookings', [ReportController::class, 'exportBookings'])->name('reports.export-bookings');
+        Route::post('reports/export-monthly', [ReportController::class, 'exportMonthly'])->name('reports.export-monthly');
+        Route::post('reports/export-sources', [ReportController::class, 'exportSources'])->name('reports.export-sources');
     });
 
     // === حاسبة التقسيط (إعدادات) ===

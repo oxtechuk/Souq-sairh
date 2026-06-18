@@ -261,8 +261,8 @@
 
         {{-- ● المحتوى والإعدادات --}}
         @php
-            $canContent = $currentUser->hasAnyPermission(['blog.view','designs.view','partners.view','testimonials.view','translations.view']);
-            $contentOpen = $canContent && $groupActive(['crm.blog','crm.settings.designs','crm.settings.partners','crm.settings.testimonials','crm.translations']);
+            $canContent = $currentUser->hasAnyPermission(['blog.view','partners.view','testimonials.view','translations.view']);
+            $contentOpen = $canContent && $groupActive(['crm.blog','crm.settings.partners','crm.settings.testimonials','crm.translations']);
         @endphp
         @if($canContent)
         <div class="crm-nav-section">
@@ -278,14 +278,6 @@
                     <a href="{{ route('crm.blog.index') }}"
                        class="crm-sub-link {{ str_starts_with($r,'crm.blog') ? 'active' : '' }}">
                         <i class="bi bi-file-earmark-text"></i> {{ __('المدونة') }}
-                    </a>
-                </li>
-                @endcan
-                @can('designs.view')
-                <li>
-                    <a href="{{ route('crm.settings.designs.index') }}"
-                       class="crm-sub-link {{ str_starts_with($r,'crm.settings.designs') ? 'active' : '' }}">
-                        <i class="bi bi-palette"></i> {{ __('معرض التصاميم') }}
                     </a>
                 </li>
                 @endcan
