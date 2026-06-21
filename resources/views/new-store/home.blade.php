@@ -277,14 +277,15 @@
                                         <div class="absolute bottom-0 w-full" style="height: 77px; background: linear-gradient(180deg, rgba(26,50,99,0) 0%, rgba(26,50,99,0.2) 100%); z-index: 2;"></div>
 
                                         {{-- Compare Button --}}
-                                        <div class="absolute flex flex-row items-center rounded-full"
-                                             style="left: 50%; transform: translateX(-50%); bottom: 14px; padding: 6px 12px; gap: 4px; background: #FFF9E6; border: 1px solid #FFECB1; backdrop-filter: blur(7.5px); z-index: 3;">
+                                        <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
+                                           class="absolute flex flex-row items-center rounded-full"
+                                           style="left: 50%; transform: translateX(-50%); bottom: 14px; padding: 6px 12px; gap: 4px; background: #FFF9E6; border: 1px solid #FFECB1; backdrop-filter: blur(7.5px); z-index: 3;">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15" stroke="#1A3263" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5C15 6.10457 14.1046 7 13 7H11C9.89543 7 9 6.10457 9 5Z" stroke="#1A3263" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             </svg>
                                             <span style="font-family: 'Tajawal'; font-weight: 700; font-size: 12px; line-height: 14px; color: #1A3263;">أضف للمقارنة</span>
-                                        </div>
+                                        </a>
                                     </div>
 
                                     {{-- Details --}}

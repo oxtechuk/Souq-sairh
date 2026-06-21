@@ -181,13 +181,18 @@
     fetch(form.action, {
       method: 'POST',
       body: formData,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      }
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.success) {
         form.reset();
         showToast(data.message);
+      } else {
+        showToast(data.message || 'حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
       }
     })
     .catch(function() {

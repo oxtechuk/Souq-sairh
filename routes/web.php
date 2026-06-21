@@ -44,7 +44,7 @@ Route::name('new.')->group(function () {
     // من نحن
     Route::get('/about', [NewHomeController::class,      'about'])->name('about')->middleware('page-cache:600');
     // تواصل معنا
-    Route::get('/contact', [NewContactController::class,   'index'])->name('contact')->middleware('page-cache:600');
+    Route::get('/contact', [NewContactController::class,   'index'])->name('contact');
     Route::post('/contact', [NewContactController::class,   'store'])->name('contact.store');
     // حجز سيارة
     Route::get('/booking', [NewBookingController::class, 'index'])->name('booking');
