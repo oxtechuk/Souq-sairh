@@ -51,6 +51,7 @@ class BookingController extends Controller
             'down_payment' => 'nullable|numeric',
             'financing_period' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:5000',
+            'num_cars' => 'nullable|integer|min:1|max:50',
         ]);
 
         $booking = Booking::create([
@@ -66,6 +67,7 @@ class BookingController extends Controller
             'tax_number' => $data['tax_number'] ?? null,
             'down_payment' => $data['down_payment'] ?? 0,
             'financing_period' => $data['financing_period'] ?? null,
+            'num_cars' => $data['num_cars'] ?? null,
             'notes' => $data['notes'] ?? null,
             'source' => 'website',
             'status' => 'new',

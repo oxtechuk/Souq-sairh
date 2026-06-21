@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CalculatorLead extends Model
 {
-    protected $fillable = ['name', 'phone', 'car_id', 'details'];
+    protected $fillable = ['name', 'phone', 'type', 'car_id', 'details'];
 
     protected $casts = [
         'details' => 'array',

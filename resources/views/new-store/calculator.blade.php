@@ -4,236 +4,268 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('new-store/components/calculator/calculator.css') }}" />
-<link rel="stylesheet" href="{{ asset('new-store/components/contact-form/contact-form.css') }}" />
-<style>
-    #calc-step-2 { display: none; }
-    .calc-step.done .calc-step-circle { background: #d4a017; border-color: #d4a017; }
-    .calc-step.done .calc-step-label { color: #1A3263; }
-</style>
 @endpush
 
 @section('content')
 
-<section class="calculator-section" dir="rtl">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+{{-- 1. Hero --}}
+<section class="all-cars-hero" dir="rtl">
+  <div class="all-cars-hero-bg"></div>
+  <div class="all-cars-hero-content">
+    <h1 class="all-cars-hero-title">حاسبة <span>التمويل</span></h1>
+    <p class="all-cars-hero-subtitle">اختر نوع العميل المناسب واملأ البيانات لتحصل على عرض تمويل تقريبي فوري</p>
+  </div>
+</section>
 
-    {{-- Stepper --}}
-    <div class="calc-stepper">
-      <div class="calc-step" id="step-indicator-2">
-        <div class="calc-step-circle">02</div>
-        <div class="calc-step-label">إحسب تمويلك</div>
-      </div>
-      <div class="calc-step-line"></div>
-      <div class="calc-step active" id="step-indicator-1">
-        <div class="calc-step-circle">01</div>
-        <div class="calc-step-label">أدخل بياناتك</div>
-      </div>
+{{-- 2. Calculator Form --}}
+<section class="calc-section" dir="rtl">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    {{-- Tabs --}}
+    <div class="calc-tabs" id="calc-tabs">
+      <button type="button" class="calc-tab {{ $tab === 'individuals' ? 'active' : '' }}" data-tab="individuals">
+        <i class="fas fa-user"></i>
+        أفراد
+      </button>
+      <button type="button" class="calc-tab {{ $tab === 'companies' ? 'active' : '' }}" data-tab="companies">
+        <i class="fas fa-building"></i>
+        شركات
+      </button>
+      <button type="button" class="calc-tab {{ $tab === 'financing' ? 'active' : '' }}" data-tab="financing">
+        <i class="fas fa-credit-card"></i>
+        تمويل
+      </button>
     </div>
 
-    {{-- Step 1: Personal Data --}}
-    <div id="calc-step-1">
-      <div class="calculator-header">
-        <h2>إحسب تمويل سيارتك</h2>
-        <p>أملأ البيانات التالية وانتقل لحساب تمويلك</p>
-      </div>
+    {{-- Card --}}
+    <div class="calc-card">
 
-      <div class="contact-type-tabs">
-        <button type="button" class="contact-type-tab active" data-type="individuals">
-          <i class="fas fa-user"></i>
-          أفراد
-        </button>
-        <button type="button" class="contact-type-tab" data-type="companies">
-          <i class="fas fa-building"></i>
-          شركات
-        </button>
-        <button type="button" class="contact-type-tab" data-type="financing">
-          <i class="fas fa-credit-card"></i>
-          تمويل
-        </button>
-      </div>
-
-      <form id="lead-form" onsubmit="event.preventDefault(); goToStep2();">
-
-        <div class="contact-form-grid">
-          <div class="contact-form-group">
-            <label>الاسم الكامل <span>*</span></label>
-            <div class="contact-input-wrapper">
-              <i class="fas fa-user"></i>
-              <input type="text" id="lead_name" required placeholder="أدخل الاسم الكامل" />
+      {{-- ===================== INDIVIDUALS ===================== --}}
+      <div class="calc-form {{ $tab === 'individuals' ? 'active' : '' }}" id="form-individuals">
+        <form onsubmit="return submitCalculatorForm('individuals')">
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>الاسم الكامل <span class="required">*</span></label>
+              <input type="text" id="ind-name" required placeholder="أدخل اسمك الكامل" />
+            </div>
+            <div class="calc-group">
+              <label>رقم الجوال <span class="required">*</span></label>
+              <input type="tel" id="ind-phone" required placeholder="05xxxxxxxx" dir="ltr" />
             </div>
           </div>
-          <div class="contact-form-group">
-            <label>رقم الجوال <span>*</span></label>
-            <div class="contact-input-wrapper">
-              <i class="fas fa-phone"></i>
-              <input type="tel" id="lead_phone" required placeholder="05xxxxxxxx" dir="ltr" />
-            </div>
-          </div>
-        </div>
 
-        <div class="contact-form-grid">
-          <div class="contact-form-group">
-            <label>موديل السيارة المطلوب</label>
-            <div class="contact-input-wrapper">
-              <i class="fas fa-car"></i>
-              <select id="lead_car_id">
-                <option value="" disabled selected>اختر سيارة...</option>
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>موديل السيارة المطلوب</label>
+              <select id="ind-car_id">
+                <option value="">اختر سيارة...</option>
                 @foreach($cars as $c)
-                  <option value="{{ $c->cash_price }}">{{ $c->name }} {{ $c->model }}</option>
+                  <option value="{{ $c->id }}" data-price="{{ $c->cash_price }}">{{ $c->name }} {{ $c->model }}</option>
                 @endforeach
               </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
             </div>
-          </div>
-          <div class="contact-form-group">
-            <label>المدينة</label>
-            <div class="contact-input-wrapper">
-              <i class="fas fa-map-marker-alt"></i>
-              <select id="lead_city">
-                <option value="" disabled selected>اختر المدينة...</option>
+            <div class="calc-group">
+              <label>المدينة</label>
+              <select id="ind-city">
+                <option value="">اختر المدينة...</option>
                 <option value="الرياض">الرياض</option>
                 <option value="جدة">جدة</option>
                 <option value="الدمام">الدمام</option>
                 <option value="مكة المكرمة">مكة المكرمة</option>
                 <option value="المدينة المنورة">المدينة المنورة</option>
+                <option value="الخبر">الخبر</option>
+                <option value="تبوك">تبوك</option>
+                <option value="القصيم">القصيم</option>
+                <option value="أبها">أبها</option>
               </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
             </div>
           </div>
-        </div>
 
-        {{-- Salary + Obligations --}}
-        <div class="contact-ranges-row">
-          <div class="contact-range-group">
-            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الراتب <span style="color:#e53e3e;">*</span></label>
-            <div class="contact-range-grid" id="calc-salary-group">
-              <button type="button" class="contact-range-btn active" data-group="calc-salary">أقل من 2,000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-salary">2,000-2,500 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-salary">2,600-3,000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-salary">3,000-3,500 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-salary">3,600-4,000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-salary">أكثر من 4,000 ﷼</button>
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>الراتب <span class="required">*</span></label>
+              <div class="calc-ranges" id="ind-salary">
+                <button type="button" class="calc-range-btn active" data-value="3,500-4,000 ﷼">3,500-4,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="4,000-5,000 ﷼">4,000-5,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="5,000-7,000 ﷼">5,000-7,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="7,000-10,000 ﷼">7,000-10,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="10,000-15,000 ﷼">10,000-15,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="أكثر من 15,000 ﷼">أكثر من 15,000 ﷼</button>
+              </div>
+            </div>
+            <div class="calc-group">
+              <label>الإلتزامات الشهرية <span class="required">*</span></label>
+              <div class="calc-ranges" id="ind-obligations">
+                <button type="button" class="calc-range-btn active" data-value="أقل من 1,000 ﷼">أقل من 1,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="1,000-1,500 ﷼">1,000-1,500 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="1,500-2,000 ﷼">1,500-2,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="2,000-2,500 ﷼">2,000-2,500 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="أكثر من 2,500 ﷼">أكثر من 2,500 ﷼</button>
+              </div>
             </div>
           </div>
-          <div class="contact-range-group">
-            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">الإلتزامات الشهرية <span style="color:#e53e3e;">*</span></label>
-            <div class="contact-range-grid" id="calc-obligations-group">
-              <button type="button" class="contact-range-btn active" data-group="calc-obligations">أقل من 1,000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-obligations">700-1500 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-obligations">1,000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-obligations">1,700-2000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-obligations">1,800-2000 ﷼</button>
-              <button type="button" class="contact-range-btn" data-group="calc-obligations">أكثر من 2,000 ﷼</button>
+
+          <div class="calc-grid">
+            <div class="calc-group full">
+              <label>ملاحظات إضافية</label>
+              <textarea id="ind-notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
             </div>
           </div>
-        </div>
 
-        <input type="hidden" id="calc_salary_range" name="salary_range" />
-        <input type="hidden" id="calc_obligations_range" name="obligations_range" />
+          <input type="hidden" id="ind-salary-val" value="3,500-4,000 ﷼" />
+          <input type="hidden" id="ind-obligations-val" value="أقل من 1,000 ﷼" />
 
-        {{-- Notes + Next --}}
-        <div class="contact-notes-row">
-          <div class="contact-notes-group">
-            <label>ملاحظات إضافية</label>
-            <textarea id="lead_notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
-          </div>
-          <div class="flex items-end">
-            <button type="submit" class="contact-submit-btn">
-              <i class="fas fa-calculator"></i>
-              أنتقل الى الحاسبة
-            </button>
-          </div>
-        </div>
-
-      </form>
-    </div>
-
-    {{-- Step 2: Calculator --}}
-    <div id="calc-step-2">
-      <div class="calculator-header">
-        <h2>إحسب تمويل سيارتك</h2>
-        <p>إختر ما يناسبك لتمويلك</p>
+          <button type="submit" class="calc-submit">
+            <i class="fas fa-calculator"></i>
+            احسب تمويلك
+          </button>
+        </form>
       </div>
 
-      <div class="calc2-grid">
+      {{-- ===================== COMPANIES ===================== --}}
+      <div class="calc-form {{ $tab === 'companies' ? 'active' : '' }}" id="form-companies">
+        <form onsubmit="return submitCalculatorForm('companies')">
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>اسم الشركة <span class="required">*</span></label>
+              <input type="text" id="comp-company" required placeholder="اسم الشركة" />
+            </div>
+            <div class="calc-group">
+              <label>اسم المسؤول <span class="required">*</span></label>
+              <input type="text" id="comp-contact" required placeholder="اسم الشخص المسؤول" />
+            </div>
+          </div>
 
-        {{-- Right Column --}}
-        <div class="calc2-col">
-          <div class="contact-form-group mb-4">
-            <label>موديل السيارة المطلوب <span>*</span></label>
-            <div class="contact-input-wrapper">
-              <i class="fas fa-car"></i>
-              <select id="calc2-car" onchange="updateCarPrice()">
-                <option value="0" disabled>اختر سيارة...</option>
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>رقم الجوال <span class="required">*</span></label>
+              <input type="tel" id="comp-phone" required placeholder="05xxxxxxxx" dir="ltr" />
+            </div>
+            <div class="calc-group">
+              <label>البريد الإلكتروني</label>
+              <input type="email" id="comp-email" placeholder="company@example.com" dir="ltr" />
+            </div>
+          </div>
+
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>عدد السيارات المطلوبة <span class="required">*</span></label>
+              <input type="number" id="comp-num_cars" min="1" max="50" value="1" />
+            </div>
+            <div class="calc-group">
+              <label>المدينة</label>
+              <select id="comp-city">
+                <option value="">اختر المدينة...</option>
+                <option value="الرياض">الرياض</option>
+                <option value="جدة">جدة</option>
+                <option value="الدمام">الدمام</option>
+                <option value="مكة المكرمة">مكة المكرمة</option>
+                <option value="المدينة المنورة">المدينة المنورة</option>
+                <option value="الخبر">الخبر</option>
+                <option value="تبوك">تبوك</option>
+                <option value="القصيم">القصيم</option>
+                <option value="أبها">أبها</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-grid">
+            <div class="calc-group full">
+              <label>ملاحظات إضافية</label>
+              <textarea id="comp-notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="calc-submit">
+            <i class="fas fa-paper-plane"></i>
+            تقديم الطلب
+          </button>
+        </form>
+      </div>
+
+      {{-- ===================== FINANCING ===================== --}}
+      <div class="calc-form {{ $tab === 'financing' ? 'active' : '' }}" id="form-financing">
+        <form onsubmit="return submitCalculatorForm('financing')">
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>الاسم الكامل <span class="required">*</span></label>
+              <input type="text" id="fin-name" required placeholder="أدخل اسمك الكامل" />
+            </div>
+            <div class="calc-group">
+              <label>رقم الجوال <span class="required">*</span></label>
+              <input type="tel" id="fin-phone" required placeholder="05xxxxxxxx" dir="ltr" />
+            </div>
+          </div>
+
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>موديل السيارة المطلوب</label>
+              <select id="fin-car_id">
+                <option value="">اختر سيارة...</option>
                 @foreach($cars as $c)
-                  <option value="{{ $c->cash_price }}">{{ $c->name }} {{ $c->model }}</option>
+                  <option value="{{ $c->id }}" data-price="{{ $c->cash_price }}">{{ $c->name }} {{ $c->model }}</option>
                 @endforeach
               </select>
-              <i class="fas fa-chevron-down select-arrow"></i>
+            </div>
+            <div class="calc-group">
+              <label>البريد الإلكتروني</label>
+              <input type="email" id="fin-email" placeholder="email@example.com" dir="ltr" />
             </div>
           </div>
 
-          <div class="calc2-price-box">
-            <p class="calc2-price-label">سعر السيارة الأساسي</p>
-            <p class="calc2-price-value" id="calc2-car-price">0 ريال</p>
-          </div>
-
-          <div class="contact-range-group mt-4">
-            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">إختر البنك <span style="color:#e53e3e;">*</span></label>
-            <div class="contact-range-grid" id="calc2-bank-group">
-              @foreach($banks as $index => $bank)
-                <button type="button" class="contact-range-btn {{ $index === 0 ? 'active' : '' }}" data-group="calc2-bank" data-rate="{{ $bank->annual_rate ?? 5 }}">
-                  {{ $bank->name }}<br/><small>معدل {{ $bank->annual_rate ?? 5 }}%</small>
-                </button>
-              @endforeach
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>الدفعة الأولى المتوقعة <span class="required">*</span></label>
+              <div class="calc-ranges" id="fin-down">
+                <button type="button" class="calc-range-btn" data-value="5%">5%</button>
+                <button type="button" class="calc-range-btn active" data-value="10%">10%</button>
+                <button type="button" class="calc-range-btn" data-value="15%">15%</button>
+                <button type="button" class="calc-range-btn" data-value="20%">20%</button>
+                <button type="button" class="calc-range-btn" data-value="25%+">25%+</button>
+              </div>
+            </div>
+            <div class="calc-group">
+              <label>هل لديك سيارة للاستبدال؟</label>
+              <div class="calc-toggle" id="fin-trade">
+                <button type="button" class="calc-toggle-btn active" data-value="no">لا</button>
+                <button type="button" class="calc-toggle-btn" data-value="yes">نعم</button>
+              </div>
             </div>
           </div>
 
-          <div class="calc2-summary-row mt-4">
-            <div class="calc2-summary-box">
-              <p class="calc2-summary-label">مبلغ التمويل</p>
-              <p class="calc2-summary-value" id="calc2-total">0 ريال</p>
-            </div>
-            <div class="calc2-summary-box">
-              <p class="calc2-summary-label">إجمالي المبلغ</p>
-              <p class="calc2-summary-value" id="calc2-grand">0 ريال</p>
-            </div>
-          </div>
-        </div>
-
-        {{-- Left Column --}}
-        <div class="calc2-col">
-          <div class="contact-range-group mb-4">
-            <label class="block text-right text-sm font-bold mb-2" style="color:#1A3263;">مدة التمويل <span style="color:#e53e3e;">*</span></label>
-            <div class="contact-range-grid" id="calc2-period-group">
-              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="12">سنة واحدة</button>
-              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="24">سنتان</button>
-              <button type="button" class="contact-range-btn active" data-group="calc2-period" data-months="36">3 سنوات</button>
-              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="48">4 سنوات</button>
-              <button type="button" class="contact-range-btn" data-group="calc2-period" data-months="60">5 سنوات</button>
+          <div class="calc-grid">
+            <div class="calc-group">
+              <label>قيمة التمويل المطلوبة <span class="required">*</span></label>
+              <div class="calc-ranges" id="fin-amount">
+                <button type="button" class="calc-range-btn active" data-value="أقل من 50,000 ﷼">أقل من 50,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="50,000-100,000 ﷼">50,000-100,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="100,000-150,000 ﷼">100,000-150,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="150,000-200,000 ﷼">150,000-200,000 ﷼</button>
+                <button type="button" class="calc-range-btn" data-value="أكثر من 200,000 ﷼">أكثر من 200,000 ﷼</button>
+              </div>
             </div>
           </div>
 
-          <div class="calc2-result-box" id="calc2-result-box">
-            <p class="calc2-result-label">القسط الشهري التقريبي</p>
-            <p class="calc2-result-amount" id="calc2-monthly">0 ريال</p>
+          <div class="calc-grid">
+            <div class="calc-group full">
+              <label>ملاحظات إضافية</label>
+              <textarea id="fin-notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
+            </div>
           </div>
-          <p class="calc2-disclaimer">هذه الحسبة تقديرية ومن الممكن أن تختلف لعدة عوامل</p>
 
-          <button type="button" onclick="submitLead()" class="contact-submit-btn" style="background:#22c55e;">
-            <i class="fas fa-check-circle"></i>
-            تأكيد وإرسال الطلب
+          <input type="hidden" id="fin-down-val" value="10%" />
+          <input type="hidden" id="fin-trade-val" value="no" />
+          <input type="hidden" id="fin-amount-val" value="أقل من 50,000 ﷼" />
+
+          <button type="submit" class="calc-submit">
+            <i class="fas fa-calculator"></i>
+            احسب تمويلك
           </button>
-        </div>
-
+        </form>
       </div>
 
-      <button class="calc-back-btn" onclick="goToStep1()">
-        <i class="fas fa-arrow-right"></i>
-        العودة للبيانات
-      </button>
-    </div>
-
+    </div>{{-- /calc-card --}}
   </div>
 </section>
 
@@ -241,115 +273,250 @@
 
 @push('scripts')
 <script>
-  document.querySelectorAll('.contact-type-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.contact-type-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+  // =============================================
+  //  Data Layer
+  // =============================================
+  var currentTab = '{{ $tab }}';
+  var formStarted = {};
+
+  function pushEvent(event, data) {
+    if (window.dataLayer) {
+      window.dataLayer.push(Object.assign({ event: event }, data || {}));
+    }
+  }
+
+  // Page View
+  pushEvent('page_view', {
+    page_type: 'calculator',
+    tab: currentTab,
+    page_url: window.location.href
+  });
+
+  // View Content
+  pushEvent('view_content', {
+    content_type: 'calculator_form',
+    tab: currentTab
+  });
+
+  // Form View
+  pushEvent('form_view', {
+    form_type: 'calculator_' + currentTab
+  });
+
+  // =============================================
+  //  Tab Switching
+  // =============================================
+  document.querySelectorAll('.calc-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var t = this.dataset.tab;
+      switchTab(t);
     });
   });
 
-  document.querySelectorAll('.contact-range-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const group = btn.dataset.group;
-      document.querySelectorAll(`.contact-range-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (['calc2-period', 'calc2-bank'].includes(group)) runCalc2();
+  function switchTab(tab) {
+    if (tab === currentTab) return;
+
+    document.querySelectorAll('.calc-tab').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.tab === tab);
+    });
+
+    document.querySelectorAll('.calc-form').forEach(function(el) {
+      el.classList.toggle('active', el.id === 'form-' + tab);
+    });
+
+    currentTab = tab;
+
+    var url = new URL(window.location);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState({ tab: tab }, '', url);
+
+    pushEvent('page_view', {
+      page_type: 'calculator',
+      tab: tab,
+      page_url: url.toString()
+    });
+
+    pushEvent('form_view', {
+      form_type: 'calculator_' + tab
+    });
+  }
+
+  // =============================================
+  //  Range Buttons (single-select within group)
+  // =============================================
+  document.querySelectorAll('.calc-ranges').forEach(function(group) {
+    group.querySelectorAll('.calc-range-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        group.querySelectorAll('.calc-range-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
     });
   });
 
-  function goToStep2() {
-    const carIdSelect1 = document.getElementById('lead_car_id');
-    const carIdSelect2 = document.getElementById('calc2-car');
-    if (carIdSelect1.value) carIdSelect2.value = carIdSelect1.value;
+  // Toggle buttons
+  document.querySelectorAll('.calc-toggle').forEach(function(group) {
+    group.querySelectorAll('.calc-toggle-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        group.querySelectorAll('.calc-toggle-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+    });
+  });
 
-    document.getElementById('calc-step-1').style.display = 'none';
-    document.getElementById('calc-step-2').style.display = 'block';
+  // Update hidden inputs on range click
+  document.querySelectorAll('#ind-salary .calc-range-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('ind-salary-val').value = this.dataset.value;
+    });
+  });
+  document.querySelectorAll('#ind-obligations .calc-range-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('ind-obligations-val').value = this.dataset.value;
+    });
+  });
+  document.querySelectorAll('#fin-down .calc-range-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('fin-down-val').value = this.dataset.value;
+    });
+  });
+  document.querySelectorAll('#fin-trade .calc-toggle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('fin-trade-val').value = this.dataset.value;
+    });
+  });
+  document.querySelectorAll('#fin-amount .calc-range-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('fin-amount-val').value = this.dataset.value;
+    });
+  });
 
-    document.getElementById('step-indicator-1').classList.remove('active');
-    document.getElementById('step-indicator-1').classList.add('done');
-    document.getElementById('step-indicator-2').classList.add('active');
+  // =============================================
+  //  Form Started (first focus on any input)
+  // =============================================
+  document.querySelectorAll('.calc-form input, .calc-form select, .calc-form textarea').forEach(function(el) {
+    el.addEventListener('focus', function() {
+      var formId = this.closest('.calc-form').id;
+      if (!formStarted[formId]) {
+        formStarted[formId] = true;
+        pushEvent('form_started', {
+          form_type: 'calculator_' + formId.replace('form-', '')
+        });
+      }
+    });
+  });
 
-    updateCarPrice();
-  }
+  // =============================================
+  //  Form Submission
+  // =============================================
+  function submitCalculatorForm(tab) {
+    var data = { tab: tab };
+    var btn = document.querySelector('#form-' + tab + ' .calc-submit');
 
-  function goToStep1() {
-    document.getElementById('calc-step-2').style.display = 'none';
-    document.getElementById('calc-step-1').style.display = 'block';
-
-    document.getElementById('step-indicator-2').classList.remove('active');
-    document.getElementById('step-indicator-1').classList.remove('done');
-    document.getElementById('step-indicator-1').classList.add('active');
-  }
-
-  function updateCarPrice() {
-    const sel = document.getElementById('calc2-car');
-    const price = parseInt(sel.value) || 0;
-    document.getElementById('calc2-car-price').textContent = price.toLocaleString('ar-SA') + ' ريال';
-    runCalc2();
-  }
-
-  let monthlyAmount = 0;
-
-  function runCalc2() {
-    const price = parseInt(document.getElementById('calc2-car').value) || 0;
-    const monthsBtn = document.querySelector('.contact-range-btn.active[data-group="calc2-period"]');
-    const bankBtn = document.querySelector('.contact-range-btn.active[data-group="calc2-bank"]');
-
-    const months = monthsBtn ? parseInt(monthsBtn.dataset.months) : 36;
-    const rate = bankBtn ? parseFloat(bankBtn.dataset.rate) : 5.0;
-
-    const monthlyRate = rate / 100 / 12;
-    monthlyAmount = monthlyRate === 0
-      ? price / months
-      : price * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-
-    const totalPaid = monthlyAmount * months;
-
-    function fmt(n) { return Math.round(n).toLocaleString('ar-SA') + ' ريال'; }
-
-    document.getElementById('calc2-monthly').textContent = fmt(monthlyAmount);
-    document.getElementById('calc2-total').textContent = fmt(price);
-    document.getElementById('calc2-grand').textContent = fmt(totalPaid);
-  }
-
-  function submitLead() {
-      const name = document.getElementById('lead_name').value;
-      const phone = document.getElementById('lead_phone').value;
-      const price = parseInt(document.getElementById('calc2-car').value) || 0;
-      const monthsBtn = document.querySelector('.contact-range-btn.active[data-group="calc2-period"]');
-      const months = monthsBtn ? parseInt(monthsBtn.dataset.months) : 36;
-      const salaryBtn = document.querySelector('.contact-range-btn.active[data-group="calc-salary"]');
-      const obligBtn = document.querySelector('.contact-range-btn.active[data-group="calc-obligations"]');
+    if (tab === 'individuals') {
+      var name = document.getElementById('ind-name').value;
+      var phone = document.getElementById('ind-phone').value;
+      var carId = document.getElementById('ind-car_id').value;
+      var city = document.getElementById('ind-city').value;
+      var salary = document.getElementById('ind-salary-val').value;
+      var obligations = document.getElementById('ind-obligations-val').value;
+      var notes = document.getElementById('ind-notes').value;
 
       if (!name || !phone) {
-          alert('يرجى العودة والتحقق من إدخال الاسم ورقم الجوال.');
-          return;
+        alert('يرجى إدخال الاسم ورقم الجوال.');
+        return false;
       }
 
-      fetch('{{ route("new.calculator.lead") }}', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({
-              name: name,
-              phone: phone,
-              car_price: price,
-              down_payment: 0,
-              months: months,
-              monthly: Math.round(monthlyAmount),
-              salary_range: salaryBtn ? salaryBtn.textContent.trim() : '',
-              obligations_range: obligBtn ? obligBtn.textContent.trim() : ''
-          })
-      }).then(res => res.json()).then(data => {
-          if(data.success) {
-              alert('تم إرسال طلبك بنجاح. سنتواصل معك قريباً.');
-              window.location.reload();
-          }
-      }).catch(err => {
-          alert('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
+      Object.assign(data, {
+        name: name, phone: phone, car_id: carId,
+        city: city, salary_range: salary,
+        obligations_range: obligations, notes: notes
       });
+    }
+    else if (tab === 'companies') {
+      var company = document.getElementById('comp-company').value;
+      var contact = document.getElementById('comp-contact').value;
+      var phone = document.getElementById('comp-phone').value;
+      var email = document.getElementById('comp-email').value;
+      var numCars = document.getElementById('comp-num_cars').value;
+      var city = document.getElementById('comp-city').value;
+      var notes = document.getElementById('comp-notes').value;
+
+      if (!company || !contact || !phone) {
+        alert('يرجى إدخال اسم الشركة واسم المسؤول ورقم الجوال.');
+        return false;
+      }
+
+      Object.assign(data, {
+        company_name: company, contact_name: contact,
+        phone: phone, email: email,
+        num_cars: numCars, city: city, notes: notes
+      });
+    }
+    else if (tab === 'financing') {
+      var name = document.getElementById('fin-name').value;
+      var phone = document.getElementById('fin-phone').value;
+      var carId = document.getElementById('fin-car_id').value;
+      var email = document.getElementById('fin-email').value;
+      var downPayment = document.getElementById('fin-down-val').value;
+      var tradeIn = document.getElementById('fin-trade-val').value;
+      var finAmount = document.getElementById('fin-amount-val').value;
+      var notes = document.getElementById('fin-notes').value;
+
+      if (!name || !phone) {
+        alert('يرجى إدخال الاسم ورقم الجوال.');
+        return false;
+      }
+
+      Object.assign(data, {
+        name: name, phone: phone, car_id: carId,
+        email: email, down_payment: downPayment,
+        trade_in: tradeIn, financing_amount: finAmount,
+        notes: notes
+      });
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+    fetch('{{ route("new.calculator.lead") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(response) {
+      if (response.success) {
+        pushEvent('lead', {
+          lead_type: 'calculator',
+          tab: tab,
+          phone: data.phone || '',
+          car_model: data.car_id || '',
+          city: data.city || '',
+          salary: data.salary_range || data.financing_amount || '',
+          car_price: '',
+          installment: ''
+        });
+        window.location.href = '{{ route("new.calculator.result") }}';
+      }
+    })
+    .catch(function() {
+      alert('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.');
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = tab === 'companies'
+        ? '<i class="fas fa-paper-plane"></i> تقديم الطلب'
+        : '<i class="fas fa-calculator"></i> احسب تمويلك';
+    });
+
+    return false;
   }
 </script>
 @endpush

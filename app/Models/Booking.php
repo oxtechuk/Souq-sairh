@@ -13,7 +13,7 @@ class Booking extends Model
         'down_payment', 'duration_years', 'interest_rate', 'monthly_installment',
         'total_price', 'notes', 'status', 'source', 'last_contacted_at',
         'city', 'salary_range', 'obligations_range', 'contact_type', 'tax_number',
-        'company_name', 'financing_period',
+        'company_name', 'financing_period', 'num_cars',
     ];
 
     protected $casts = [
