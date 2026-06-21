@@ -265,34 +265,51 @@
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
     </div>
+    @php
+        $aboutPhone = $settings['contact_phone'] ?? '056 9567 947';
+        $aboutEmail = $settings['contact_email'] ?? 'info@souqsayara.com';
+        $aboutAddress = $settings['contact_address'] ?? 'الرياض، المملكة العربية السعودية';
+        $aboutWhatsapp = $settings['contact_whatsapp'] ?? $aboutPhone;
+        $aboutCleanPhone = preg_replace('/[^0-9]/', '', $aboutPhone);
+        $aboutCleanWa = preg_replace('/[^0-9]/', '', $aboutWhatsapp);
+    @endphp
     <div class="contact-info-grid">
-      <div class="contact-info-card">
-        <div class="contact-info-icon">
-          <i class="fas fa-map-marker-alt"></i>
-        </div>
-        <div class="contact-info-content">
-          <h3 class="contact-info-label">موقعنا</h3>
-          <p class="contact-info-value">الرياض، المملكة العربية السعودية</p>
-        </div>
-      </div>
-      <div class="contact-info-card">
-        <div class="contact-info-icon">
-          <i class="fas fa-envelope"></i>
-        </div>
-        <div class="contact-info-content">
-          <h3 class="contact-info-label">البريد الإلكتروني</h3>
-          <p class="contact-info-value">Tese@test.com</p>
-        </div>
-      </div>
-      <div class="contact-info-card">
-        <div class="contact-info-icon">
-          <i class="fas fa-phone"></i>
+      <a href="tel:{{ $aboutCleanPhone }}" class="contact-info-card group">
+        <div class="contact-info-icon bg-green-100 group-hover:bg-green-600 transition-colors">
+          <i class="fas fa-phone-alt text-green-600 group-hover:text-white transition-colors"></i>
         </div>
         <div class="contact-info-content">
           <h3 class="contact-info-label">خدمة العملاء</h3>
-          <p class="contact-info-value">056 9567 947</p>
+          <p class="contact-info-value">{{ $aboutPhone }}</p>
         </div>
-      </div>
+      </a>
+      <a href="https://wa.me/{{ $aboutCleanWa }}" target="_blank" class="contact-info-card group">
+        <div class="contact-info-icon bg-green-100 group-hover:bg-[#25D366] transition-colors">
+          <i class="fab fa-whatsapp text-[#25D366] group-hover:text-white transition-colors"></i>
+        </div>
+        <div class="contact-info-content">
+          <h3 class="contact-info-label">واتساب</h3>
+          <p class="contact-info-value">{{ $aboutWhatsapp }}</p>
+        </div>
+      </a>
+      <a href="mailto:{{ $aboutEmail }}" class="contact-info-card group">
+        <div class="contact-info-icon bg-blue-100 group-hover:bg-blue-600 transition-colors">
+          <i class="fas fa-envelope text-blue-600 group-hover:text-white transition-colors"></i>
+        </div>
+        <div class="contact-info-content">
+          <h3 class="contact-info-label">البريد الإلكتروني</h3>
+          <p class="contact-info-value">{{ $aboutEmail }}</p>
+        </div>
+      </a>
+      <a href="https://maps.google.com/?q={{ urlencode($aboutAddress) }}" target="_blank" class="contact-info-card group">
+        <div class="contact-info-icon bg-red-100 group-hover:bg-red-600 transition-colors">
+          <i class="fas fa-map-marker-alt text-red-600 group-hover:text-white transition-colors"></i>
+        </div>
+        <div class="contact-info-content">
+          <h3 class="contact-info-label">موقعنا</h3>
+          <p class="contact-info-value">{{ $aboutAddress }}</p>
+        </div>
+      </a>
     </div>
   </div>
 </section>

@@ -11,7 +11,11 @@
 @section('content')
 
 {{-- 1. Hero Section --}}
-@php $breadcrumbBg = $settings['breadcrumb_bg'] ?? null; @endphp
+@php
+    $breadcrumbBg = $settings['breadcrumb_bg'] ?? null;
+    $cleanPhone = preg_replace('/[^0-9]/', '', $settings['contact_phone'] ?? '');
+    $cleanWa = preg_replace('/[^0-9]/', '', $settings['contact_whatsapp'] ?? $settings['contact_phone'] ?? '');
+@endphp
 <section class="all-cars-hero" dir="rtl" style="{{ $breadcrumbBg ? 'background-image: url(' . asset('storage/' . $breadcrumbBg) . ');' : '' }}">
   <div class="all-cars-hero-bg"></div>
   <div class="all-cars-hero-content">
@@ -30,36 +34,52 @@
         <div>
           <h2 class="text-3xl font-bold mb-8 text-gold">معلومات التواصل</h2>
           
-          <div class="space-y-8">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-xl shrink-0">
+          <div class="space-y-6">
+            <a href="https://maps.google.com/?q={{ urlencode($settings['contact_address'] ?? 'الرياض، المملكة العربية السعودية') }}"
+               target="_blank"
+               class="flex items-start gap-4 group">
+              <div class="w-12 h-12 bg-white/10 group-hover:bg-red-600 rounded-full flex items-center justify-center text-xl shrink-0 transition-colors">
                 <i class="fas fa-map-marker-alt"></i>
               </div>
               <div>
                 <h3 class="text-lg font-bold mb-1">العنوان</h3>
                 <p class="text-gray-300 leading-relaxed">{{ $settings['contact_address'] ?? 'الرياض، المملكة العربية السعودية' }}</p>
               </div>
-            </div>
+            </a>
 
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-xl shrink-0">
+            <a href="tel:{{ $cleanPhone }}"
+               class="flex items-start gap-4 group">
+              <div class="w-12 h-12 bg-white/10 group-hover:bg-green-600 rounded-full flex items-center justify-center text-xl shrink-0 transition-colors">
                 <i class="fas fa-phone-alt"></i>
               </div>
               <div>
                 <h3 class="text-lg font-bold mb-1">رقم الهاتف</h3>
                 <p class="text-gray-300" dir="ltr">{{ $settings['contact_phone'] ?? '056 9567 947' }}</p>
               </div>
-            </div>
+            </a>
 
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-xl shrink-0">
+            <a href="https://wa.me/{{ $cleanWa }}"
+               target="_blank"
+               class="flex items-start gap-4 group">
+              <div class="w-12 h-12 bg-white/10 group-hover:bg-[#25D366] rounded-full flex items-center justify-center text-xl shrink-0 transition-colors">
+                <i class="fab fa-whatsapp"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold mb-1">واتساب</h3>
+                <p class="text-gray-300" dir="ltr">{{ $settings['contact_whatsapp'] ?? $settings['contact_phone'] ?? '056 9567 947' }}</p>
+              </div>
+            </a>
+
+            <a href="mailto:{{ $settings['contact_email'] ?? 'info@souqsayara.com' }}"
+               class="flex items-start gap-4 group">
+              <div class="w-12 h-12 bg-white/10 group-hover:bg-blue-600 rounded-full flex items-center justify-center text-xl shrink-0 transition-colors">
                 <i class="fas fa-envelope"></i>
               </div>
               <div>
                 <h3 class="text-lg font-bold mb-1">البريد الإلكتروني</h3>
                 <p class="text-gray-300">{{ $settings['contact_email'] ?? 'info@souqsayara.com' }}</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 

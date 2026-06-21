@@ -3,9 +3,12 @@
     $phone       = $settings['contact_phone'] ?? '056 9567 947';
     $email       = $settings['contact_email'] ?? 'info@souqsayara.com';
     $address     = $settings['contact_address'] ?? 'الرياض، المملكة العربية السعودية';
+    $whatsapp    = $settings['contact_whatsapp'] ?? $phone;
     $tiktok      = $settings['social_tiktok'] ?? '#';
     $facebook    = $settings['social_facebook'] ?? '#';
     $instagram   = $settings['social_instagram'] ?? '#';
+    $cleanPhone  = preg_replace('/[^0-9]/', '', $phone);
+    $cleanWa     = preg_replace('/[^0-9]/', '', $whatsapp);
     $footerCar   = asset('new-store/images/footer-car.svg');
     $footerMask  = asset('new-store/images/Mask group.svg');
 @endphp
@@ -65,31 +68,48 @@
                     </h3>
                     <ul class="footer-contact">
                         <li>
-                            <div class="contact-item">
-                                <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                            <a href="tel:{{ $cleanPhone }}" class="contact-item group">
+                                <div class="contact-icon bg-green-100 group-hover:bg-green-600 transition-colors">
+                                    <i class="fas fa-phone-alt text-green-600 group-hover:text-white transition-colors"></i>
+                                </div>
                                 <div class="contact-text">
                                     <p class="contact-label">اتصل بنا</p>
                                     <p class="contact-value">{{ $phone }}</p>
                                 </div>
-                            </div>
+                            </a>
                         </li>
                         <li>
-                            <div class="contact-item">
-                                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <a href="https://wa.me/{{ $cleanWa }}" target="_blank" class="contact-item group">
+                                <div class="contact-icon bg-green-100 group-hover:bg-[#25D366] transition-colors">
+                                    <i class="fab fa-whatsapp text-[#25D366] group-hover:text-white transition-colors"></i>
+                                </div>
+                                <div class="contact-text">
+                                    <p class="contact-label">واتساب</p>
+                                    <p class="contact-value">{{ $whatsapp }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:{{ $email }}" class="contact-item group">
+                                <div class="contact-icon bg-blue-100 group-hover:bg-blue-600 transition-colors">
+                                    <i class="fas fa-envelope text-blue-600 group-hover:text-white transition-colors"></i>
+                                </div>
                                 <div class="contact-text">
                                     <p class="contact-label">راسلنا</p>
                                     <p class="contact-value">{{ $email }}</p>
                                 </div>
-                            </div>
+                            </a>
                         </li>
                         <li>
-                            <div class="contact-item">
-                                <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <a href="https://maps.google.com/?q={{ urlencode($address) }}" target="_blank" class="contact-item group">
+                                <div class="contact-icon bg-red-100 group-hover:bg-red-600 transition-colors">
+                                    <i class="fas fa-map-marker-alt text-red-600 group-hover:text-white transition-colors"></i>
+                                </div>
                                 <div class="contact-text">
                                     <p class="contact-label">الموقع</p>
                                     <p class="contact-value">{{ $address }}</p>
                                 </div>
-                            </div>
+                            </a>
                         </li>
                     </ul>
                 </div>
