@@ -143,8 +143,8 @@
             <div class="footer-bottom-content">
                 <p class="copyright">© {{ date('Y') }} SOUQ SAYARAH. جميع الحقوق محفوظة</p>
                 <div class="footer-bottom-links">
-                    <a href="#">سياسة الخصوصية</a>
-                    <a href="#">الشروط والأحكام</a>
+                    <a href="{{ route('new.page', 'privacy-policy') }}">سياسة الخصوصية</a>
+                    <a href="{{ route('new.page', 'terms-conditions') }}">الشروط والأحكام</a>
                 </div>
             </div>
         </div>

@@ -85,6 +85,14 @@
                                             <label class="form-label fw-bold small text-muted">{{ __('نص التذييل (Footer Text)') }}</label>
                                             <textarea name="footer_text" class="form-control bg-light border-0 shadow-none" rows="4" placeholder="{{ __('اكتب النص الذي يظهر في أسفل جميع الصفحات...') }}">{{ $settings['footer_text'] ?? '' }}</textarea>
                                         </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold small text-muted">{{ __('سياسة الخصوصية') }}</label>
+                                            <textarea name="privacy_policy" class="form-control bg-light border-0 shadow-none" rows="8" placeholder="{{ __('اكتب نص سياسة الخصوصية...') }}">{{ $settings['privacy_policy'] ?? '' }}</textarea>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold small text-muted">{{ __('الشروط والأحكام') }}</label>
+                                            <textarea name="terms_conditions" class="form-control bg-light border-0 shadow-none" rows="8" placeholder="{{ __('اكتب نص الشروط والأحكام...') }}">{{ $settings['terms_conditions'] ?? '' }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -351,6 +359,12 @@
                                                     <input type="text" name="store_home_hero[subtitle]" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['store_home_hero']['subtitle'] ?? 'وحنّا نيسّر لك التمويل' }}" placeholder="وحنّا نيسّر لك التمويل">
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold small text-muted">{{ __('وصف الهيرو') }}</label>
+                                            <textarea name="store_home_description" class="form-control bg-light border-0 shadow-none" rows="3" placeholder="{{ __('لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك...') }}">{{ $settings['store_home_description'] ?? '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>

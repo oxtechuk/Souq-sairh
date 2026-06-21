@@ -11,6 +11,7 @@ use App\Models\Partner;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Services\CacheService;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -116,5 +117,23 @@ class HomeController extends Controller
         ];
 
         return view('new-store.about', compact('testimonials', 'partners', 'stats'));
+    }
+
+    public function page($page)
+    {
+        $settings = Cache::remember('settings.all', 3600, function () {
+            return Setting::all()->pluck('value', 'key');
+        });
+
+        $allowed = ['privacy-policy', 'terms-conditions'];
+        if (! in_array($page, $allowed)) {
+            abort(404);
+        }
+
+        $key = $page === 'privacy-policy' ? 'privacy_policy' : 'terms_conditions';
+        $title = $page === 'privacy-policy' ? 'سياسة الخصوصية' : 'الشروط والأحكام';
+        $content = $settings[$key] ?? '';
+
+        return view('new-store.page', compact('title', 'content'));
     }
 }

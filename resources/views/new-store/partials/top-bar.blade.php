@@ -29,11 +29,11 @@
                     <span class="text-[11px] font-bold">واتساب</span>
                 </a>
 
-                <a href="mailto:{{ $email }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all hover:shadow-lg">
-                    <i class="fas fa-envelope text-[10px]"></i>
-                    <span class="text-[11px] font-bold">{{ $email }}</span>
-                </a>
+{{--                <a href="mailto:{{ $email }}"--}}
+{{--                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all hover:shadow-lg">--}}
+{{--                    <i class="fas fa-envelope text-[10px]"></i>--}}
+{{--                    <span class="text-[11px] font-bold">{{ $email }}</span>--}}
+{{--                </a>--}}
 
             </div>
 

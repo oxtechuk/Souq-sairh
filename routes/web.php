@@ -39,6 +39,8 @@ Route::name('new.')->group(function () {
     // مقارنة
     Route::get('/compare', [NewCompareController::class,   'index'])->name('compare');
     Route::get('/compare/search', [NewCompareController::class,   'search'])->name('compare.search');
+    // صفحات ثابتة
+    Route::get('/page/{page}', [NewHomeController::class, 'page'])->name('page');
     // من نحن
     Route::get('/about', [NewHomeController::class,      'about'])->name('about')->middleware('page-cache:600');
     // تواصل معنا

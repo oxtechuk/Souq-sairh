@@ -72,7 +72,7 @@
                     </div>
 
                     <p class="text-base sm:text-lg text-gray-600 leading-relaxed text-right">
-                        لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك، أيًا بدأت الحين مع "سوق سيارة" وعيش الرفاهية
+                        {!! $settings['store_home_description'] ?? 'لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك، أيًا بدأت الحين مع "سوق سيارة" وعيش الرفاهية' !!}
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4">
