@@ -155,6 +155,34 @@
 @push('scripts')
 <script>
   // =============================================
+  //  Toast Notification
+  // =============================================
+  function showToast(message, type) {
+    type = type || 'success';
+    var bg = type === 'success' ? '#1A3263' : '#dc2626';
+    var icon = type === 'success' ? '<i class="fas fa-check-circle" style="color:#d4a017;font-size:22px;"></i>' : '<i class="fas fa-exclamation-circle" style="color:#fff;font-size:22px;"></i>';
+
+    var toast = document.createElement('div');
+    toast.id = 'calc-toast';
+    toast.innerHTML =
+      '<div style="position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:9999;background:' + bg + ';color:white;padding:16px 32px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;direction:rtl;max-width:90vw;" dir="rtl">' +
+      icon +
+      '<span>' + message + '</span>' +
+      '<button onclick="this.parentElement.parentElement.remove()" style="background:rgba(255,255,255,0.15);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;margin-right:8px;flex-shrink:0;">✕</button>' +
+      '</div>';
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      var el = document.getElementById('calc-toast');
+      if (el) {
+        el.style.transition = 'opacity 0.4s';
+        el.style.opacity = '0';
+        setTimeout(function() { el.remove(); }, 400);
+      }
+    }, 5000);
+  }
+
+  // =============================================
   //  Data Layer — Page View
   // =============================================
   if (window.dataLayer) {
@@ -238,7 +266,7 @@
     var carName = carOption ? carOption.dataset.name : '';
 
     if (!price) {
-      alert('يرجى اختيار سيارة.');
+      showToast('يرجى اختيار سيارة.', 'error');
       return;
     }
 
@@ -256,8 +284,10 @@
       });
     }
 
-    alert('تم إرسال طلبك بنجاح. سنتواصل معك قريباً.');
-    window.location.href = '{{ route("new.calculator") }}';
+    showToast('تم إرسال طلبك بنجاح. سنتواصل معك قريباً.');
+    setTimeout(function() {
+      window.location.href = '{{ route("new.calculator") }}';
+    }, 1500);
   }
 </script>
 @endpush
