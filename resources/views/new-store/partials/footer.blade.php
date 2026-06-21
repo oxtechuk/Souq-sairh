@@ -9,6 +9,7 @@
     $instagram   = $settings['social_instagram'] ?? '#';
     $cleanPhone  = preg_replace('/[^0-9]/', '', $phone);
     $cleanWa     = preg_replace('/[^0-9]/', '', $whatsapp);
+    if (!$cleanWa) { $cleanWa = $cleanPhone; $whatsapp = $phone; }
     $footerCar   = asset('new-store/images/footer-car.svg');
     $footerMask  = asset('new-store/images/Mask group.svg');
 @endphp

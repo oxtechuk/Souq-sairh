@@ -104,6 +104,24 @@
     {{-- CarCarousel JS (shared across pages) --}}
     <script src="{{ asset('new-store/scripts/carCarousel.js') }}" defer></script>
 
+    {{-- Floating WhatsApp Icon --}}
+    @php
+        $waRaw = $globalSouqSettings['contact_whatsapp'] ?? '';
+        $waClean = preg_replace('/[^0-9]/', '', $waRaw);
+        if (!$waClean) {
+            $waRaw = $globalSouqSettings['contact_phone'] ?? '';
+            $waClean = preg_replace('/[^0-9]/', '', $waRaw);
+        }
+    @endphp
+    @if($waClean)
+    <div class="fixed bottom-6 left-6 z-50">
+        <a href="https://wa.me/{{ $waClean }}?text={{ urlencode('مرحباً، أود الاستفسار عن') }}" target="_blank"
+           class="w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 shadow-[0_4px_20px_rgba(37,211,102,0.4)]">
+            <i class="fab fa-whatsapp text-white text-3xl"></i>
+        </a>
+    </div>
+    @endif
+
     {{-- Global Tracking Helpers --}}
     <script>
         @if($souqGaId)
