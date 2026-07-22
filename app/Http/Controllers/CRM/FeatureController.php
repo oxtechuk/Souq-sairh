@@ -24,7 +24,15 @@ class FeatureController extends Controller
             'icon' => 'nullable|string',
         ]);
 
-        Feature::create($request->all());
+        $feature = Feature::create($request->all());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة الخاصية بنجاح',
+                'data' => $feature
+            ]);
+        }
 
         return back()->with('success', 'تمت إضافة الخاصية بنجاح');
     }

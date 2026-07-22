@@ -176,15 +176,23 @@
                                 <input type="number" name="specs[seats]" class="form-control" placeholder="5" value="{{ $car->specs['seats'] ?? '' }}">
                             </div>
                             <div class="col-12">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <label class="form-label mb-0 fw-bold">{{ __('المواصفات') }}</label>
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <label class="form-label mb-0 fw-bold me-2">{{ __('المواصفات') }}</label>
+                                        <input type="text" id="search-specifications" class="form-control form-control-sm rounded-3" placeholder="{{ __('بحث في المواصفات...') }}" style="width: 180px; font-size: 12px; height: 32px;">
+                                        @can('specifications.create')
+                                        <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 rounded-pill px-3" style="font-size: 12px; height: 32px;" data-bs-toggle="modal" data-bs-target="#quickAddSpecModal">
+                                            <i class="bi bi-plus-lg"></i> {{ __('إضافة سريعة') }}
+                                        </button>
+                                        @endcan
+                                    </div>
                                     <div class="btn-group btn-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="toggleCheckboxes('specifications[]', true)">{{ __('تحديد الكل') }}</button>
                                         <button type="button" class="btn btn-outline-secondary" onclick="toggleCheckboxes('specifications[]', false)">{{ __('إلغاء الكل') }}</button>
                                     </div>
                                 </div>
                                 <div class="checkbox-grid-container">
-                                    <div class="row g-2">
+                                    <div class="row g-2" id="specifications-container">
                                         @foreach($specifications as $spec)
                                         <div class="col-md-4 col-lg-3">
                                             <div class="checkbox-item-wrapper">
@@ -200,15 +208,23 @@
                                 </div>
                             </div>
                             <div class="col-12 mt-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <label class="form-label mb-0 fw-bold">{{ __('المميزات') }}</label>
+                                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <label class="form-label mb-0 fw-bold me-2">{{ __('المميزات') }}</label>
+                                        <input type="text" id="search-features" class="form-control form-control-sm rounded-3" placeholder="{{ __('بحث في المميزات...') }}" style="width: 180px; font-size: 12px; height: 32px;">
+                                        @can('features.create')
+                                        <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 rounded-pill px-3" style="font-size: 12px; height: 32px;" data-bs-toggle="modal" data-bs-target="#quickAddFeatModal">
+                                            <i class="bi bi-plus-lg"></i> {{ __('إضافة سريعة') }}
+                                        </button>
+                                        @endcan
+                                    </div>
                                     <div class="btn-group btn-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="toggleCheckboxes('features_list[]', true)">{{ __('تحديد الكل') }}</button>
                                         <button type="button" class="btn btn-outline-secondary" onclick="toggleCheckboxes('features_list[]', false)">{{ __('إلغاء الكل') }}</button>
                                     </div>
                                 </div>
                                 <div class="checkbox-grid-container">
-                                    <div class="row g-2">
+                                    <div class="row g-2" id="features-container">
                                         @foreach($features_list as $feat)
                                         <div class="col-md-4 col-lg-3">
                                             <div class="checkbox-item-wrapper">
@@ -406,7 +422,122 @@
 .color-row .color-img-label:hover { border-color:var(--crm-red);color:var(--crm-red); }
 .color-row .color-img-preview { width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--crm-border); }
 .color-row .color-remove { background:none;border:none;color:var(--crm-red);cursor:pointer;font-size:18px;flex-shrink:0;padding:0; }
+
+/* Custom CRM Toast */
+.crm-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #12B76A;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+}
+.crm-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+.crm-toast.error {
+    background: #D92D20;
+}
 </style>
+
+<!-- Modal Quick Add Specification -->
+@can('specifications.create')
+<div class="modal fade" id="quickAddSpecModal" tabindex="-1" aria-labelledby="quickAddSpecModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="quickAddSpecModalLabel">{{ __('إضافة مواصفة جديدة') }}</h5>
+                <button type="button" class="btn-close {{ app()->getLocale() == 'ar' ? 'ms-0 me-auto' : '' }}" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-2">
+                <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active rounded-pill py-1" data-bs-toggle="tab" data-bs-target="#quick-add-ar-spec" type="button" style="font-size: 13px;">{{ __('العربية') }}</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link rounded-pill py-1" data-bs-toggle="tab" data-bs-target="#quick-add-en-spec" type="button" style="font-size: 13px;">{{ __('الإنجليزية') }}</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mb-3" id="quick-add-spec-form">
+                    <div class="tab-pane fade show active" id="quick-add-ar-spec">
+                        <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('اسم المواصفة (بالعربية)') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="name[ar]" class="form-control rounded-3" placeholder="{{ __('مثال: فتحة سقف') }}">
+                    </div>
+                    <div class="tab-pane fade" id="quick-add-en-spec">
+                        <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('اسم المواصفة (بالإنجليزية)') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="name[en]" class="form-control rounded-3" placeholder="{{ __('e.g., Sunroof') }}">
+                    </div>
+                </div>
+
+                <div class="mb-3" id="quick-add-spec-icon-div">
+                    <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('أيقونة المواصفة (Bootstrap Icons)') }}</label>
+                    <input type="text" name="icon" class="form-control rounded-3" placeholder="{{ __('مثال: bi-speedometer') }}">
+                    <small class="text-muted" style="font-size: 11px;">{{ __('استخدم أكواد Bootstrap Icons (مثل: bi-fuel-pump)') }}</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" style="font-size: 13px;">{{ __('إلغاء') }}</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="submitQuickAdd('spec')" style="font-size: 13px;">{{ __('إضافة') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endcan
+
+<!-- Modal Quick Add Feature -->
+@can('features.create')
+<div class="modal fade" id="quickAddFeatModal" tabindex="-1" aria-labelledby="quickAddFeatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="quickAddFeatModalLabel">{{ __('إضافة ميزة جديدة') }}</h5>
+                <button type="button" class="btn-close {{ app()->getLocale() == 'ar' ? 'ms-0 me-auto' : '' }}" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-2">
+                <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active rounded-pill py-1" data-bs-toggle="tab" data-bs-target="#quick-add-ar-feat" type="button" style="font-size: 13px;">{{ __('العربية') }}</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link rounded-pill py-1" data-bs-toggle="tab" data-bs-target="#quick-add-en-feat" type="button" style="font-size: 13px;">{{ __('الإنجليزية') }}</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mb-3" id="quick-add-feat-form">
+                    <div class="tab-pane fade show active" id="quick-add-ar-feat">
+                        <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('اسم الميزة (بالعربية)') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="name[ar]" class="form-control rounded-3" placeholder="{{ __('مثال: شاشة ملاحة') }}">
+                    </div>
+                    <div class="tab-pane fade" id="quick-add-en-feat">
+                        <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('اسم الميزة (بالإنجليزية)') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="name[en]" class="form-control rounded-3" placeholder="{{ __('e.g., Navigation Screen') }}">
+                    </div>
+                </div>
+
+                <div class="mb-3" id="quick-add-feat-icon-div">
+                    <label class="form-label fw-semibold" style="font-size: 13px;">{{ __('أيقونة الميزة (Bootstrap Icons)') }}</label>
+                    <input type="text" name="icon" class="form-control rounded-3" placeholder="{{ __('مثال: bi-star') }}">
+                    <small class="text-muted" style="font-size: 11px;">{{ __('استخدم أكواد Bootstrap Icons (مثل: bi-star)') }}</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" style="font-size: 13px;">{{ __('إلغاء') }}</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="submitQuickAdd('feat')" style="font-size: 13px;">{{ __('إضافة') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endcan
 
 @endsection
 
@@ -505,6 +636,133 @@ existingColors.forEach(c => {
 function toggleCheckboxes(name, state) {
     const checkboxes = document.querySelectorAll(`input[name="${name}"]`);
     checkboxes.forEach(cb => cb.checked = state);
+}
+
+// Search Specifications
+$('#search-specifications').on('input', function() {
+    let query = $(this).val().toLowerCase().trim();
+    $('input[name="specifications[]"]').each(function() {
+        let wrapper = $(this).closest('.col-md-4');
+        let label = wrapper.find('span').text().toLowerCase();
+        if (label.includes(query)) {
+            wrapper.show();
+        } else {
+            wrapper.hide();
+        }
+    });
+});
+
+// Search Features
+$('#search-features').on('input', function() {
+    let query = $(this).val().toLowerCase().trim();
+    $('input[name="features_list[]"]').each(function() {
+        let wrapper = $(this).closest('.col-md-4');
+        let label = wrapper.find('span').text().toLowerCase();
+        if (label.includes(query)) {
+            wrapper.show();
+        } else {
+            wrapper.hide();
+        }
+    });
+});
+
+// Submit Quick Add Specification / Feature via AJAX
+function submitQuickAdd(type) {
+    let formId = type === 'spec' ? '#quick-add-spec-form' : '#quick-add-feat-form';
+    let container = $(formId);
+    let nameAr = container.find('input[name="name[ar]"]').val().trim();
+    let nameEn = container.find('input[name="name[en]"]').val().trim();
+    let icon = $(type === 'spec' ? '#quick-add-spec-icon-div' : '#quick-add-feat-icon-div').find('input[name="icon"]').val().trim();
+    
+    if (!nameAr || !nameEn) {
+        alert('{{ __("يرجى ملء جميع الحقول المطلوبة") }}');
+        return;
+    }
+    
+    let url = type === 'spec' ? "{{ route('crm.specifications.store') }}" : "{{ route('crm.features.store') }}";
+    
+    $.ajax({
+        url: url,
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Accept': 'application/json'
+        },
+        data: {
+            name: {
+                ar: nameAr,
+                en: nameEn
+            },
+            icon: icon
+        },
+        success: function(response) {
+            if (response.success) {
+                // Clear input fields
+                container.find('input[type="text"]').val('');
+                $(type === 'spec' ? '#quick-add-spec-icon-div' : '#quick-add-feat-icon-div').find('input[name="icon"]').val('');
+                
+                // Hide modal
+                let modalId = type === 'spec' ? '#quickAddSpecModal' : '#quickAddFeatModal';
+                $(modalId).modal('hide');
+                
+                // Append and check the newly created item
+                let item = response.data;
+                let localizedName = '';
+                if (typeof item.name === 'object' && item.name !== null) {
+                    localizedName = '{{ app()->getLocale() }}' === 'ar' ? item.name.ar : item.name.en;
+                    if (!localizedName) localizedName = item.name.ar || item.name.en;
+                } else {
+                    localizedName = item.name;
+                }
+                
+                let checkboxName = type === 'spec' ? 'specifications[]' : 'features_list[]';
+                let idPrefix = type === 'spec' ? 'spec_' : 'feat_';
+                let appendContainer = type === 'spec' ? '#specifications-container' : '#features-container';
+                
+                let html = `
+                    <div class="col-md-4 col-lg-3">
+                        <div class="checkbox-item-wrapper">
+                            <input type="checkbox" name="${checkboxName}" value="${item.id}" id="${idPrefix}${item.id}" class="btn-check" checked>
+                            <label class="btn btn-outline-premium w-100 text-start d-flex align-items-center gap-2" for="${idPrefix}${item.id}">
+                                <i class="bi bi-check-circle-fill check-icon"></i>
+                                <span>${localizedName}</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+                
+                $(appendContainer).append(html);
+                
+                // Show success toast
+                showCrmToast('{{ __("تمت الإضافة والتحديد بنجاح") }}');
+            }
+        },
+        error: function(xhr) {
+            let msg = '{{ __("حدث خطأ ما") }}';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                msg = xhr.responseJSON.message;
+            }
+            showCrmToast(msg, 'error');
+        }
+    });
+}
+
+// Custom CRM Toast
+function showCrmToast(message, type = 'success') {
+    let toast = $('<div class="crm-toast"></div>').text(message);
+    if (type === 'error') {
+        toast.addClass('error');
+    }
+    $('body').append(toast);
+    setTimeout(function() {
+        toast.addClass('show');
+    }, 100);
+    setTimeout(function() {
+        toast.removeClass('show');
+        setTimeout(function() {
+            toast.remove();
+        }, 300);
+    }, 3000);
 }
 </script>
 @endsection

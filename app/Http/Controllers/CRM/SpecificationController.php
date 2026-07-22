@@ -24,7 +24,15 @@ class SpecificationController extends Controller
             'icon' => 'nullable|string',
         ]);
 
-        Specification::create($request->all());
+        $specification = Specification::create($request->all());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة المواصفة بنجاح',
+                'data' => $specification
+            ]);
+        }
 
         return back()->with('success', 'تمت إضافة المواصفة بنجاح');
     }

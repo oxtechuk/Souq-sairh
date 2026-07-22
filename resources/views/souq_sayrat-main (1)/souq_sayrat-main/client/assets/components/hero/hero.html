@@ -10,17 +10,19 @@
           class="relative w-full max-w-[453px]"
           style="aspect-ratio: 453/614"
         >
-          <video
-            id="hero-video"
-            class="w-full h-full object-cover rounded-3xl"
-            poster="assets/images/hero-video-poster.png"
-          >
-            <source
-              src="assets/images/videos/hero-video.mp4"
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
+          <div class="video-mask-wrapper w-full h-full">
+            <video
+              id="hero-video"
+              class="w-full h-full object-cover"
+              poster="assets/images/hero-video-poster.png"
+            >
+              <source
+                src="assets/images/videos/hero-video.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
 
           <!-- Play Button -->
           <button

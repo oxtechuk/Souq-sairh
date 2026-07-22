@@ -26,17 +26,19 @@
                 {{-- Left Side - Video and Social Media (Order 2 on mobile) --}}
                 <div class="relative order-2 lg:order-1" dir="ltr">
                     <div id="hero-video-container" class="relative w-full max-w-[453px]" style="aspect-ratio: 453/614">
-                        @if($heroVideo)
-                            <video id="hero-video" class="w-full h-full object-cover rounded-3xl" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
-                                <source src="{{ asset('storage/' . $heroVideo) }}" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        @else
-                            <video id="hero-video" class="w-full h-full object-cover rounded-3xl" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
-                                <source src="{{ asset('new-store/images/videos/hero-video.mp4') }}" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        @endif
+                        <div class="video-mask-wrapper w-full h-full">
+                            @if($heroVideo)
+                                <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
+                                    <source src="{{ asset('storage/' . $heroVideo) }}" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            @else
+                                <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
+                                    <source src="{{ asset('new-store/images/videos/hero-video.mp4') }}" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            @endif
+                        </div>
 
                         <button id="play-button" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-primary transition-all hover:scale-110 z-10">
                             <i class="fas fa-pause text-2xl sm:text-3xl ml-1"></i>

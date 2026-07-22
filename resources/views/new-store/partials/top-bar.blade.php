@@ -17,7 +17,7 @@
             <div class="flex flex-wrap gap-2 justify-center sm:justify-start" dir="ltr">
 
                 <a href="tel:{{ $cleanPhone }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-md transition-all hover:shadow-lg">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-dark hover:bg-green-700 text-white rounded-md transition-all hover:shadow-lg">
                     <i class="fas fa-phone-alt text-[10px]"></i>
                     <span class="text-[11px] font-bold">{{ $phone }}</span>
                 </a>
@@ -35,7 +35,7 @@
             {{-- Location --}}
             <a href="https://maps.google.com/?q={{ urlencode($address) }}"
                target="_blank"
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md transition-all hover:shadow-lg">
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-dark text-white rounded-md transition-all hover:shadow-lg">
                 <i class="fas fa-map-marker-alt text-[10px]"></i>
                 <span class="text-[11px] font-bold">{{ $address }}</span>
             </a>
