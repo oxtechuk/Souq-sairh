@@ -6,7 +6,7 @@
 
     <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
       alt="{{ $car->name }}"
-      class="w-full h-[135px] object-contain mt-8" loading="lazy" />
+      class="w-full h-[135px] object-cover mt-8" loading="lazy" />
 
     <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
       class="absolute bottom-4 right-5 bg-[#FFF1C2] text-primary px-4 py-2 rounded-full font-bold text-xs flex items-center justify-center gap-2 whitespace-nowrap hover:bg-[#FFE8A0] transition-colors">
