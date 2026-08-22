@@ -1,31 +1,79 @@
-<div class="car-card shrink-0 w-[280px] bg-white rounded-[18px] overflow-hidden border border-[#B8C3D8]" dir="rtl">
-  <div class="relative bg-[#EEF2F7] h-[215px] px-5 pt-5">
-    <span class="absolute top-4 left-5 bg-primary text-white px-5 py-2 rounded-full text-xs font-bold">
+@php
+    $carName = trim($car->name ?? '');
+    $carModel = trim($car->model ?? '');
+
+    $displayName = $carName;
+    if ($carModel !== '') {
+        $nameLower = mb_strtolower($carName);
+        $modelLower = mb_strtolower($carModel);
+
+        $alreadyContains = Str::contains($nameLower, $modelLower);
+
+        if (!$alreadyContains) {
+            $modelWords = array_filter(explode(' ', preg_replace('/[^\p{L}\p{N}]+/u', ' ', $modelLower)));
+            if (!empty($modelWords)) {
+                $missingWords = false;
+                foreach ($modelWords as $word) {
+                    if (mb_strlen($word) > 1 && !Str::contains($nameLower, $word)) {
+                        $missingWords = true;
+                        break;
+                    }
+                }
+                if (!$missingWords) {
+                    $alreadyContains = true;
+                }
+            }
+        }
+
+        if (!$alreadyContains) {
+            $displayName .= ' ' . $carModel;
+        }
+    }
+
+    $hasDiscount = false;
+    $discountPrice = null;
+    if (isset($car->activeOffer) && $car->activeOffer && !empty($car->activeOffer->special_price) && $car->activeOffer->special_price < $car->cash_price) {
+        $hasDiscount = true;
+        $discountPrice = $car->activeOffer->special_price;
+    }
+@endphp
+
+<div class="car-card shrink-0 w-[280px] bg-white rounded-[18px] overflow-hidden border border-[#B8C3D8] hover:shadow-lg transition-shadow" dir="rtl">
+  {{-- Card Header: Car Image filling full area --}}
+  <div class="relative bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse h-[215px] overflow-hidden">
+    <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
+      alt="{{ $displayName }}"
+      class="w-full h-full object-cover transition-all duration-500 opacity-0 hover:scale-105" loading="lazy"
+      onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('animate-pulse', 'bg-gradient-to-r', 'from-gray-200', 'via-gray-100', 'to-gray-200');" />
+
+    <span class="absolute top-4 left-5 bg-primary/90 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-sm z-10">
       {{ $car->year }}
     </span>
 
-    <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
-      alt="{{ $car->name }}"
-      class="w-full h-[135px] object-cover mt-8" loading="lazy" />
-
     <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
-      class="absolute bottom-4 right-5 bg-[#FFF1C2] text-primary px-4 py-2 rounded-full font-bold text-xs flex items-center justify-center gap-2 whitespace-nowrap hover:bg-[#FFE8A0] transition-colors">
+      class="absolute bottom-4 right-5 bg-[#FFF1C2]/95 hover:bg-[#FFE8A0] text-primary px-4 py-1.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 whitespace-nowrap transition-colors shadow-sm z-10">
       <span>أضف للمقارنة</span>
       <i class="fas fa-code-compare text-xs"></i>
     </a>
   </div>
 
+  {{-- Title (No duplicated model) --}}
   <div class="h-[62px] px-4 flex items-center justify-center border-b border-[#C9D1E2]">
-    <h3 class="text-[18px] font-extrabold text-primary text-center leading-tight">
-      {{ $car->name }} <span dir="ltr">{{ $car->model }}</span>
+    <h3 class="text-[17px] font-extrabold text-primary text-center leading-tight line-clamp-2">
+      {{ $displayName }}
     </h3>
   </div>
 
+  {{-- Pricing Grid (No repeated price if no discount) --}}
   <div class="grid grid-cols-2 h-[108px] border-b border-[#C9D1E2]">
     <div class="flex flex-col items-center justify-center border-l border-[#C9D1E2]">
       <p class="text-[11px] text-primary mb-1">سعر الكاش</p>
-      <p class="text-[17px] font-extrabold text-gold mb-1">{{ number_format($car->cash_price) }} ريال</p>
-      <p class="text-[11px] text-gray-500 line-through">{{ number_format($car->cash_price) }} ريال</p>
+      @if($hasDiscount)
+        <p class="text-[17px] font-extrabold text-gold mb-0.5">{{ number_format($discountPrice) }} ريال</p>
+        <p class="text-[11px] text-gray-500 line-through">{{ number_format($car->cash_price) }} ريال</p>
+      @else
+        <p class="text-[17px] font-extrabold text-gold">{{ number_format($car->cash_price) }} ريال</p>
+      @endif
     </div>
 
     <div class="flex flex-col items-center justify-center">
@@ -35,6 +83,7 @@
     </div>
   </div>
 
+  {{-- Car Specifications --}}
   <div class="grid grid-cols-2 gap-x-14 gap-y-5 px-6 py-5 text-primary text-[13px]" dir="rtl">
     <div class="flex items-center justify-start gap-2">
       <i class="fas fa-gas-pump w-4 text-center flex-shrink-0"></i>
@@ -60,6 +109,7 @@
     </div>
   </div>
 
+  {{-- Action Button --}}
   <div class="px-8 pb-5">
     <a href="{{ route('new.cars.show', $car->slug) }}"
       class="w-full h-[62px] flex items-center justify-center bg-white text-primary border border-primary hover:bg-primary hover:text-white rounded-md font-extrabold text-[20px] transition-all">

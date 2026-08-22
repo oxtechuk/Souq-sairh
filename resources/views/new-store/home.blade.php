@@ -21,72 +21,82 @@
     =========================================== --}}
     <section class="bg-white py-10 sm:py-16 lg:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16" dir="ltr">
+            <div class="flex flex-col gap-10 lg:gap-12">
 
-                {{-- Left Side - Video and Social Media (Order 2 on mobile) --}}
-                <div class="relative order-2 lg:order-1" dir="ltr">
-                    <div id="hero-video-container" class="relative w-full max-w-[453px]" style="aspect-ratio: 453/614">
-                        <div class="video-mask-wrapper w-full h-full">
-                            @if($heroVideo)
-                                <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
-                                    <source src="{{ asset('storage/' . $heroVideo) }}" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            @else
-                                <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay muted playsinline loop>
-                                    <source src="{{ asset('new-store/images/videos/hero-video.mp4') }}" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            @endif
+                {{-- 1. Video & Hero Title Content --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+
+                    {{-- Left Side - Video (First on mobile and desktop) --}}
+                    <div class="relative flex justify-center lg:justify-start" dir="ltr">
+                        <div id="hero-video-container" class="relative w-full max-w-[453px]" style="aspect-ratio: 453/614">
+                            <div class="video-mask-wrapper w-full h-full">
+                                @if($heroVideo)
+                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop>
+                                        <source src="{{ asset('storage/' . $heroVideo) }}" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop>
+                                        <source src="{{ asset('new-store/images/videos/hero-video.mp4') }}" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @endif
+                            </div>
+
+                            {{-- Play/Pause Button --}}
+                            <button id="play-button" aria-label="تشغيل / إيقاف الفيديو" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-primary transition-all hover:scale-110 z-10 shadow-lg">
+                                <i class="fas fa-pause text-2xl sm:text-3xl ml-1"></i>
+                            </button>
+
+                            {{-- Audio Mute/Unmute Toggle Button --}}
+                            <button id="audio-toggle-button" aria-label="تشغيل / كتم الصوت" title="تشغيل / كتم الصوت" class="absolute top-6 left-6 w-14 h-14 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200 text-primary transition-all hover:scale-110 z-20 cursor-pointer">
+                                <i id="audio-icon" class="fas fa-volume-high text-xl"></i>
+                            </button>
+
+                            {{-- Social Media Links --}}
+                            <div class="absolute bottom-4 right-4 flex flex-col gap-3 z-20">
+                                <a href="#" class="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
+                                    <i class="fab fa-tiktok text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
+                                    <i class="fab fa-facebook-f text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
+                                    <i class="fab fa-instagram text-xl"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Right Side - Title, Subtitle, Description, Buttons (Under video on mobile) --}}
+                    <div class="flex flex-col space-y-6 text-right" dir="rtl">
+                        <div>
+                            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight mb-5 hero-title-primary">
+                                {!! $hero['title'] ?? 'تخيّر موتِرك..' !!}
+                            </h1>
+                            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gold leading-tight mb-4 hero-title-secondary">
+                                {!! $hero['subtitle'] ?? 'وحنّا نيسّر لك التمويل' !!}
+                            </h2>
                         </div>
 
-                        <button id="play-button" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-primary transition-all hover:scale-110 z-10">
-                            <i class="fas fa-pause text-2xl sm:text-3xl ml-1"></i>
-                        </button>
+                        <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+                            {!! $settings['store_home_description'] ?? 'لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك، أيًا بدأت الحين مع "سوق سيارة" وعيش الرفاهية' !!}
+                        </p>
 
-                        <div class="absolute top-6 left-6 w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200">
-                            <i class="fas fa-arrow-up-right text-xl"></i>
-                        </div>
-
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-3 z-20">
-                            <a href="#" class="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
-                                <i class="fab fa-tiktok text-xl"></i>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <a href="{{ route('new.cars.index') }}" class="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg transition-all hover:-translate-y-1 text-base text-center font-bold shadow-md">
+                                استعرض السيارات
                             </a>
-                            <a href="#" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
-                                <i class="fab fa-facebook-f text-xl"></i>
-                            </a>
-                            <a href="#" class="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform text-white shadow-lg">
-                                <i class="fab fa-instagram text-xl"></i>
+                            <a href="{{ route('new.calculator') }}" class="bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg transition-all text-base text-center font-bold">
+                                اطلب تمويلك الآن
                             </a>
                         </div>
                     </div>
+
                 </div>
 
-                {{-- Right Side - Title, Subtitle, Description, Buttons, Carousel (Order 1 on mobile) --}}
-                <div class="order-1 lg:order-2 flex flex-col space-y-8" dir="rtl">
-                    <div class="text-right">
-                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight mb-5 hero-title-primary">
-                            {!! $hero['title'] ?? 'تخيّر موتِرك..' !!}
-                        </h1>
-                        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gold leading-tight mb-4 hero-title-secondary">
-                            {!! $hero['subtitle'] ?? 'وحنّا نيسّر لك التمويل' !!}
-                        </h2>
-                    </div>
-
-                    <p class="text-base sm:text-lg text-gray-600 leading-relaxed text-right">
-                        {!! $settings['store_home_description'] ?? 'لديك التمويلات بين يديك مع خطط تمويل مرنة تناسب ميزانيتك، أيًا بدأت الحين مع "سوق سيارة" وعيش الرفاهية' !!}
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="{{ route('new.cars.index') }}"             class="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg transition-all hover:-translate-y-1 text-base">
-                            استعرض السيارات
-                        </a>
-                        <a href="{{ route('new.calculator') }}"             class="bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-lg transition-all text-base">
-                            اطلب تمويلك الآن
-                        </a>
-                    </div>
-
-                    {{-- Carousel --}}
+                {{-- 2. Banners / Carousel (Placed directly after Title & Action Buttons) --}}
+                <div class="w-full pt-4" dir="rtl">
                     <div class="relative" dir="ltr">
                         <div class="relative">
                             <div class="carousel-container rounded-3xl overflow-hidden shadow-2xl" id="hero-carousel-container">
@@ -742,21 +752,57 @@
 @push('scripts')
     <script>
         // ==========================================
-        // 1. VIDEO PLAYER
+        // 1. VIDEO PLAYER & AUDIO TOGGLE
         // ==========================================
         (function() {
             const video = document.getElementById("hero-video");
             const playButton = document.getElementById("play-button");
-            if (playButton && video) {
-                playButton.addEventListener("click", () => {
-                    if (video.paused) {
+            const audioButton = document.getElementById("audio-toggle-button");
+            const audioIcon = document.getElementById("audio-icon");
+
+            if (video) {
+                // Default sound ON: attempt unmuted playback
+                video.muted = false;
+                const playPromise = video.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        if (audioIcon) audioIcon.className = 'fas fa-volume-high text-xl';
+                    }).catch(function(err) {
+                        // Browser autoplay policy prevented audio, fallback to muted until user clicks
+                        console.log("Audio autoplay prevented by browser. Falling back to muted autoplay.");
+                        video.muted = true;
                         video.play();
-                        playButton.innerHTML = '<i class="fas fa-pause text-2xl sm:text-3xl"></i>';
-                    } else {
-                        video.pause();
-                        playButton.innerHTML = '<i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>';
-                    }
-                });
+                        if (audioIcon) audioIcon.className = 'fas fa-volume-xmark text-xl';
+                    });
+                }
+
+                // Play / Pause Toggle
+                if (playButton) {
+                    playButton.addEventListener("click", () => {
+                        if (video.paused) {
+                            video.play();
+                            playButton.innerHTML = '<i class="fas fa-pause text-2xl sm:text-3xl ml-1"></i>';
+                        } else {
+                            video.pause();
+                            playButton.innerHTML = '<i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>';
+                        }
+                    });
+                }
+
+                // Audio Mute / Unmute Toggle
+                if (audioButton && audioIcon) {
+                    audioButton.addEventListener("click", () => {
+                        if (video.muted) {
+                            video.muted = false;
+                            video.volume = 1.0;
+                            audioIcon.className = 'fas fa-volume-high text-xl';
+                        } else {
+                            video.muted = true;
+                            audioIcon.className = 'fas fa-volume-xmark text-xl';
+                        }
+                    });
+                }
             }
         })();
 
@@ -892,8 +938,9 @@
 
                         const filter = this.dataset.filter;
                         try {
-                            // Show loading state
-                            if (track) track.style.opacity = '0.5';
+                            // Render Skeleton Loaders
+                            const homeSkeleton = `{!! view('new-store.partials.car-card-skeleton')->render() !!}`;
+                            if (track) track.innerHTML = homeSkeleton.repeat(4);
 
                             const response = await fetch(`{{ route('new.cars.api.filter') }}?filter=${filter}`);
                             const data = await response.json();
@@ -909,8 +956,6 @@
                             }
                         } catch (error) {
                             console.error("Failed to fetch cars:", error);
-                        } finally {
-                            if (track) track.style.opacity = '1';
                         }
                     });
                 });

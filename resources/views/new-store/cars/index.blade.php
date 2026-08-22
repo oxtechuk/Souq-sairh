@@ -336,6 +336,17 @@
   var loadMoreContainer = document.getElementById('load-more-container');
   var activeRequest = null;
 
+  // Skeleton HTML string
+  const skeletonCardHtml = `{!! view('new-store.partials.car-card-skeleton')->render() !!}`;
+
+  function getSkeletonHtml(count) {
+    var html = '';
+    for (var i = 0; i < count; i++) {
+      html += skeletonCardHtml;
+    }
+    return html;
+  }
+
   async function fetchCars(url, append) {
     if (append === undefined) append = false;
 
@@ -348,7 +359,16 @@
     var grid = document.getElementById('cars-grid');
     var resultsCount = document.getElementById('results-count');
 
-    if (grid) grid.style.opacity = '0.5';
+    // Show skeletons
+    if (grid) {
+      if (append) {
+        var existingWrapper = document.getElementById('skeleton-append-wrapper');
+        if (existingWrapper) existingWrapper.remove();
+        grid.insertAdjacentHTML('beforeend', '<div id="skeleton-append-wrapper" class="contents">' + getSkeletonHtml(3) + '</div>');
+      } else {
+        grid.innerHTML = getSkeletonHtml(6);
+      }
+    }
 
     try {
       var finalUrl = url || ('{{ route('new.cars.index') }}?' + collectParams());
@@ -364,6 +384,10 @@
       var data = await response.json();
 
       if (data.html !== undefined) {
+        // Remove load-more skeletons if present
+        var existingWrapper = document.getElementById('skeleton-append-wrapper');
+        if (existingWrapper) existingWrapper.remove();
+
         if (append) {
           grid.insertAdjacentHTML('beforeend', data.html);
         } else {
@@ -391,8 +415,9 @@
       }
     } catch (e) {
       if (e.name !== 'AbortError') console.error(e);
+      var existingWrapper = document.getElementById('skeleton-append-wrapper');
+      if (existingWrapper) existingWrapper.remove();
     } finally {
-      if (grid) grid.style.opacity = '1';
       if (activeRequest === controller) activeRequest = null;
     }
   }

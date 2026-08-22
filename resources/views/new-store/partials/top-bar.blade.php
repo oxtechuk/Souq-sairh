@@ -9,35 +9,25 @@
       $cleanWhatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
 @endphp
 
-<div class="bg-[#291F00] text-white py-2 text-xs" style="font-family: 'Cairo';">
+<div class="bg-[#1e1700] border-b border-[#3d2e00] text-white py-2 text-xs font-cairo">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row-reverse justify-between items-center gap-2 sm:gap-0">
+        <div class="flex flex-row justify-between items-center gap-2">
 
-            {{-- Contact Actions --}}
-            <div class="flex flex-wrap gap-2 justify-center sm:justify-start" dir="ltr">
-
+            {{-- Contact Actions (Phone & WhatsApp) --}}
+            <div class="flex items-center gap-3" dir="ltr">
                 <a href="tel:{{ $cleanPhone }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-dark hover:bg-green-700 text-white rounded-md transition-all hover:shadow-lg">
-                    <i class="fas fa-phone-alt text-[10px]"></i>
-                    <span class="text-[11px] font-bold">{{ $phone }}</span>
+                   class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 hover:bg-gold hover:text-black text-white rounded-full transition-all text-xs font-semibold backdrop-blur-sm">
+                    <i class="fas fa-phone-alt text-[11px]"></i>
+                    <span dir="ltr">{{ $phone }}</span>
                 </a>
-
-
-
-                {{--                <a href="mailto:{{ $email }}"--}}
-                {{--                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all hover:shadow-lg">--}}
-                {{--                    <i class="fas fa-envelope text-[10px]"></i>--}}
-                {{--                    <span class="text-[11px] font-bold">{{ $email }}</span>--}}
-                {{--                </a>--}}
-
             </div>
 
-            {{-- Location --}}
+            {{-- Location Address --}}
             <a href="https://maps.google.com/?q={{ urlencode($address) }}"
                target="_blank"
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-dark text-white rounded-md transition-all hover:shadow-lg">
-                <i class="fas fa-map-marker-alt text-[10px]"></i>
-                <span class="text-[11px] font-bold">{{ $address }}</span>
+               class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs font-medium backdrop-blur-sm">
+                <i class="fas fa-map-marker-alt text-gold text-[11px]"></i>
+                <span>{{ $address }}</span>
             </a>
 
         </div>
