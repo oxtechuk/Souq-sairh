@@ -80,7 +80,7 @@ class BookingController extends Controller
             'car_id' => 'nullable|exists:cars,id',
             'total_price' => 'nullable|numeric',
             'down_payment' => 'nullable|numeric',
-            'duration_years' => 'nullable|integer',
+            'duration_years' => 'nullable|integer|min:0',
             'monthly_installment' => 'nullable|numeric',
             'notes' => 'nullable|string',
             'type' => 'nullable|string',
