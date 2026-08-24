@@ -302,7 +302,7 @@
                                     </div>
 
                                     {{-- Details --}}
-                                    <div class="flex flex-col items-center gap-2 w-full px-0">
+                                    <div class="flex flex-col items-center gap-2 w-full px-0 pt-5" style="padding-top: 20px;">
 
                                         {{-- Car Name --}}
                                         <div class="w-full flex items-center" style="padding: 0px 16px 0px 0px; height: 22px;">

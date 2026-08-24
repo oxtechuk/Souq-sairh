@@ -3,6 +3,7 @@
 @section('title', 'سوق سيارة - حاسبة التمويل')
 
 @push('styles')
+<link rel="stylesheet" href="{{ asset('new-store/components/all-cars-hero/all-cars-hero.css') }}" />
 <link rel="stylesheet" href="{{ asset('new-store/components/calculator/calculator.css') }}" />
 @endpush
 
