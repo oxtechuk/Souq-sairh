@@ -11,31 +11,30 @@
         <span class="current">{{ __('الطلبات') }}</span>
     </nav>
 
-
     {{-- Stat Cards --}}
     <div class="row g-3 mb-4">
         <div class="col-6 col-xl-4">
             <div class="crm-stat-new">
-                <span class="stat-badge orange">65%</span>
+                <span class="stat-badge orange"><i class="bi bi-clock-history"></i></span>
                 <div class="stat-icon red"><i class="bi bi-clock"></i></div>
-                <div class="stat-lbl">{{ __('بانتظار المراجعة') }}</div>
-                <div class="stat-val">{{ number_format($stats['new'] ?? 0) }}</div>
+                <div class="stat-lbl">{{ __('بانتظار مراجعة الأدمن') }}</div>
+                <div class="stat-val">{{ number_format($stats['pending_review'] ?? 0) }}</div>
             </div>
         </div>
         <div class="col-6 col-xl-4">
             <div class="crm-stat-new">
-                <span class="stat-badge green">+3%</span>
+                <span class="stat-badge green"><i class="bi bi-calendar-check"></i></span>
                 <div class="stat-icon blue"><i class="bi bi-people"></i></div>
                 <div class="stat-lbl">{{ __('عدد طلبات اليوم') }}</div>
-                <div class="stat-val">{{ number_format($stats['in_progress'] ?? 0) }}</div>
+                <div class="stat-val">{{ number_format($stats['today_count'] ?? 0) }}</div>
             </div>
         </div>
         <div class="col-6 col-xl-4">
             <div class="crm-stat-new">
-                <span class="stat-badge green">+12%</span>
+                <span class="stat-badge green"><i class="bi bi-bar-chart"></i></span>
                 <div class="stat-icon purple"><i class="bi bi-person-lines-fill"></i></div>
                 <div class="stat-lbl">{{ __('إجمالي عدد الطلبات') }}</div>
-                <div class="stat-val">{{ number_format($bookings->total()) }}</div>
+                <div class="stat-val">{{ number_format($stats['total'] ?? $bookings->total()) }}</div>
             </div>
         </div>
     </div>
@@ -47,7 +46,7 @@
                 <div class="d-flex flex-wrap gap-2 align-items-center">
                     {{-- Date --}}
                     <div style="position:relative;">
-                        <input type="date" name="date" value="{{ request('date', now()->format('Y-m-d')) }}"
+                        <input type="date" name="date" value="{{ request('date') }}"
                                style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
                         <i class="bi bi-calendar3" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:10px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);pointer-events:none;"></i>
                     </div>
@@ -66,9 +65,9 @@
                         @endforeach
                     </select>
                     {{-- Search --}}
-                    <div style="position:relative;flex:1;min-width:180px;">
+                    <div style="position:relative;flex:1;min-width:240px;">
                         <input type="text" name="search" value="{{ request('search') }}"
-                               placeholder="{{ __('بحث...') }}"
+                               placeholder="{{ __('بحث برقم الطلب، رقم/اسم العميل، أو السيارة...') }}"
                                style="width:100%;border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
                         <i class="bi bi-search" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:12px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);"></i>
                     </div>
@@ -78,8 +77,6 @@
             </div>
         </div>
     </form>
-
-
 
     {{-- Table --}}
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border:1px solid var(--crm-border)!important;">
@@ -95,9 +92,9 @@
                     <tr>
                         <th class="px-4 py-3 text-muted fw-bold" style="font-size:12px;">{{ __('رقم الطلب') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('رقم العميل') }}</th>
-                        <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('الراتب') }}</th>
+                        <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('الراتب/القسط') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('نوع الطلب') }}</th>
-                        <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('نوع السيارات') }}</th>
+                        <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('السيارة') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('سعر السيارة') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('المسؤول') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('تاريخ الطلب') }}</th>
@@ -119,7 +116,7 @@
                             {{ number_format($b->monthly_installment) }}
                             <small class="text-muted">{!! __('ريال') !!}</small>
                         </td>
-                        <td style="font-size:12px;color:var(--crm-text-muted);">{{ __('طلب تجربة قيادة') }}</td>
+                        <td style="font-size:12px;color:var(--crm-text-muted);">{{ __('طلب سيارة') }}</td>
                         <td>
                             <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
                             <small class="text-muted">{{ $b->car?->brand?->name }}</small>
@@ -153,23 +150,39 @@
                         </td>
                         <td style="font-size:12px;color:var(--crm-text-muted);">{{ $b->created_at->format('d/m/Y') }}</td>
                         <td>
-                            <form action="{{ route('crm.bookings.status', $b) }}" method="POST" class="m-0">
+                            <form action="{{ route('crm.bookings.status', $b) }}" method="POST" class="m-0" id="statusForm_{{ $b->id }}">
                                 @csrf @method('PATCH')
                                 @php
                                     $dotClass = match($b->status) {
-                                        'new','pending'  => 'planned',
-                                        'in_progress'    => 'waiting',
-                                        'sold','done'    => 'done',
-                                        'rejected'       => 'late',
-                                        default          => 'confirmed',
+                                        'new','pending'      => 'planned',
+                                        'in_progress','contacted' => 'waiting',
+                                        'sold','done'        => 'done',
+                                        'rejected','closed'  => 'late',
+                                        'pending_closure'    => 'waiting',
+                                        default              => 'confirmed',
                                     };
                                 @endphp
-                                <select name="status" class="form-select form-select-sm border-0 shadow-none status-dot {{ $dotClass }}" style="font-size:12px;font-weight:700;padding-top:4px;padding-bottom:4px;width:auto;display:inline-block;" onchange="this.form.submit()">
+                                <select name="status"
+                                        data-current-val="{{ $b->status }}"
+                                        class="form-select form-select-sm border-0 shadow-none status-dot {{ $dotClass }}"
+                                        style="font-size:12px;font-weight:700;padding-top:4px;padding-bottom:4px;width:auto;display:inline-block;"
+                                        onchange="onBookingStatusSelectChange(this, '{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}', '{{ $b->total_price ?? ($b->car?->cash_price ?? 0) }}', '{{ $b->interest_rate ?? 0 }}')">
                                     @foreach($statuses as $key => $s)
                                     <option value="{{ $key }}" {{ $b->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
                                     @endforeach
                                 </select>
                             </form>
+
+                            @if($b->status === 'pending_closure' && (auth()->user()->hasRole('admin') || auth()->user()->role === 'admin'))
+                            <div class="mt-1 d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-success py-0 px-2 rounded-pill" style="font-size:11px;" onclick="approveClosure('{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}')">
+                                    قبول الغلق
+                                </button>
+                                <button type="button" class="btn btn-sm btn-warning py-0 px-2 rounded-pill text-dark" style="font-size:11px;" onclick="rejectClosure('{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}')">
+                                    إرجاع لسيلز
+                                </button>
+                            </div>
+                            @endif
                         </td>
                         <td>
                             <div class="d-flex gap-1 align-items-center">
@@ -208,11 +221,12 @@
             @forelse($bookings as $b)
             @php
                 $dotClassM = match($b->status) {
-                    'new','pending'  => 'planned',
-                    'in_progress'    => 'waiting',
-                    'sold','done'    => 'done',
-                    'rejected'       => 'late',
-                    default          => 'confirmed',
+                    'new','pending'      => 'planned',
+                    'in_progress','contacted' => 'waiting',
+                    'sold','done'        => 'done',
+                    'rejected','closed'  => 'late',
+                    'pending_closure'    => 'waiting',
+                    default              => 'confirmed',
                 };
             @endphp
             <div class="mb-3 p-3 rounded-3" style="border:1px solid var(--crm-border);background:#fff;">
@@ -222,14 +236,31 @@
                         <div class="fw-bold mt-1" style="font-size:14px;color:var(--crm-text);">{{ $b->client_name }}</div>
                         <div style="font-size:12px;color:var(--crm-text-muted);" dir="ltr">{{ $b->client_phone }}</div>
                     </div>
-                    <form action="{{ route('crm.bookings.status', $b) }}" method="POST">
-                        @csrf @method('PATCH')
-                        <select name="status" class="form-select form-select-sm border-0 shadow-none status-dot {{ $dotClassM }}" style="font-size:11px;font-weight:700;padding:3px 8px;width:auto;" onchange="this.form.submit()">
-                            @foreach($statuses as $key => $s)
-                            <option value="{{ $key }}" {{ $b->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
-                            @endforeach
-                        </select>
-                    </form>
+                    <div>
+                        <form action="{{ route('crm.bookings.status', $b) }}" method="POST">
+                            @csrf @method('PATCH')
+                            <select name="status"
+                                    data-current-val="{{ $b->status }}"
+                                    class="form-select form-select-sm border-0 shadow-none status-dot {{ $dotClassM }}"
+                                    style="font-size:11px;font-weight:700;padding:3px 8px;width:auto;"
+                                    onchange="onBookingStatusSelectChange(this, '{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}', '{{ $b->total_price ?? ($b->car?->cash_price ?? 0) }}', '{{ $b->interest_rate ?? 0 }}')">
+                                @foreach($statuses as $key => $s)
+                                <option value="{{ $key }}" {{ $b->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+
+                        @if($b->status === 'pending_closure' && (auth()->user()->hasRole('admin') || auth()->user()->role === 'admin'))
+                        <div class="mt-1 d-flex gap-1">
+                            <button type="button" class="btn btn-xs btn-success py-0 px-2 rounded-pill" style="font-size:10px;" onclick="approveClosure('{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}')">
+                                قبول الغلق
+                            </button>
+                            <button type="button" class="btn btn-xs btn-warning py-0 px-2 rounded-pill text-dark" style="font-size:10px;" onclick="rejectClosure('{{ $b->id }}', '{{ route('crm.bookings.status', $b) }}')">
+                                إرجاع لسيلز
+                            </button>
+                        </div>
+                        @endif
+                    </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-between" style="font-size:12px;color:var(--crm-text-muted);border-top:1px solid var(--crm-border);padding-top:10px;margin-top:8px;">
                     <div>
@@ -294,7 +325,7 @@
     </button>
     @endcan
 
-    {{-- Create Booking Modal --}}
+    {{-- Modal: إضافة طلب جديد --}}
     <div class="modal fade" id="createBookingModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; background: #FAF9F6;">
@@ -389,6 +420,90 @@
         </div>
     </div>
 
+    {{-- Modal: غلق الطلب / ملاحظة الغلق --}}
+    <div class="modal fade" id="closeBookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2">
+                        <i class="bi bi-x-circle-fill fs-4"></i>
+                        <span>{{ __('غلق الطلب') }}</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="closeBookingForm" method="POST">
+                    @csrf @method('PATCH')
+                    <input type="hidden" name="status" id="close_modal_status" value="pending_closure">
+                    <div class="modal-body px-4 py-3">
+                        <p class="text-muted small mb-3" id="close_modal_desc">
+                            {{ __('يرجى تدوين سبب إغلاق الطلب. سيتم تحويل الطلب لمراجعة الأدمن ليتم اعتماده أو إرجاعه.') }}
+                        </p>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">{{ __('ملاحظة / سبب الغلق') }} <span class="text-danger">*</span></label>
+                            <textarea name="note" class="form-control border-1 shadow-sm" rows="3" style="border-radius:10px;" placeholder="{{ __('اكتب سبب الغلق هنا...') }}" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
+                        <button type="submit" class="btn btn-danger flex-fill fw-bold py-2" style="border-radius:10px;">{{ __('تأكيد وإرسال') }}</button>
+                        <button type="button" class="btn btn-light flex-fill fw-bold py-2" data-bs-dismiss="modal" style="border-radius:10px;">{{ __('إلغاء') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal: تم الاستلام / تفاصيل البيع --}}
+    <div class="modal fade" id="soldBookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-success d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill fs-4"></i>
+                        <span>{{ __('تم الاستلام / تفاصيل الطلب النهائي') }}</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="soldBookingForm" method="POST">
+                    @csrf @method('PATCH')
+                    <input type="hidden" name="status" value="sold">
+                    <div class="modal-body px-4 py-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">{{ __('السعر النهائي') }} <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="final_price" id="sold_final_price" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;" required>
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">ر.س</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">{{ __('سعر الفائدة (%)') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="interest_rate" id="sold_interest_rate" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;">
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted">{{ __('العمولة') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="commission" id="sold_commission" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;" placeholder="0">
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">ر.س</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted">{{ __('ملاحظات التسليم') }}</label>
+                                <textarea name="note" class="form-control border-1 shadow-sm" rows="3" style="border-radius:10px;" placeholder="{{ __('أضف أي ملاحظات إضافية حول عملية التسليم...') }}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
+                        <button type="submit" class="btn btn-success flex-fill fw-bold py-2" style="border-radius:10px;">{{ __('حفظ وتأكيد تم الاستلام') }}</button>
+                        <button type="button" class="btn btn-light flex-fill fw-bold py-2" data-bs-dismiss="modal" style="border-radius:10px;">{{ __('إلغاء') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <style>
@@ -419,5 +534,58 @@
             });
         }
     });
+
+    function onBookingStatusSelectChange(selectEl, bookingId, actionUrl, defaultPrice, defaultInterest) {
+        const val = selectEl.value;
+        const currentVal = selectEl.getAttribute('data-current-val') || val;
+
+        if (val === 'pending_closure' || val === 'closed') {
+            selectEl.value = currentVal;
+            const form = document.getElementById('closeBookingForm');
+            form.action = actionUrl;
+            document.getElementById('close_modal_status').value = val;
+            
+            const closeModal = new bootstrap.Modal(document.getElementById('closeBookingModal'));
+            closeModal.show();
+        } else if (val === 'sold') {
+            selectEl.value = currentVal;
+            const form = document.getElementById('soldBookingForm');
+            form.action = actionUrl;
+            document.getElementById('sold_final_price').value = defaultPrice || '';
+            document.getElementById('sold_interest_rate').value = defaultInterest || '0';
+            document.getElementById('sold_commission').value = '';
+            
+            const soldModal = new bootstrap.Modal(document.getElementById('soldBookingModal'));
+            soldModal.show();
+        } else {
+            selectEl.form.submit();
+        }
+    }
+
+    function approveClosure(bookingId, actionUrl) {
+        const form = document.getElementById('closeBookingForm');
+        form.action = actionUrl;
+        document.getElementById('close_modal_status').value = 'closed';
+        document.getElementById('close_modal_desc').innerText = 'أنت تقوم الآن بقبول غلق الطلب كـ أدمن.';
+        const closeModal = new bootstrap.Modal(document.getElementById('closeBookingModal'));
+        closeModal.show();
+    }
+
+    function rejectClosure(bookingId, actionUrl) {
+        if(confirm('هل تريد إرجاع الطلب إلى موظف المبيعات؟')) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = actionUrl;
+            form.innerHTML = `
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="status" value="contacted">
+                <input type="hidden" name="note" value="تم رفض الغلق من قبل الأدمن وإرجاع الطلب للموظف لمتابعته.">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
 </script>
 @endsection

@@ -15,6 +15,9 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
         $query = Booking::with(['car.brand', 'employee'])->latest();
 
         // فلترة بالحالة
@@ -26,16 +29,31 @@ class BookingController extends Controller
         if ($request->filled('employee_id')) {
             $query->where('assigned_to', $request->employee_id);
         }
-        if (!auth()->user()->hasRole('admin')) {
-            $query->where('assigned_to', \auth()->id());
+
+        // للموظف العادي: إظهار الطلبات المسندة إليه فقط، واستبعاد الطلبات المغلقة أو في انتظار مراجعة الأدمن
+        if (!$isAdmin) {
+            $query->where('assigned_to', $user?->id);
+            if (!$request->filled('status')) {
+                $query->whereNotIn('status', ['pending_closure', 'closed']);
+            }
         }
 
-        // بحث
+        // بحث شامل: رقم الطلب (#ID)، رقم/جوال العميل، اسم العميل، اسم السيارة/الماركة
         if ($request->filled('search')) {
-            $s = $request->search;
-            $query->where(function ($q) use ($s) {
-                $q->where('client_name', 'like', "%$s%")
-                    ->orWhere('client_phone', 'like', "%$s%");
+            $s = trim($request->search);
+            $cleanS = ltrim($s, '#');
+            $query->where(function ($q) use ($s, $cleanS) {
+                if (is_numeric($cleanS)) {
+                    $q->where('id', $cleanS);
+                }
+                $q->orWhere('client_name', 'like', "%$s%")
+                    ->orWhere('client_phone', 'like', "%$s%")
+                    ->orWhereHas('car', function ($carQ) use ($s) {
+                        $carQ->where('name', 'like', "%$s%")
+                            ->orWhereHas('brand', function ($bQ) use ($s) {
+                                $bQ->where('name', 'like', "%$s%");
+                            });
+                    });
             });
         }
 
@@ -44,7 +62,13 @@ class BookingController extends Controller
         $statuses = Booking::STATUSES;
         $cars = Car::with('brand')->where('is_active', true)->get();
 
-        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'cars'));
+        $stats = [
+            'pending_review' => Booking::where('status', 'pending_closure')->count(),
+            'today_count' => Booking::whereDate('created_at', now()->format('Y-m-d'))->count(),
+            'total' => Booking::count(),
+        ];
+
+        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'cars', 'stats'));
     }
 
     public function store(Request $request)
@@ -93,33 +117,102 @@ class BookingController extends Controller
 
     public function updateStatus(Request $request, Booking $booking)
     {
-        $request->validate(['status' => 'required|in:'.implode(',', array_keys(Booking::STATUSES))]);
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
 
-        $oldStatus = $booking->status;
-        $booking->update([
-            'status' => $request->status,
-            'last_contacted_at' => now(),
+        $request->validate([
+            'status' => 'required|in:'.implode(',', array_keys(Booking::STATUSES)),
+            'final_price' => 'nullable|numeric|min:0',
+            'interest_rate' => 'nullable|numeric|min:0',
+            'commission' => 'nullable|numeric|min:0',
+            'note' => 'nullable|string|max:2000',
         ]);
 
-        // تسجيل تغيير الحالة في الـ Notes
+        $oldStatus = $booking->status;
+        $targetStatus = $request->status;
+
+        // إذا كان الموظف ليس أدمن ويحاول غلق الطلب، يتحول الطلب إلى "في انتظار مراجعة الأدمن"
+        if (!$isAdmin && in_array($targetStatus, ['closed', 'pending_closure'])) {
+            $targetStatus = 'pending_closure';
+        }
+
+        $updateData = [
+            'status' => $targetStatus,
+            'last_contacted_at' => now(),
+        ];
+
+        // في حالة تم الاستلام (sold)
+        if ($targetStatus === 'sold') {
+            if ($request->filled('final_price')) {
+                $updateData['final_price'] = $request->final_price;
+            }
+            if ($request->filled('interest_rate')) {
+                $updateData['interest_rate'] = $request->interest_rate;
+            }
+            if ($request->filled('commission')) {
+                $updateData['commission'] = $request->commission;
+            }
+        }
+
+        $booking->update($updateData);
+
+        // بناء نص الملاحظة السجلي
+        $noteText = 'تم تغيير الحالة من "'.(Booking::STATUSES[$oldStatus]['label'] ?? $oldStatus).'" إلى "'.(Booking::STATUSES[$targetStatus]['label'] ?? $targetStatus).'"';
+
+        if ($targetStatus === 'sold') {
+            $details = [];
+            if ($request->filled('final_price')) {
+                $details[] = 'السعر النهائي: '.number_format($request->final_price).' ريال';
+            }
+            if ($request->filled('interest_rate')) {
+                $details[] = 'سعر الفائدة: '.$request->interest_rate.'%';
+            }
+            if ($request->filled('commission')) {
+                $details[] = 'العمولة: '.number_format($request->commission).' ريال';
+            }
+            if (!empty($details)) {
+                $noteText .= ' ('.implode(' - ', $details).')';
+            }
+        }
+
+        if ($request->filled('note')) {
+            $noteText .= "\nملاحظة: ".$request->note;
+        }
+
         BookingNote::create([
             'booking_id' => $booking->id,
-            'employee_id' => auth('employee')->id(),
-            'note' => 'تم تغيير الحالة من "'.Booking::STATUSES[$oldStatus]['label'].'" إلى "'.Booking::STATUSES[$request->status]['label'].'"',
+            'employee_id' => $user?->id,
+            'note' => $noteText,
             'type' => 'status_change',
             'old_status' => $oldStatus,
-            'new_status' => $request->status,
+            'new_status' => $targetStatus,
         ]);
 
         if ($booking->assignedTo) {
-            $booking->assignedTo->notify(new NewBookingNotification($booking, __('تحديث حالة الطلب'), __('تم تغيير حالة طلب العميل').' '.$booking->client_name.' '.__('إلى').' '.Booking::STATUSES[$request->status]['label']));
+            $booking->assignedTo->notify(new NewBookingNotification(
+                $booking,
+                __('تحديث حالة الطلب'),
+                __('تم تغيير حالة طلب العميل').' '.$booking->client_name.' '.__('إلى').' '.(Booking::STATUSES[$targetStatus]['label'] ?? $targetStatus)
+            ));
         }
 
-        return back()->with('success', 'تم تحديث حالة الطلب بنجاح');
+        $message = 'تم تحديث حالة الطلب بنجاح';
+        if (!$isAdmin && $targetStatus === 'pending_closure') {
+            $message = 'تم إرسال طلب إغلاق الطلب، وهو الآن في انتظار مراجعة الأدمن';
+        }
+
+        return back()->with('success', $message);
     }
 
     public function assign(Request $request, Booking $booking)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin) {
+            return back()->with('error', 'عفواً، تحويل الطلبات متاح للأدمن فقط');
+        }
+
         $request->validate(['employee_id' => 'required|exists:employees,id']);
         $booking->update(['assigned_to' => $request->employee_id]);
 
@@ -177,6 +270,13 @@ class BookingController extends Controller
 
     public function destroy(Booking $booking)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin) {
+            return back()->with('error', 'عفواً، حذف الطلبات متاح للأدمن فقط');
+        }
+
         $booking->delete();
 
         return redirect()->route('crm.bookings.index')->with('success', 'تم حذف الطلب');

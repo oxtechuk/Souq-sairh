@@ -11,21 +11,26 @@ class Booking extends Model
     protected $fillable = [
         'car_id', 'assigned_to', 'client_name', 'client_phone', 'client_email',
         'down_payment', 'duration_years', 'interest_rate', 'monthly_installment',
-        'total_price', 'notes', 'status', 'source', 'last_contacted_at',
+        'total_price', 'final_price', 'commission', 'notes', 'status', 'source', 'last_contacted_at',
         'city', 'salary_range', 'obligations_range', 'contact_type', 'tax_number',
         'company_name', 'financing_period', 'num_cars',
     ];
 
     protected $casts = [
         'last_contacted_at' => 'datetime',
+        'final_price' => 'decimal:2',
+        'commission' => 'decimal:2',
+        'interest_rate' => 'decimal:2',
     ];
 
     const STATUSES = [
-        'new' => ['label' => 'جديد',          'color' => 'primary'],
-        'contacted' => ['label' => 'تم التواصل',     'color' => 'info'],
-        'interested' => ['label' => 'مهتم',           'color' => 'warning'],
-        'rejected' => ['label' => 'مرفوض',          'color' => 'danger'],
-        'sold' => ['label' => 'تم البيع ✓',     'color' => 'success'],
+        'new' => ['label' => 'جديد', 'color' => 'primary'],
+        'contacted' => ['label' => 'تم التواصل', 'color' => 'info'],
+        'interested' => ['label' => 'مهتم', 'color' => 'warning'],
+        'pending_closure' => ['label' => 'في انتظار مراجعة الأدمن', 'color' => 'secondary'],
+        'closed' => ['label' => 'مغلق', 'color' => 'dark'],
+        'sold' => ['label' => 'تم الاستلام ✓', 'color' => 'success'],
+        'rejected' => ['label' => 'مرفوض', 'color' => 'danger'],
     ];
 
     public function car(): BelongsTo

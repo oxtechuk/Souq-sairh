@@ -30,7 +30,6 @@
         </div>
     </div>
 
-
     {{-- Row 1: تفاصيل الطلب + تفاصيل الدفع --}}
     <div class="row g-3 mb-3">
 
@@ -45,32 +44,33 @@
                         $orderRows = [
                             __('رقم العميل')      => '#' . ($booking->lead_id ?? $booking->id),
                             __('رقم الطلب')       => '#' . $booking->id,
-                            __('حوال العميل')     => $booking->client_phone,
+                            __('اسم العميل')      => $booking->client_name,
+                            __('جوال العميل')     => $booking->client_phone,
                             __('تاريخ الطلب')     => $booking->created_at->format('d/m/Y • H:i') . ($booking->created_at->format('A') == 'AM' ? ' ص' : ' م'),
-                            __('نوع الطلب')       => __('تجربة سيارة'),
-                            __('الموقع الجغرافي') => __('المعادي ش 10'),
+                            __('نوع الطلب')       => __('حجز سيارة / تمويل'),
                         ];
                     @endphp
                     @foreach($orderRows as $label => $value)
                     <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
                         <span style="font-size:13px;color:var(--crm-text-muted);">{{ $label }}</span>
-                        <span style="font-size:13px;font-weight:700;color:var(--crm-text);" dir="{{ in_array($label, [__('حوال العميل')]) ? 'ltr' : 'inherit' }}">{{ $value }}</span>
+                        <span style="font-size:13px;font-weight:700;color:var(--crm-text);" dir="{{ in_array($label, [__('جوال العميل')]) ? 'ltr' : 'inherit' }}">{{ $value }}</span>
                     </div>
                     @endforeach
                     <div class="d-flex justify-content-between py-2 align-items-center">
                         <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('حالة الطلب') }}</span>
                         @php
                             $dotClass = match($booking->status) {
-                                'new','pending'  => 'planned',
-                                'in_progress'    => 'waiting',
-                                'sold','done'    => 'done',
-                                'rejected'       => 'late',
-                                default          => 'confirmed',
+                                'new','pending'      => 'planned',
+                                'in_progress','contacted' => 'waiting',
+                                'sold','done'        => 'done',
+                                'rejected','closed'  => 'late',
+                                'pending_closure'    => 'waiting',
+                                default              => 'confirmed',
                             };
                         @endphp
                         <span class="status-dot {{ $dotClass }}">{{ $booking->status_label }}</span>
                     </div>
-                    
+
                     {{-- تعيين مسؤول المبيعات --}}
                     <div class="mt-3 p-3 rounded-3" style="background:#F8F9FC;border:1px solid var(--crm-border);">
                         <label style="font-size:12px;font-weight:700;margin-bottom:8px;display:block;">{{ __('مسؤول المبيعات') }}</label>
@@ -97,51 +97,66 @@
         <div class="col-12 col-md-6">
             <div class="card border-0 shadow-sm rounded-4 h-100" style="border:1px solid var(--crm-border)!important;">
                 <div class="card-header bg-white border-0 px-4 pt-4 pb-3" style="border-bottom:1px solid var(--crm-border)!important;">
-                    <h6 class="fw-bold mb-0">{{ __('تفاصيل الدفع') }}</h6>
+                    <h6 class="fw-bold mb-0">{{ __('تفاصيل الدفع والمالية') }}</h6>
                 </div>
                 <div class="card-body px-4 py-3">
-                    @php
-                        $commission = $booking->monthly_installment * 0.035;
-                        $delivery   = 125;
-                        $total      = $booking->monthly_installment + $commission + $delivery;
-                    @endphp
                     <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
-                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('إجمالي القسط') }}</span>
+                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('إجمالي سعر السيارة المبدئي') }}</span>
+                        <span style="font-size:13px;font-weight:700;">{{ number_format($booking->total_price) }} {!! __('ريال') !!}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
+                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('الدفعة الأولى (المقدم)') }}</span>
+                        <span style="font-size:13px;font-weight:700;">{{ number_format($booking->down_payment) }} {!! __('ريال') !!}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
+                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('القسط الشهري المتوقع') }}</span>
                         <span style="font-size:13px;font-weight:700;">{{ number_format($booking->monthly_installment) }} {!! __('ريال') !!}</span>
                     </div>
-                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
-                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('عمولة البنك') }} (3.5%)</span>
-                        <span style="font-size:13px;font-weight:700;">{{ number_format($commission) }} {!! __('ريال') !!}</span>
-                    </div>
-                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
-                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('رسوم التوصيل') }}</span>
-                        <span style="font-size:13px;font-weight:700;">{{ number_format($delivery) }} {!! __('ريال') !!}</span>
-                    </div>
-                    <div class="d-flex justify-content-between py-3">
-                        <span style="font-size:14px;font-weight:800;color:var(--crm-text);">{{ __('الإجمالي') }}</span>
-                        <span style="font-size:14px;font-weight:900;color:var(--crm-red);">{{ number_format($total) }} {!! __('ريال') !!}</span>
-                    </div>
 
-                    {{-- حالة الطلب + تقرير --}}
+                    @if($booking->final_price)
+                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);background:#F0FDF4;padding:4px 8px;border-radius:6px;">
+                        <span style="font-size:13px;font-weight:700;color:#166534;">{{ __('السعر النهائي') }}</span>
+                        <span style="font-size:14px;font-weight:800;color:#166534;">{{ number_format($booking->final_price, 2) }} {!! __('ريال') !!}</span>
+                    </div>
+                    @endif
+                    @if($booking->interest_rate)
+                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
+                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('سعر الفائدة') }}</span>
+                        <span style="font-size:13px;font-weight:700;">{{ $booking->interest_rate }}%</span>
+                    </div>
+                    @endif
+                    @if($booking->commission)
+                    <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
+                        <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('العمولة') }}</span>
+                        <span style="font-size:13px;font-weight:700;color:#1e40af;">{{ number_format($booking->commission, 2) }} {!! __('ريال') !!}</span>
+                    </div>
+                    @endif
+
+                    {{-- حالة الطلب + تغيير الحالة --}}
                     <div class="mt-3 p-3 rounded-3" style="background:#F8F9FC;border:1px solid var(--crm-border);">
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <form action="{{ route('crm.bookings.status', $booking) }}" method="POST" class="d-flex align-items-center gap-2 w-100">
-                                @csrf @method('PATCH')
-                                <select name="status" onchange="this.form.submit()" class="form-select form-select-sm border-0 shadow-none" style="background:#fff;border-radius:8px;font-size:13px;font-weight:700;">
-                                    @foreach($statuses as $key => $s)
-                                    <option value="{{ $key }}" {{ $booking->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
-                                    @endforeach
-                                </select>
-                            </form>
+                        <label style="font-size:12px;font-weight:700;margin-bottom:8px;display:block;">{{ __('تحديث حالة الطلب') }}</label>
+                        <form action="{{ route('crm.bookings.status', $booking) }}" method="POST" class="d-flex align-items-center gap-2 w-100" id="showStatusForm">
+                            @csrf @method('PATCH')
+                            <select name="status"
+                                    data-current-val="{{ $booking->status }}"
+                                    onchange="onBookingStatusSelectChange(this, '{{ $booking->id }}', '{{ route('crm.bookings.status', $booking) }}', '{{ $booking->final_price ?? $booking->total_price }}', '{{ $booking->interest_rate }}')"
+                                    class="form-select form-select-sm border-0 shadow-none" style="background:#fff;border-radius:8px;font-size:13px;font-weight:700;">
+                                @foreach($statuses as $key => $s)
+                                <option value="{{ $key }}" {{ $booking->status === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+
+                        @if($booking->status === 'pending_closure' && (auth()->user()->hasRole('admin') || auth()->user()->role === 'admin'))
+                        <div class="mt-2 d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-success flex-fill fw-bold" onclick="approveClosure('{{ $booking->id }}', '{{ route('crm.bookings.status', $booking) }}')">
+                                قبول الغلق
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning flex-fill fw-bold text-dark" onclick="rejectClosure('{{ $booking->id }}', '{{ route('crm.bookings.status', $booking) }}')">
+                                إرجاع للسيلز
+                            </button>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span style="font-size:12px;color:var(--crm-text-muted);">{{ __('فئة الراتب') }}</span>
-                            <span style="font-size:12px;font-weight:700;">{{ __('أكثر من') }} 2,000 {!! __('ريال') !!}</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span style="font-size:12px;color:var(--crm-text-muted);">{{ __('فئة الديون') }}</span>
-                            <span style="font-size:12px;font-weight:700;">{{ __('أكثر من') }} 2,000 {!! __('ريال') !!}</span>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -165,11 +180,11 @@
                     <div style="font-size:13px;font-weight:700;">{{ $booking->car->brand->name ?? '' }} {{ $booking->car->name }}</div>
                 </div>
                 <div class="col-6 col-md-3 py-2 px-3" style="border-{{ app()->getLocale()=='ar'?'left':'right' }}:1px solid var(--crm-border);">
-                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('اللون المطلوب') }}</div>
-                    <div style="font-size:13px;font-weight:700;">{{ $booking->car->color ?? __('أحمر') }}</div>
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('السنة') }}</div>
+                    <div style="font-size:13px;font-weight:700;">{{ $booking->car->year ?? '—' }}</div>
                 </div>
                 <div class="col-6 col-md-3 py-2 px-3">
-                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('سعر السيارة') }}</div>
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('سعر المعرض') }}</div>
                     <div style="font-size:13px;font-weight:700;">{{ number_format($booking->car->cash_price) }} {!! __('ريال') !!}</div>
                 </div>
             </div>
@@ -197,55 +212,39 @@
                     </div>
                     <div class="col-md-2">
                         @can('bookings.edit')
-                        <button type="submit" class="btn-crm-primary w-100" style="padding:8px 16px;">
-                            <i class="bi bi-upload"></i> {{ __('رفع') }}
-                        </button>
+                        <button type="submit" class="btn-crm-primary w-100" style="padding:8px 16px;">{{ __('رفع') }}</button>
                         @endcan
                     </div>
                 </div>
             </form>
 
-            {{-- قائمة المستندات --}}
-            @if($booking->documents && $booking->documents->count() > 0)
+            @if($booking->documents->count() > 0)
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" style="border:1px solid var(--crm-border);border-radius:8px;overflow:hidden;">
-                    <thead style="background:#F8F9FC;">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
                         <tr>
-                            <th class="py-2 px-3 text-muted fw-bold" style="font-size:12px;border-bottom:1px solid var(--crm-border);">{{ __('المستند') }}</th>
-                            <th class="py-2 px-3 text-muted fw-bold" style="font-size:12px;border-bottom:1px solid var(--crm-border);">{{ __('بواسطة') }}</th>
-                            <th class="py-2 px-3 text-muted fw-bold" style="font-size:12px;border-bottom:1px solid var(--crm-border);">{{ __('التاريخ') }}</th>
-                            <th class="py-2 px-3 text-muted fw-bold text-end" style="font-size:12px;border-bottom:1px solid var(--crm-border);">{{ __('إجراء') }}</th>
+                            <th class="text-muted fw-bold" style="font-size:12px;">{{ __('اسم المستند') }}</th>
+                            <th class="text-muted fw-bold" style="font-size:12px;">{{ __('الموظف') }}</th>
+                            <th class="text-muted fw-bold" style="font-size:12px;">{{ __('التاريخ') }}</th>
+                            <th class="text-muted fw-bold" style="font-size:12px;">{{ __('إجراءات') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($booking->documents as $doc)
                         <tr>
-                            <td class="px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div style="width:36px;height:36px;background:#F1F5F9;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#475467;">
-                                        @if(in_array(strtolower($doc->file_type), ['png','jpg','jpeg','gif']))
-                                            <i class="bi bi-file-image fs-5"></i>
-                                        @elseif(strtolower($doc->file_type) == 'pdf')
-                                            <i class="bi bi-file-pdf fs-5" style="color:var(--crm-red);"></i>
-                                        @else
-                                            <i class="bi bi-file-earmark fs-5"></i>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold" style="font-size:13px;color:var(--crm-text);">{{ $doc->title }}</div>
-                                        <div style="font-size:11px;color:var(--crm-text-muted);">.{{ strtoupper($doc->file_type) }}</div>
-                                    </div>
-                                </div>
+                            <td class="fw-bold" style="font-size:13px;">
+                                <i class="bi bi-file-earmark-text text-primary me-1"></i>
+                                {{ $doc->title }}
                             </td>
-                            <td style="font-size:12px;color:var(--crm-text-muted);">{{ $doc->employee->name ?? __('النظام') }}</td>
-                            <td style="font-size:12px;color:var(--crm-text-muted);">{{ $doc->created_at->format('Y-m-d H:i') }}</td>
-                            <td class="text-end px-3">
-                                <div class="d-flex gap-1 justify-content-end">
-                                    <a href="{{ asset('storage/'.$doc->file_path) }}" target="_blank" class="btn btn-sm btn-light rounded-2 text-primary" title="{{ __('عرض') }}">
-                                        <i class="bi bi-eye"></i>
+                            <td style="font-size:12px;">{{ $doc->employee->name ?? '—' }}</td>
+                            <td style="font-size:12px;color:var(--crm-text-muted);">{{ $doc->created_at->format('d/m/Y • H:i') }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="btn btn-sm btn-light rounded-2" title="{{ __('عرض/تحميل') }}">
+                                        <i class="bi bi-download"></i>
                                     </a>
-                                    @can('bookings.edit')
-                                    <form action="{{ route('crm.bookings.documents.destroy', $doc) }}" method="POST" onsubmit="return confirm('{{ __('هل تريد حذف هذا المستند؟') }}')">
+                                    @can('bookings.delete')
+                                    <form action="{{ route('crm.bookings.documents.destroy', $doc) }}" method="POST" onsubmit="return confirm('{{ __('هل تريد حذف المستند؟') }}')">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-light rounded-2" style="color:var(--crm-red);" title="{{ __('حذف') }}">
                                             <i class="bi bi-trash"></i>
@@ -302,7 +301,7 @@
                     <div class="position-absolute" style="{{ app()->getLocale()=='ar'?'right':'left' }}:-9px;top:4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid {{ $note->type === 'call' ? '#12B76A' : ($note->type === 'status_change' ? '#2E90FA' : 'var(--crm-red)') }};"></div>
                     <div class="flex-grow-1">
                         <div class="p-3 rounded-3 border" style="background:#fff;border-color:var(--crm-border)!important;">
-                            <p class="mb-2" style="font-size:13px;font-weight:600;color:var(--crm-text);">{{ $note->note }}</p>
+                            <p class="mb-2" style="font-size:13px;font-weight:600;color:var(--crm-text);white-space:pre-line;">{{ $note->note }}</p>
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge bg-light text-dark border" style="font-size:11px;font-weight:600;">{{ $note->employee->name ?? __('النظام') }}</span>
                                 <span style="font-size:11px;color:var(--crm-text-muted);"><i class="bi bi-clock me-1"></i>{{ $note->created_at->diffForHumans() }}</span>
@@ -320,11 +319,148 @@
         </div>
     </div>
 
+    {{-- Modal: غلق الطلب / ملاحظة الغلق --}}
+    <div class="modal fade" id="closeBookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2">
+                        <i class="bi bi-x-circle-fill fs-4"></i>
+                        <span>{{ __('غلق الطلب') }}</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="closeBookingForm" method="POST">
+                    @csrf @method('PATCH')
+                    <input type="hidden" name="status" id="close_modal_status" value="pending_closure">
+                    <div class="modal-body px-4 py-3">
+                        <p class="text-muted small mb-3" id="close_modal_desc">
+                            {{ __('يرجى تدوين سبب إغلاق الطلب. سيتم تحويل الطلب لمراجعة الأدمن ليتم اعتماده أو إرجاعه.') }}
+                        </p>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">{{ __('ملاحظة / سبب الغلق') }} <span class="text-danger">*</span></label>
+                            <textarea name="note" class="form-control border-1 shadow-sm" rows="3" style="border-radius:10px;" placeholder="{{ __('اكتب سبب الغلق هنا...') }}" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
+                        <button type="submit" class="btn btn-danger flex-fill fw-bold py-2" style="border-radius:10px;">{{ __('تأكيد وإرسال') }}</button>
+                        <button type="button" class="btn btn-light flex-fill fw-bold py-2" data-bs-dismiss="modal" style="border-radius:10px;">{{ __('إلغاء') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal: تم الاستلام / تفاصيل البيع --}}
+    <div class="modal fade" id="soldBookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold text-success d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill fs-4"></i>
+                        <span>{{ __('تم الاستلام / تفاصيل الطلب النهائي') }}</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="soldBookingForm" method="POST">
+                    @csrf @method('PATCH')
+                    <input type="hidden" name="status" value="sold">
+                    <div class="modal-body px-4 py-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">{{ __('السعر النهائي') }} <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="final_price" id="sold_final_price" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;" required>
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">ر.س</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">{{ __('سعر الفائدة (%)') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="interest_rate" id="sold_interest_rate" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;">
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted">{{ __('العمولة') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="commission" id="sold_commission" class="form-control shadow-sm" style="border-radius: 8px 0 0 8px;" placeholder="0">
+                                    <span class="input-group-text bg-light text-muted" style="font-size:12px;">ر.س</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted">{{ __('ملاحظات التسليم') }}</label>
+                                <textarea name="note" class="form-control border-1 shadow-sm" rows="3" style="border-radius:10px;" placeholder="{{ __('أضف أي ملاحظات إضافية حول عملية التسليم...') }}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
+                        <button type="submit" class="btn btn-success flex-fill fw-bold py-2" style="border-radius:10px;">{{ __('حفظ وتأكيد تم الاستلام') }}</button>
+                        <button type="button" class="btn btn-light flex-fill fw-bold py-2" data-bs-dismiss="modal" style="border-radius:10px;">{{ __('إلغاء') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 @endsection
 
 @section('scripts')
 <script>
 window.onbeforeprint = () => document.title = 'طلب #{{ $booking->id }} — GR Motors';
+
+function onBookingStatusSelectChange(selectEl, bookingId, actionUrl, defaultPrice, defaultInterest) {
+    const val = selectEl.value;
+    const currentVal = selectEl.getAttribute('data-current-val') || val;
+
+    if (val === 'pending_closure' || val === 'closed') {
+        selectEl.value = currentVal;
+        const form = document.getElementById('closeBookingForm');
+        form.action = actionUrl;
+        document.getElementById('close_modal_status').value = val;
+        
+        const closeModal = new bootstrap.Modal(document.getElementById('closeBookingModal'));
+        closeModal.show();
+    } else if (val === 'sold') {
+        selectEl.value = currentVal;
+        const form = document.getElementById('soldBookingForm');
+        form.action = actionUrl;
+        document.getElementById('sold_final_price').value = defaultPrice || '';
+        document.getElementById('sold_interest_rate').value = defaultInterest || '0';
+        document.getElementById('sold_commission').value = '';
+        
+        const soldModal = new bootstrap.Modal(document.getElementById('soldBookingModal'));
+        soldModal.show();
+    } else {
+        selectEl.form.submit();
+    }
+}
+
+function approveClosure(bookingId, actionUrl) {
+    const form = document.getElementById('closeBookingForm');
+    form.action = actionUrl;
+    document.getElementById('close_modal_status').value = 'closed';
+    document.getElementById('close_modal_desc').innerText = 'أنت تقوم الآن بقبول غلق الطلب كـ أدمن.';
+    const closeModal = new bootstrap.Modal(document.getElementById('closeBookingModal'));
+    closeModal.show();
+}
+
+function rejectClosure(bookingId, actionUrl) {
+    if(confirm('هل تريد إرجاع الطلب إلى موظف المبيعات؟')) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = actionUrl;
+        form.innerHTML = `
+            <input type="hidden" name="_token" value="${csrfToken}">
+            <input type="hidden" name="_method" value="PATCH">
+            <input type="hidden" name="status" value="contacted">
+            <input type="hidden" name="note" value="تم رفض الغلق من قبل الأدمن وإرجاع الطلب للموظف لمتابعته.">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
 </script>
 @endsection
