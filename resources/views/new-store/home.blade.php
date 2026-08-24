@@ -273,11 +273,12 @@
                             <div class="car-card shrink-0 w-[230px] bg-white rounded-[20px] border border-[#B8BFCF] flex flex-col items-center p-0 pb-4 gap-2" dir="rtl" style="isolation: isolate;">
 
                                 {{-- Image with Overlays --}}
-                                <div class="relative w-full flex flex-col gap-2" style="isolation: isolate;">
-                                    <div class="relative w-full" style="height: 180px;">
+                                <div class="relative w-full flex flex-col" style="isolation: isolate;">
+                                    <div class="relative w-full overflow-hidden rounded-t-[20px]" style="height: 185px;">
                                         <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
                                              alt="{{ $car->name }}"
-                                             class="w-full h-full object-cover rounded-t-[20px]" loading="lazy" />
+                                             class="w-full h-full object-cover rounded-t-[20px] transition-transform duration-500 hover:scale-105" loading="lazy"
+                                             style="image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;" />
 
                                         {{-- Year Badge --}}
                                         <span class="absolute flex items-center justify-center rounded-full"

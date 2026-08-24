@@ -1,5 +1,5 @@
 @extends('partials.Layouts.crm-master')
-@section('title', __('تفاصيل الطلب') . ' #' . $booking->id . ' | GR Motors')
+@section('title', __('تفاصيل الطلب') . ' #' . $booking->id . ' | Souq Siarh')
 
 @section('content')
 <div class="container-fluid" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
@@ -408,7 +408,7 @@
 
 @section('scripts')
 <script>
-window.onbeforeprint = () => document.title = 'طلب #{{ $booking->id }} — GR Motors';
+window.onbeforeprint = () => document.title = 'طلب #{{ $booking->id }} — Souq Siarh';
 
 function onBookingStatusSelectChange(selectEl, bookingId, actionUrl, defaultPrice, defaultInterest) {
     const val = selectEl.value;

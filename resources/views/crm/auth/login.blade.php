@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('تسجيل دخول المديرين | GR Motors') }}</title>
+    <title>{{ __('تسجيل دخول المديرين | Souq Siarh') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -233,7 +233,7 @@
         <div class="login-card">
 
             <div class="logo-section">
-                <img src="{{ asset('new-store/images/Logo.svg') }}" alt="GR Motors">
+                <img src="{{ asset('new-store/images/Logo.svg') }}" alt="Souq Siarh">
             </div>
 
             <div class="form-header">
@@ -281,7 +281,7 @@
         </div>
 
         <div class="footer-text">
-            &copy; {{ date('Y') }} GR Motors Dashboard. All rights reserved.
+            &copy; {{ date('Y') }} Souq Siarh Dashboard. All rights reserved.
         </div>
     </div>
 

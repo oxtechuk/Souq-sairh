@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold small text-muted">{{ __('اسم الموقع (بالإنجليزية)') }}</label>
-                                            <input type="text" name="site_name[en]" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['site_name']['en'] ?? '' }}" placeholder="e.g.: GR Motors">
+                                            <input type="text" name="site_name[en]" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['site_name']['en'] ?? '' }}" placeholder="e.g.: Souq Siarh">
                                         </div>
                                         <div class="col-md-12">
                                             <label class="form-label fw-bold small text-muted">{{ __('نص التذييل (Footer Text)') }}</label>

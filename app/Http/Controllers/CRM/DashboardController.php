@@ -63,8 +63,8 @@ class DashboardController extends Controller
 
         $siteNameSetting = Setting::where('key', 'site_name')->first()?->value;
         $siteName = is_array($siteNameSetting)
-            ? ($siteNameSetting[app()->getLocale()] ?? $siteNameSetting['ar'] ?? 'GR Motors')
-            : ($siteNameSetting ?? 'GR Motors');
+            ? ($siteNameSetting[app()->getLocale()] ?? $siteNameSetting['ar'] ?? 'Souq Siarh')
+            : ($siteNameSetting ?? 'Souq Siarh');
 
         return view('crm.dashboard', compact(
             'stats', 'topCars', 'weeklyBookings', 'recentBookings',

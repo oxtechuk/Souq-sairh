@@ -1,4 +1,4 @@
-﻿@extends('new-store.layouts.app')
+@extends('new-store.layouts.app')
 
 @section('title', 'سوق سيارة - حاسبة التمويل')
 
@@ -218,6 +218,7 @@
             <div class="calc-group">
               <label>الدفعة الأولى المتوقعة <span class="required">*</span></label>
               <div class="calc-ranges" id="fin-down">
+                <button type="button" class="calc-range-btn" data-value="0%">0%</button>
                 <button type="button" class="calc-range-btn" data-value="5%">5%</button>
                 <button type="button" class="calc-range-btn active" data-value="10%">10%</button>
                 <button type="button" class="calc-range-btn" data-value="15%">15%</button>

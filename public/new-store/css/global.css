@@ -32,3 +32,22 @@ button {
     cursor: pointer;
     font-family: inherit;
 }
+
+/* High Quality Image Rendering & Anti-Pixelation */
+img, svg {
+    max-width: 100%;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: high-quality;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.car-card img,
+.main-image-box img,
+.gallery-main-image,
+.article-card-image img,
+.offer-card img {
+    image-rendering: high-quality;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+}

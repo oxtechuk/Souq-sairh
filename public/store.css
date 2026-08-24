@@ -1,5 +1,5 @@
 /* ============================================
-   GR Motors - Store Frontend
+   Souq Siarh - Store Frontend
    Design System from Figma
    OX TECH.UK / oxtech.uk
    ============================================ */
@@ -984,11 +984,13 @@ select.form-control {
 
   .mobile-menu-btn {
     display: flex;
-    order: 1; /* First in RTL (Right) */
+    order: 1;
+    /* First in RTL (Right) */
   }
 
   .site-logo {
-    order: 2; /* Second in RTL (Left) */
+    order: 2;
+    /* Second in RTL (Left) */
   }
 
   .btn-call-now {
@@ -1298,13 +1300,22 @@ select.form-control {
   color: var(--color-red);
 }
 
-.hero__container, .gallery__container, .partners__container, .contact__container, .testimonials__container {
+.hero__container,
+.gallery__container,
+.partners__container,
+.contact__container,
+.testimonials__container {
   max-width: 100% !important;
   padding: 0 40px !important;
 }
 
 @media (max-width: 768px) {
-  .hero__container, .gallery__container, .partners__container, .contact__container, .testimonials__container {
+
+  .hero__container,
+  .gallery__container,
+  .partners__container,
+  .contact__container,
+  .testimonials__container {
     padding: 0 20px !important;
   }
 }
@@ -1620,7 +1631,7 @@ select.form-control {
 
 .testimonial-premium-card-v2:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
   border-color: #eee;
 }
 
@@ -1653,7 +1664,7 @@ select.form-control {
   overflow: hidden;
   flex-shrink: 0;
   border: 3px solid #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .author-avatar-v2 img {
@@ -1729,7 +1740,7 @@ select.form-control {
   height: 50px;
   background: #fff;
   border-radius: 50%;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   color: #111;
   display: flex;
   align-items: center;
@@ -2194,24 +2205,30 @@ select.form-control {
     padding-top: 60px !important;
     padding-bottom: 60px !important;
   }
+
   .testimonial-premium-card-v2 {
     padding: 16px;
     border-radius: 24px;
     gap: 16px;
   }
+
   .author-avatar-v2 {
     width: 48px;
     height: 48px;
   }
+
   .author-name-v2 {
     font-size: 1rem;
   }
+
   .testimonial-car-model-v2 {
     font-size: 0.95rem;
   }
+
   .section-title-premium {
     font-size: 1.8rem !important;
   }
+
   .swiper-nav-custom {
     display: none !important;
   }
@@ -3051,7 +3068,7 @@ body {
 }
 
 /* =============================================
-   GR MOTORS – PRODUCT DETAIL STYLES
+   Souq Siarh – PRODUCT DETAIL STYLES
    ============================================= */
 
 /* ---------- BUTTONS (Specific to this page if different from layout) ---------- */

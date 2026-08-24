@@ -1,6 +1,6 @@
 @extends('new-store.layouts.app')
 
-@section('title', __('طلبات كثيرة') . ' — GR Motors')
+@section('title', __('طلبات كثيرة') . ' — Souq Siarh')
 
 @section('content')
 

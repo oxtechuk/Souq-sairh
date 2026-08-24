@@ -40,10 +40,11 @@
 
 <div class="car-card shrink-0 w-[280px] bg-white rounded-[18px] overflow-hidden border border-[#B8C3D8] hover:shadow-lg transition-shadow" dir="rtl">
   {{-- Card Header: Car Image filling full area --}}
-  <div class="relative bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse h-[215px] overflow-hidden">
+  <div class="relative bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse h-[215px] overflow-hidden rounded-t-[18px]">
     <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
       alt="{{ $displayName }}"
       class="w-full h-full object-cover transition-all duration-500 opacity-0 hover:scale-105" loading="lazy"
+      style="image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;"
       onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('animate-pulse', 'bg-gradient-to-r', 'from-gray-200', 'via-gray-100', 'to-gray-200');" />
 
     <span class="absolute top-4 left-5 bg-primary/90 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-sm z-10">
