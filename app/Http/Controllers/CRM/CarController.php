@@ -103,7 +103,14 @@ class CarController extends Controller
         }
         $data['colors'] = $colors ?: null;
 
-        $data['slug'] = Str::slug($data['name']['en'].'-'.$data['year'].'-'.uniqid());
+        // توليد slug نظيف وصديق لـ SEO (بدون hash عشوائي)
+        $baseSlug = Str::slug($data['name']['en'] . '-' . $data['year']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Car::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+        $data['slug'] = $slug;
         $data['is_featured'] = $request->boolean('is_featured');
         $data['is_highlighted'] = $request->input('is_highlighted', 'none');
         $data['availability_status'] = $request->input('availability_status', 'available');

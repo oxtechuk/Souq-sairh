@@ -13,9 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'page-cache' => \App\Http\Middleware\PageCache::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'guard.employee' => \App\Http\Middleware\SetEmployeeGuard::class,
+            'page-cache'       => \App\Http\Middleware\PageCache::class,
+            'permission'       => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'guard.employee'   => \App\Http\Middleware\SetEmployeeGuard::class,
+            'redirect-old-car' => \App\Http\Middleware\RedirectOldCarSlug::class,
         ]);
 
         $middleware->web(append: [

@@ -33,6 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    object-fit: cover;
 }
 
 .thumbnail-item:hover,
@@ -91,6 +92,7 @@
     .thumbnail-item {
         width: 100px;
         height: 85px;
+        object-fit: cover;
     }
 }
 
@@ -111,6 +113,7 @@
         width: 80px;
         height: 70px;
         padding: 0.25rem;
+        object-fit: cover;
     }
 
     .colors-box {
@@ -148,6 +151,7 @@
     .thumbnail-item {
         width: 70px;
         height: 60px;
+        object-fit: cover;
     }
 
     .color-btn {

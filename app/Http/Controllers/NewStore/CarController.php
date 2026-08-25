@@ -84,14 +84,14 @@ class CarController extends Controller
             'images:id,car_id,image_path,type,sort_order',
             'specifications:id,name,icon',
             'features_list:id,name,icon',
-            'offers' => fn ($q) => $q->active(),
+            'activeOffers',
         ])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail([
                 'id', 'brand_id', 'name', 'slug', 'model', 'year', 'type',
                 'color', 'colors', 'cash_price', 'min_down_payment', 'min_installment',
-                'description', 'thumbnail', 'is_active', 'availability_status',
+                'description', 'features', 'specs', 'thumbnail', 'is_active', 'availability_status',
             ]);
 
         $car->increment('views');

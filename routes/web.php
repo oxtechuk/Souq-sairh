@@ -26,7 +26,8 @@ Route::name('new.')->group(function () {
     // السيارات
     Route::get('/cars/api/filter', [NewCarController::class, 'apiFilter'])->name('cars.api.filter');
     Route::get('/cars', [NewCarController::class,       'index'])->name('cars.index');
-    Route::get('/cars/{slug}', [NewCarController::class,       'show'])->name('cars.show');
+    Route::get('/cars/{slug}', [NewCarController::class, 'show'])->name('cars.show')->middleware('redirect-old-car');
+
     // العروض
     Route::get('/offers', [NewOfferController::class,     'index'])->name('offers.index')->middleware('page-cache:600');
     // المدونة

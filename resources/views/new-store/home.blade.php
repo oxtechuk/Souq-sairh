@@ -307,7 +307,7 @@
                                         {{-- Car Name --}}
                                         <div class="w-full flex items-center" style="padding: 0px 16px 0px 0px; height: 22px;">
                                             <h3 class="text-primary" style="font-family: 'Tajawal'; font-weight: 700; font-size: 18px; line-height: 22px; text-align: right;">
-                                                {{ $car->name }} <span dir="ltr">{{ $car->model }}</span>
+                                                {{ $car->display_name }}
                                             </h3>
                                         </div>
 

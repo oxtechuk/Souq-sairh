@@ -1,34 +1,5 @@
 @php
-    $carName = trim($car->name ?? '');
-    $carModel = trim($car->model ?? '');
-
-    $displayName = $carName;
-    if ($carModel !== '') {
-        $nameLower = mb_strtolower($carName);
-        $modelLower = mb_strtolower($carModel);
-
-        $alreadyContains = Str::contains($nameLower, $modelLower);
-
-        if (!$alreadyContains) {
-            $modelWords = array_filter(explode(' ', preg_replace('/[^\p{L}\p{N}]+/u', ' ', $modelLower)));
-            if (!empty($modelWords)) {
-                $missingWords = false;
-                foreach ($modelWords as $word) {
-                    if (mb_strlen($word) > 1 && !Str::contains($nameLower, $word)) {
-                        $missingWords = true;
-                        break;
-                    }
-                }
-                if (!$missingWords) {
-                    $alreadyContains = true;
-                }
-            }
-        }
-
-        if (!$alreadyContains) {
-            $displayName .= ' ' . $carModel;
-        }
-    }
+    $displayName = $car->display_name;
 
     $hasDiscount = false;
     $discountPrice = null;

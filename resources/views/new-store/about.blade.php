@@ -189,8 +189,8 @@
     <div class="flex items-start justify-between mb-8">
       <div class="flex-1">
         <h2 class="text-[32px] font-extrabold mb-3 text-center">
-          <span class="text-primary">صور من</span>
-          <span class="text-gold"> معرضنا</span>
+          <span class="text-primary">{{ $settings['offers_grid_title'] ?? 'عروضنا' }}</span>
+          <!-- <span class="text-gold"> معرضنا</span> -->
         </h2>
       </div>
     </div>

@@ -87,6 +87,40 @@ class Car extends Model
         return $this->cash_price;
     }
 
+    /** الاسم المعروض بدون تكرار الموديل */
+    public function getDisplayNameAttribute(): string
+    {
+        $carName = trim($this->name ?? '');
+        $carModel = trim($this->model ?? '');
+
+        if ($carModel === '') {
+            return $carName;
+        }
+
+        $nameLower = mb_strtolower($carName);
+        $modelLower = mb_strtolower($carModel);
+
+        if (\Illuminate\Support\Str::contains($nameLower, $modelLower)) {
+            return $carName;
+        }
+
+        $modelWords = array_filter(explode(' ', preg_replace('/[^\p{L}\p{N}]+/u', ' ', $modelLower)));
+        if (!empty($modelWords)) {
+            $missingWords = false;
+            foreach ($modelWords as $word) {
+                if (mb_strlen($word) > 1 && !\Illuminate\Support\Str::contains($nameLower, $word)) {
+                    $missingWords = true;
+                    break;
+                }
+            }
+            if (!$missingWords) {
+                return $carName;
+            }
+        }
+
+        return $carName . ' ' . $carModel;
+    }
+
     /** حساب القسط الشهري */
     public function calculateInstallment(int $downPayment, int $months, float $interestRate): array
     {

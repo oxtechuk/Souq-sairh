@@ -94,7 +94,7 @@ class StoreAppearanceSeeder extends Seeder
         ]]);
 
         // ===== Offers Grid Title =====
-        Setting::updateOrCreate(['key' => 'offers_grid_title'], ['value' => 'صور من معرضنا']);
+        Setting::updateOrCreate(['key' => 'offers_grid_title'], ['value' => 'عروضنا']);
 
         // ===== Main Gallery (صور المعرض الرئيسي - صفحة من نحن) =====
         Setting::updateOrCreate(['key' => 'main_gallery'], ['value' => [

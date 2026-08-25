@@ -1,6 +1,18 @@
 @extends('new-store.layouts.app')
 
-@section('title', 'سوق سيارة - ' . $car->name . ' ' . $car->model)
+@php
+    $brandName = trim($car->brand->name ?? '');
+    $displayName = $car->display_name;
+    if ($brandName !== '' && !\Illuminate\Support\Str::contains(mb_strtolower($displayName), mb_strtolower($brandName))) {
+        $fullCarTitle = $brandName . ' ' . $displayName;
+    } else {
+        $fullCarTitle = $displayName;
+    }
+@endphp
+
+@section('title', $fullCarTitle . ' ' . $car->year . ' | سوق سيارة')
+
+@section('meta_description', 'اشتري ' . $fullCarTitle . ' ' . $car->year . ' بسعر ' . number_format($car->cash_price) . ' ريال، قسط شهري من ' . number_format($car->min_installment) . ' ريال. تمويل مرن وتوصيل مجاني - سوق سيارة السعودية.')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('new-store/components/car-details-hero/car-details-hero.css') }}" />
@@ -23,7 +35,7 @@
         <div>
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-3xl font-extrabold text-primary text-right" id="car-title">
-              {{ $car->name }} <span dir="ltr">{{ $car->model }}</span>
+              {{ $fullCarTitle }}
             </h1>
             <div class="flex items-center gap-2">
               <i class="fas fa-star text-gold text-xl"></i>
@@ -136,20 +148,73 @@
   </div>
 </section>
 
-{{-- 2. Technical Specifications --}}
+{{-- 2. Technical Specifications (Relational - from pivot table) --}}
 @if($car->specifications && count($car->specifications) > 0)
-<section class="py-12" dir="rtl">
+<section class="py-10" dir="rtl">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold text-primary text-right mb-8">المواصفات التقنية</h2>
     <div id="technical-specs-grid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
       @foreach($car->specifications as $spec)
         <div class="spec-card">
           <div class="spec-icon-wrapper">
-            <i class="fas fa-cog spec-icon"></i>
+            @if($spec->icon)
+              <i class="fas fa-{{ $spec->icon }} spec-icon"></i>
+            @else
+              <i class="fas fa-cog spec-icon"></i>
+            @endif
           </div>
           <div class="spec-content">
             <p class="spec-label">{{ $spec->name }}</p>
-            <p class="spec-value">{{ $spec->pivot->value ?? $spec->type }}</p>
+            <p class="spec-value">{{ $spec->pivot->value ?? $spec->type ?? '—' }}</p>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+{{-- 2.5 Specs JSON (from `specs` JSON column) --}}
+@php
+  $specsMap = [
+      'fuel_type'       => ['label' => 'نوع الوقود',       'icon' => 'fa-gas-pump'],
+      'transmission'    => ['label' => 'ناقل الحركة',      'icon' => 'fa-gears'],
+      'engine_size'     => ['label' => 'حجم المحرك',       'icon' => 'fa-engine'],
+      'engine_capacity' => ['label' => 'سعة المحرك',       'icon' => 'fa-engine'],
+      'engine_type'     => ['label' => 'نوع المحرك',       'icon' => 'fa-bolt'],
+      'horsepower'      => ['label' => 'القوة (حصان)',      'icon' => 'fa-gauge-high'],
+      'torque'          => ['label' => 'عزم الدوران',      'icon' => 'fa-rotate'],
+      'seats'           => ['label' => 'عدد المقاعد',      'icon' => 'fa-chair'],
+      'doors'           => ['label' => 'عدد الأبواب',      'icon' => 'fa-door-open'],
+      'drive_type'      => ['label' => 'نظام الدفع',       'icon' => 'fa-car-side'],
+      'mileage'         => ['label' => 'المسافة (كم)',     'icon' => 'fa-road'],
+      'color'           => ['label' => 'اللون',            'icon' => 'fa-palette'],
+      'warranty'        => ['label' => 'الضمان',           'icon' => 'fa-shield-halved'],
+      'acceleration'    => ['label' => '0-100 كم/ساعة',   'icon' => 'fa-stopwatch'],
+      'top_speed'       => ['label' => 'السرعة القصوى',   'icon' => 'fa-tachometer-alt'],
+      'fuel_tank'       => ['label' => 'خزان الوقود (لتر)', 'icon' => 'fa-fill-drip'],
+      'weight'          => ['label' => 'الوزن (كجم)',      'icon' => 'fa-weight-hanging'],
+  ];
+  $carSpecs = $car->specs ?? [];
+  $visibleSpecs = collect($carSpecs)->filter(fn($v) => !empty($v));
+@endphp
+
+@if($visibleSpecs->isNotEmpty())
+<section class="py-10 bg-gray-50" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-extrabold text-primary text-right mb-8">بيانات السيارة</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      @foreach($visibleSpecs as $key => $value)
+        @php
+          $meta = $specsMap[$key] ?? ['label' => ucfirst(str_replace('_', ' ', $key)), 'icon' => 'fa-circle-info'];
+        @endphp
+        <div class="spec-card">
+          <div class="spec-icon-wrapper">
+            <i class="fas {{ $meta['icon'] }} spec-icon"></i>
+          </div>
+          <div class="spec-content">
+            <p class="spec-label">{{ $meta['label'] }}</p>
+            <p class="spec-value">{{ $value }}</p>
           </div>
         </div>
       @endforeach
