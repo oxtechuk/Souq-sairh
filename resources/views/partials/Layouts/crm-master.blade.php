@@ -6,6 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'لوحة التحكم | Souq Siarh')</title>
 
+    {{-- App Favicon --}}
+    @php
+        $crmFaviconSetting = \App\Models\Setting::where('key', 'site_favicon')->first()?->value;
+        $crmFavicon = $crmFaviconSetting ? asset('storage/' . $crmFaviconSetting) : asset('favicon.png');
+    @endphp
+    <link rel="shortcut icon" href="{{ $crmFavicon }}">
+    <link rel="icon" type="image/png" href="{{ $crmFavicon }}">
+
     {{-- Preconnect & DNS-Prefetch for Speed --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

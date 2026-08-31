@@ -33,46 +33,76 @@
             <div class="crm-stat-new">
                 <span class="stat-badge green"><i class="bi bi-bar-chart"></i></span>
                 <div class="stat-icon purple"><i class="bi bi-person-lines-fill"></i></div>
-                <div class="stat-lbl">{{ __('إجمالي عدد الطلبات') }}</div>
                 <div class="stat-val">{{ number_format($stats['total'] ?? $bookings->total()) }}</div>
             </div>
         </div>
     </div>
 
     {{-- Filter Bar --}}
-    <form method="GET">
+    <form method="GET" action="{{ route('crm.bookings.index') }}">
         <div class="card border-0 shadow-sm rounded-3 mb-4" style="border:1px solid var(--crm-border)!important;">
             <div class="card-body p-3">
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    {{-- Date --}}
-                    <div style="position:relative;">
-                        <input type="date" name="date" value="{{ request('date') }}"
-                               style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
-                        <i class="bi bi-calendar3" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:10px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);pointer-events:none;"></i>
+                <div class="row g-2 align-items-center">
+                    {{-- 1. Search by Name, Phone, or ID --}}
+                    <div class="col-12 col-lg-3 col-md-6">
+                        <div style="position:relative;">
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                   placeholder="{{ __('بحث بالاسم، رقم الجوال، أو رقم الطلب #...') }}"
+                                   class="form-control"
+                                   style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <i class="bi bi-search" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:12px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);"></i>
+                        </div>
                     </div>
-                    {{-- مصرف الخدمة --}}
-                    <select name="type" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;min-width:150px;">
-                        <option value="">{{ __('مصرف الخدمة — الكل') }}</option>
-                        <option value="loan" {{ request('type')=='loan'?'selected':'' }}>{{ __('تمويل') }}</option>
-                        <option value="test" {{ request('type')=='test'?'selected':'' }}>{{ __('تجربة قيادة') }}</option>
-                        <option value="booking" {{ request('type')=='booking'?'selected':'' }}>{{ __('حجز سيارة') }}</option>
-                    </select>
-                    {{-- الحالة --}}
-                    <select name="status" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;min-width:140px;">
-                        <option value="">{{ __('الحالة — الكل') }}</option>
-                        @foreach($statuses as $key => $s)
-                        <option value="{{ $key }}" {{ request('status')===$key?'selected':'' }}>{{ $s['label'] }}</option>
-                        @endforeach
-                    </select>
-                    {{-- Search --}}
-                    <div style="position:relative;flex:1;min-width:240px;">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                               placeholder="{{ __('بحث برقم الطلب، رقم/اسم العميل، أو السيارة...') }}"
-                               style="width:100%;border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
-                        <i class="bi bi-search" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:12px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);"></i>
+
+                    {{-- 2. Filter by Employee --}}
+                    <div class="col-6 col-lg-2 col-md-3">
+                        <select name="employee_id" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <option value="">{{ __('الموظف — الكل') }}</option>
+                            @foreach($employees as $emp)
+                                <option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <button type="submit" class="btn-crm-primary" style="padding:8px 20px;">{{ __('تصفية') }}</button>
-                    <a href="{{ route('crm.bookings.index') }}" class="fw-bold text-decoration-none" style="font-size:13px;color:var(--crm-red);">{{ __('حذف الفلاتر') }}</a>
+
+                    {{-- 3. Filter by Request Type (تمويل / شراء كاش / شركات) --}}
+                    <div class="col-6 col-lg-2 col-md-3">
+                        <select name="contact_type" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <option value="">{{ __('نوع الطلب — الكل') }}</option>
+                            <option value="financing" {{ request('contact_type') == 'financing' ? 'selected' : '' }}>{{ __('طلب تمويل') }}</option>
+                            <option value="individuals" {{ request('contact_type') == 'individuals' ? 'selected' : '' }}>{{ __('شراء كاش / أفراد') }}</option>
+                            <option value="companies" {{ request('contact_type') == 'companies' ? 'selected' : '' }}>{{ __('طلب شركات') }}</option>
+                        </select>
+                    </div>
+
+                    {{-- 4. Filter by Status (الحالة كاملة) --}}
+                    <div class="col-6 col-lg-2 col-md-4">
+                        <select name="status" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <option value="">{{ __('الحالة — الكل') }}</option>
+                            @foreach($statuses as $key => $s)
+                                <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- 5. Date --}}
+                    <div class="col-6 col-lg-2 col-md-4">
+                        <div style="position:relative;">
+                            <input type="date" name="date" value="{{ request('date') }}"
+                                   class="form-control"
+                                   style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 36px 8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <i class="bi bi-calendar3" style="position:absolute;{{ app()->getLocale()=='ar'?'left':'right' }}:10px;top:50%;transform:translateY(-50%);color:var(--crm-text-muted);pointer-events:none;"></i>
+                        </div>
+                    </div>
+
+                    {{-- 6. Action Buttons --}}
+                    <div class="col-12 col-lg-1 col-md-4 d-flex gap-2 align-items-center">
+                        <button type="submit" class="btn-crm-primary w-100" style="padding:8px 14px;font-size:13px;">{{ __('تصفية') }}</button>
+                        @if(request()->hasAny(['search', 'employee_id', 'contact_type', 'type', 'status', 'date']))
+                            <a href="{{ route('crm.bookings.index') }}" class="btn btn-light border text-danger" title="{{ __('إلغاء الفلاتر') }}" style="padding:7px 12px;border-radius:8px;">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,7 +146,25 @@
                             {{ number_format($b->monthly_installment) }}
                             <small class="text-muted">{!! __('ريال') !!}</small>
                         </td>
-                        <td style="font-size:12px;color:var(--crm-text-muted);">{{ __('طلب سيارة') }}</td>
+                        <td>
+                            @if($b->contact_type === 'financing' || (!empty($b->monthly_installment) && $b->monthly_installment > 0))
+                                <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size:11px;">
+                                    <i class="bi bi-credit-card me-1"></i>{{ __('طلب تمويل') }}
+                                </span>
+                            @elseif($b->contact_type === 'companies')
+                                <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle px-2 py-1" style="font-size:11px;">
+                                    <i class="bi bi-building me-1"></i>{{ __('طلب شركات') }}
+                                </span>
+                            @else
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size:11px;">
+                                    <i class="bi bi-cash-stack me-1"></i>{{ __('شراء كاش / أفراد') }}
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                            <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
+                            <small class="text-muted">{{ $b->car?->brand?->name }}</small>
+                        </td>-muted);">{{ __('طلب سيارة') }}</td>
                         <td>
                             <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
                             <small class="text-muted">{{ $b->car?->brand?->name }}</small>

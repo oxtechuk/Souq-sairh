@@ -438,27 +438,42 @@
                                 </div>
 
                                 {{-- Ad 1 --}}
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card border-0 shadow-sm rounded-4 h-100">
                                         <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
-                                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-megaphone-fill text-warning me-2"></i>{{ __('الإعلان الأول') }}</h6>
+                                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-megaphone-fill text-warning me-2"></i>{{ __('البانر الأول') }}</h6>
                                         </div>
                                         <div class="card-body p-4 pt-2">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الإعلان') }}</label>
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الديسكتوب (1600 × 592)') }}</label>
                                                 @if(isset($settings['hero_ad_1_image']))
-                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:130px;">
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
                                                     <img src="{{ asset('storage/' . $settings['hero_ad_1_image']) }}" class="w-100 h-100" style="object-fit:cover;">
                                                 </div>
                                                 @else
-                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:100px;">
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
                                                     <span class="text-muted small"><i class="bi bi-image me-1"></i>{{ __('لا توجد صورة') }}</span>
                                                 </div>
                                                 @endif
                                                 <input type="file" name="hero_ad_1_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الجوال / الموبايل (اختياري)') }}</label>
+                                                @if(isset($settings['hero_ad_1_mobile_image']))
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
+                                                    <img src="{{ asset('storage/' . $settings['hero_ad_1_mobile_image']) }}" class="w-100 h-100" style="object-fit:contain; background:#f8fafc;">
+                                                </div>
+                                                @else
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
+                                                    <span class="text-muted small"><i class="bi bi-phone me-1"></i>{{ __('لا توجد صورة موبايل') }}</span>
+                                                </div>
+                                                @endif
+                                                <input type="file" name="hero_ad_1_mobile_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
+                                            </div>
+
                                             <div>
-                                                <label class="form-label fw-bold small text-muted">{{ __('رابط الإعلان (URL)') }}</label>
+                                                <label class="form-label fw-bold small text-muted">{{ __('رابط البانر (URL)') }}</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-light border-0"><i class="bi bi-link-45deg"></i></span>
                                                     <input type="url" name="hero_ad_1_link" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['hero_ad_1_link'] ?? '' }}" placeholder="https://...">
@@ -469,30 +484,91 @@
                                 </div>
 
                                 {{-- Ad 2 --}}
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card border-0 shadow-sm rounded-4 h-100">
                                         <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
-                                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-megaphone-fill text-info me-2"></i>{{ __('الإعلان الثاني') }}</h6>
+                                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-megaphone-fill text-info me-2"></i>{{ __('البانر الثاني') }}</h6>
                                         </div>
                                         <div class="card-body p-4 pt-2">
                                             <div class="mb-3">
-                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الإعلان') }}</label>
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الديسكتوب (1600 × 592)') }}</label>
                                                 @if(isset($settings['hero_ad_2_image']))
-                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:130px;">
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
                                                     <img src="{{ asset('storage/' . $settings['hero_ad_2_image']) }}" class="w-100 h-100" style="object-fit:cover;">
                                                 </div>
                                                 @else
-                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:100px;">
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
                                                     <span class="text-muted small"><i class="bi bi-image me-1"></i>{{ __('لا توجد صورة') }}</span>
                                                 </div>
                                                 @endif
                                                 <input type="file" name="hero_ad_2_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الجوال / الموبايل (اختياري)') }}</label>
+                                                @if(isset($settings['hero_ad_2_mobile_image']))
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
+                                                    <img src="{{ asset('storage/' . $settings['hero_ad_2_mobile_image']) }}" class="w-100 h-100" style="object-fit:contain; background:#f8fafc;">
+                                                </div>
+                                                @else
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
+                                                    <span class="text-muted small"><i class="bi bi-phone me-1"></i>{{ __('لا توجد صورة موبايل') }}</span>
+                                                </div>
+                                                @endif
+                                                <input type="file" name="hero_ad_2_mobile_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
+                                            </div>
+
                                             <div>
-                                                <label class="form-label fw-bold small text-muted">{{ __('رابط الإعلان (URL)') }}</label>
+                                                <label class="form-label fw-bold small text-muted">{{ __('رابط البانر (URL)') }}</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text bg-light border-0"><i class="bi bi-link-45deg"></i></span>
                                                     <input type="url" name="hero_ad_2_link" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['hero_ad_2_link'] ?? '' }}" placeholder="https://...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Ad 3 --}}
+                                <div class="col-md-4">
+                                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                                        <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
+                                            <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-megaphone-fill text-primary me-2"></i>{{ __('البانر الثالث') }}</h6>
+                                        </div>
+                                        <div class="card-body p-4 pt-2">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الديسكتوب (1600 × 592)') }}</label>
+                                                @if(isset($settings['hero_ad_3_image']))
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
+                                                    <img src="{{ asset('storage/' . $settings['hero_ad_3_image']) }}" class="w-100 h-100" style="object-fit:cover;">
+                                                </div>
+                                                @else
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
+                                                    <span class="text-muted small"><i class="bi bi-image me-1"></i>{{ __('لا توجد صورة') }}</span>
+                                                </div>
+                                                @endif
+                                                <input type="file" name="hero_ad_3_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold small text-muted">{{ __('صورة الجوال / الموبايل (اختياري)') }}</label>
+                                                @if(isset($settings['hero_ad_3_mobile_image']))
+                                                <div class="mb-2 rounded-3 overflow-hidden border" style="height:110px;">
+                                                    <img src="{{ asset('storage/' . $settings['hero_ad_3_mobile_image']) }}" class="w-100 h-100" style="object-fit:contain; background:#f8fafc;">
+                                                </div>
+                                                @else
+                                                <div class="mb-2 bg-light rounded-3 border border-dashed d-flex align-items-center justify-content-center" style="height:90px;">
+                                                    <span class="text-muted small"><i class="bi bi-phone me-1"></i>{{ __('لا توجد صورة موبايل') }}</span>
+                                                </div>
+                                                @endif
+                                                <input type="file" name="hero_ad_3_mobile_image" class="form-control bg-light border-0 shadow-none" accept="image/*">
+                                            </div>
+
+                                            <div>
+                                                <label class="form-label fw-bold small text-muted">{{ __('رابط البانر (URL)') }}</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0"><i class="bi bi-link-45deg"></i></span>
+                                                    <input type="url" name="hero_ad_3_link" class="form-control bg-light border-0 shadow-none py-2" value="{{ $settings['hero_ad_3_link'] ?? '' }}" placeholder="https://...">
                                                 </div>
                                             </div>
                                         </div>

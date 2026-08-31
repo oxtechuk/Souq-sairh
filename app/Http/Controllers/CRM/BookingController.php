@@ -30,6 +30,24 @@ class BookingController extends Controller
             $query->where('assigned_to', $request->employee_id);
         }
 
+        // فلترة بنوع الطلب (تمويل / كاش أفراد / شركات)
+        if ($request->filled('contact_type')) {
+            $query->where('contact_type', $request->contact_type);
+        } elseif ($request->filled('type')) {
+            if ($request->type === 'financing' || $request->type === 'loan') {
+                $query->where('contact_type', 'financing');
+            } elseif ($request->type === 'individuals' || $request->type === 'cash') {
+                $query->where('contact_type', 'individuals');
+            } elseif ($request->type === 'companies') {
+                $query->where('contact_type', 'companies');
+            }
+        }
+
+        // فلترة بالتاريخ
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
         // للموظف العادي: إظهار الطلبات المسندة إليه فقط، واستبعاد الطلبات المغلقة أو في انتظار مراجعة الأدمن
         if (!$isAdmin) {
             $query->where('assigned_to', $user?->id);
@@ -57,7 +75,7 @@ class BookingController extends Controller
             });
         }
 
-        $bookings = $query->paginate(20);
+        $bookings = $query->paginate(20)->withQueryString();
         $employees = Employee::where('is_active', true)->get();
         $statuses = Booking::STATUSES;
         $cars = Car::with('brand')->where('is_active', true)->get();

@@ -133,35 +133,62 @@
                         <div class="relative">
                             <div class="carousel-container rounded-3xl overflow-hidden shadow-2xl" id="hero-carousel-container">
                                 <div class="carousel-track flex transition-transform duration-500 ease-in-out" id="hero-carousel-track">
-                                    @if($heroAd1['image'])
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('storage/' . $heroAd1['image']) }}" alt="Car Financing 1" class="w-full h-auto" loading="eager" />
-                                        </div>
-                                    @else
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('new-store/images/car-slide-1.png') }}" alt="Car Financing 1" class="w-full h-auto" loading="eager" />
-                                        </div>
-                                    @endif
+                                    {{-- Banner 1 --}}
+                                    <div class="carousel-slide min-w-full">
+                                        @if(!empty($heroAd1['link']))
+                                            <a href="{{ $heroAd1['link'] }}" class="block w-full h-full">
+                                        @endif
+                                        <picture class="block w-full h-full">
+                                            @if(!empty($heroAd1['mobile_image']))
+                                                <source media="(max-width: 768px)" srcset="{{ asset('storage/' . $heroAd1['mobile_image']) }}">
+                                            @endif
+                                            <img src="{{ $heroAd1['image'] ? asset('storage/' . $heroAd1['image']) : asset('new-store/images/car-slide-1.png') }}"
+                                                 alt="عروض سوق سيارة 1"
+                                                 class="banner-img w-full h-full object-cover"
+                                                 loading="eager" />
+                                        </picture>
+                                        @if(!empty($heroAd1['link']))
+                                            </a>
+                                        @endif
+                                    </div>
 
-                                    @if($heroAd2['image'])
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('storage/' . $heroAd2['image']) }}" alt="Car Financing 2" class="w-full h-auto" loading="lazy" />
-                                        </div>
-                                    @else
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('new-store/images/car-slide-2.png') }}" alt="Car Financing 2" class="w-full h-auto" loading="lazy" />
-                                        </div>
-                                    @endif
+                                    {{-- Banner 2 --}}
+                                    <div class="carousel-slide min-w-full">
+                                        @if(!empty($heroAd2['link']))
+                                            <a href="{{ $heroAd2['link'] }}" class="block w-full h-full">
+                                        @endif
+                                        <picture class="block w-full h-full">
+                                            @if(!empty($heroAd2['mobile_image']))
+                                                <source media="(max-width: 768px)" srcset="{{ asset('storage/' . $heroAd2['mobile_image']) }}">
+                                            @endif
+                                            <img src="{{ $heroAd2['image'] ? asset('storage/' . $heroAd2['image']) : asset('new-store/images/car-slide-2.png') }}"
+                                                 alt="عروض سوق سيارة 2"
+                                                 class="banner-img w-full h-full object-cover"
+                                                 loading="lazy" />
+                                        </picture>
+                                        @if(!empty($heroAd2['link']))
+                                            </a>
+                                        @endif
+                                    </div>
 
-                                    @if($heroAd3['image'])
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('storage/' . $heroAd3['image']) }}" alt="Car Financing 3" class="w-full h-auto" loading="lazy" />
-                                        </div>
-                                    @else
-                                        <div class="carousel-slide min-w-full">
-                                            <img src="{{ asset('new-store/images/car-slide-3.png') }}" alt="Car Financing 3" class="w-full h-auto" loading="lazy" />
-                                        </div>
-                                    @endif
+                                    {{-- Banner 3 --}}
+                                    <div class="carousel-slide min-w-full">
+                                        @if(!empty($heroAd3['link']))
+                                            <a href="{{ $heroAd3['link'] }}" class="block w-full h-full">
+                                        @endif
+                                        <picture class="block w-full h-full">
+                                            @if(!empty($heroAd3['mobile_image']))
+                                                <source media="(max-width: 768px)" srcset="{{ asset('storage/' . $heroAd3['mobile_image']) }}">
+                                            @endif
+                                            <img src="{{ $heroAd3['image'] ? asset('storage/' . $heroAd3['image']) : asset('new-store/images/car-slide-3.png') }}"
+                                                 alt="عروض سوق سيارة 3"
+                                                 class="banner-img w-full h-full object-cover"
+                                                 loading="lazy" />
+                                        </picture>
+                                        @if(!empty($heroAd3['link']))
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
@@ -479,12 +506,6 @@
                         <button data-filter="popular" class="car-filter-btn active w-full bg-primary text-white px-6 py-4 rounded-lg font-bold text-[16px] hover:bg-primary-dark transition-all flex items-center justify-center gap-3">
                             <i class="fas fa-car text-[18px]"></i>
                             <span>سيارات شائعة</span>
-                        </button>
-
-                        <!-- Certified Pre-owned Filter -->
-                        <button data-filter="test-drive" class="car-filter-btn w-full bg-white text-primary border-2 border-[#E5E7EB] px-6 py-4 rounded-lg font-bold text-[16px] hover:border-primary transition-all flex items-center justify-center gap-3">
-                            <i class="fas fa-certificate text-[18px]"></i>
-                            <span>سيارات مع تجربة قيادة</span>
                         </button>
 
                         <!-- Best Offers Filter -->

@@ -40,7 +40,7 @@ class GeneralSettingController extends Controller
         $keys = [
             'site_name', 'footer_text', 'contact_email', 'contact_phone',
             'contact_whatsapp', 'contact_address', 'bento_cars',
-            'hero_ad_1_link', 'hero_ad_2_link', 'store_home_hero', 'store_home_description',
+            'hero_ad_1_link', 'hero_ad_2_link', 'hero_ad_3_link', 'store_home_hero', 'store_home_description',
             'order_distribution_method',
             'twilio_sid', 'twilio_auth_token', 'twilio_from',
             'google_analytics_id', 'meta_pixel_id',             'offers_grid_title',
@@ -71,7 +71,13 @@ class GeneralSettingController extends Controller
         Setting::updateOrCreate(['key' => 'social_media'], ['value' => $socialMedia]);
 
         // Handle File Uploads (Only if new files are uploaded)
-        $files = ['site_logo', 'site_favicon', 'breadcrumb_bg', 'hero_video', 'hero_ad_1_image', 'hero_ad_2_image', 'hero_ad_3_image', 'about_why_choose_image'];
+        $files = [
+            'site_logo', 'site_favicon', 'breadcrumb_bg', 'hero_video',
+            'hero_ad_1_image', 'hero_ad_1_mobile_image',
+            'hero_ad_2_image', 'hero_ad_2_mobile_image',
+            'hero_ad_3_image', 'hero_ad_3_mobile_image',
+            'about_why_choose_image'
+        ];
         foreach ($files as $fileKey) {
             if ($request->hasFile($fileKey)) {
                 $path = $request->file($fileKey)->store('settings', 'public');

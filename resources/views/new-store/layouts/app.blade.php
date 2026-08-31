@@ -17,6 +17,15 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
 
+    <!-- Favicon -->
+    @php
+        $siteFavicon = $globalSouqSettings['site_favicon'] ?? null;
+        $faviconUrl = $siteFavicon ? asset('storage/' . $siteFavicon) : asset('favicon.png');
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

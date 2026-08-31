@@ -78,16 +78,21 @@ class HomeController extends Controller
         ];
 
         $heroVideo = $settings->get('hero_video');
-        $heroAd1Image = $settings->get('hero_ad_1_image');
-        $heroAd2Image = $settings->get('hero_ad_2_image');
-        $heroAd3Image = $settings->get('hero_ad_3_image');
-        $heroAd1Link = $settings->get('hero_ad_1_link');
-        $heroAd2Link = $settings->get('hero_ad_2_link');
-        $heroAd3Link = $settings->get('hero_ad_3_link');
-
-        $heroAd1 = ['image' => $heroAd1Image, 'link' => $heroAd1Link];
-        $heroAd2 = ['image' => $heroAd2Image, 'link' => $heroAd2Link];
-        $heroAd3 = ['image' => $heroAd3Image, 'link' => $heroAd3Link];
+        $heroAd1 = [
+            'image' => $settings->get('hero_ad_1_image'),
+            'mobile_image' => $settings->get('hero_ad_1_mobile_image'),
+            'link' => $settings->get('hero_ad_1_link'),
+        ];
+        $heroAd2 = [
+            'image' => $settings->get('hero_ad_2_image'),
+            'mobile_image' => $settings->get('hero_ad_2_mobile_image'),
+            'link' => $settings->get('hero_ad_2_link'),
+        ];
+        $heroAd3 = [
+            'image' => $settings->get('hero_ad_3_image'),
+            'mobile_image' => $settings->get('hero_ad_3_mobile_image'),
+            'link' => $settings->get('hero_ad_3_link'),
+        ];
 
         $stats = $cache->remember('home.stats', function () {
             return [
