@@ -82,6 +82,53 @@
     text-align: center;
 }
 
+.car-description-card {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    text-align: right;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+}
+
+.car-description-card:hover {
+    border-color: rgba(26, 50, 99, 0.2);
+}
+
+.car-description-card .desc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.car-description-card .desc-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(26, 50, 99, 0.08);
+    color: #1A3263;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.car-description-card .desc-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1A3263;
+    margin: 0;
+}
+
+.car-description-card .desc-body {
+    color: #475569;
+    font-size: 0.925rem;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
 
 /* Responsive Styles */
 @media (max-width: 1024px) {

@@ -19,6 +19,10 @@ use App\Http\Controllers\NewStore\CompareController as NewCompareController;
 use App\Http\Controllers\NewStore\ContactController as NewContactController;
 use App\Http\Controllers\NewStore\HomeController as NewHomeController;
 use App\Http\Controllers\NewStore\OfferController as NewOfferController;
+use App\Http\Controllers\NewStore\SitemapController;
+
+// خريطة الموقع لمحركات البحث (Sitemap)
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::name('new.')->group(function () {
     // الصفحة الرئيسية

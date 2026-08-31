@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /crm/
+Disallow: /Souq-admin/
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://souqsayarh.sa/sitemap.xml

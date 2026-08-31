@@ -1,6 +1,38 @@
 @extends('new-store.layouts.app')
 
-@section('title', 'سوق سيارة - الرئيسية')
+@section('title', 'سوق سيارة | أفضل منصة لشراء السيارات كاش وبالتقسيط في السعودية')
+
+@section('meta_description', 'سوق سيارة — منصتك الأولى لشراء أحدث السيارات الجديدة كاش وبالتقسيط في المملكة العربية السعودية مع ضمان شامل وتوصيل مجاني لكافة المدن.')
+
+@section('meta')
+<meta property="og:title" content="سوق سيارة | أفضل منصة لشراء السيارات كاش وبالتقسيط في السعودية">
+<meta property="og:description" content="سوق سيارة — منصتك الأولى لشراء أحدث السيارات الجديدة كاش وبالتقسيط في المملكة العربية السعودية مع ضمان شامل وتوصيل مجاني لكافة المدن.">
+<meta property="og:image" content="{{ asset('new-store/images/hero-video-poster.png') }}">
+<meta property="og:url" content="{{ route('new.home') }}">
+<meta property="og:type" content="website">
+
+{{-- AutoDealer & WebSite Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AutoDealer",
+  "name": "سوق سيارة",
+  "url": "{{ route('new.home') }}",
+  "logo": "{{ asset('new-store/images/logo.png') }}",
+  "description": "منصة رائدة لبيع وشراء السيارات الجديدة والمستعملة في المملكة العربية السعودية كاش وبالتقسيط الميسر.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "SA",
+    "addressRegion": "Riyadh"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ route('new.cars.index') }}?keyword={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+@endsection
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('new-store/components/hero/hero.css') }}" />

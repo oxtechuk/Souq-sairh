@@ -10,9 +10,104 @@
     }
 @endphp
 
-@section('title', $fullCarTitle . ' ' . $car->year . ' | سوق سيارة')
+@section('title', 'سعر ومواصفات ' . $fullCarTitle . ' ' . $car->year . ' كاش وتقسيط | سوق سيارة')
 
-@section('meta_description', 'اشتري ' . $fullCarTitle . ' ' . $car->year . ' بسعر ' . number_format($car->cash_price) . ' ريال، قسط شهري من ' . number_format($car->min_installment) . ' ريال. تمويل مرن وتوصيل مجاني - سوق سيارة السعودية.')
+@section('meta_description', 'تعرف على سعر ومواصفات ' . $fullCarTitle . ' ' . $car->year . ' في السعودية. اشتريها كاش بسعر ' . number_format($car->cash_price) . ' ريال أو بالتقسيط الشهري من ' . number_format($car->min_installment) . ' ريال مع توصيل مجاني وضمان شامل.')
+
+@section('meta')
+@php
+    $carImgUrl = $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png');
+    $carPrice = (int) ($car->activeOffer && $car->activeOffer->special_price ? $car->activeOffer->special_price : $car->cash_price);
+    $cleanDesc = !empty($car->description) ? \Illuminate\Support\Str::limit(strip_tags($car->description), 160) : ('اشتري ' . $fullCarTitle . ' ' . $car->year . ' كاش أو بالتقسيط من سوق سيارة السعودية مع توصيل مجاني وضمان شامل.');
+@endphp
+<meta property="og:title" content="سعر ومواصفات {{ $fullCarTitle }} {{ $car->year }} | سوق سيارة">
+<meta property="og:description" content="{{ $cleanDesc }}">
+<meta property="og:image" content="{{ $carImgUrl }}">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="product">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="سعر ومواصفات {{ $fullCarTitle }} {{ $car->year }} | سوق سيارة">
+<meta name="twitter:description" content="{{ $cleanDesc }}">
+<meta name="twitter:image" content="{{ $carImgUrl }}">
+
+{{-- JSON-LD Schema for Car / Vehicle --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Car",
+  "name": "{{ $fullCarTitle }} {{ $car->year }}",
+  "image": "{{ $carImgUrl }}",
+  "description": "{{ addslashes($cleanDesc) }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ $brandName }}"
+  },
+  "model": "{{ $car->model }}",
+  "vehicleModelDate": "{{ $car->year }}",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "SAR",
+    "price": "{{ $carPrice }}",
+    "availability": "https://schema.org/InStock",
+    "url": "{{ url()->current() }}"
+  }
+}
+</script>
+
+{{-- BreadcrumbList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "الرئيسية",
+    "item": "{{ route('new.home') }}"
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "name": "السيارات",
+    "item": "{{ route('new.cars.index') }}"
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "name": "{{ $fullCarTitle }}",
+    "item": "{{ url()->current() }}"
+  }]
+}
+</script>
+
+{{-- FAQPage Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "هل يمكن شراء {{ $fullCarTitle }} {{ $car->year }} بالتقسيط بدون دفعة أولى؟",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "نعم، يوفر سوق سيارة برامج تمويلية مرنة بالتعاون مع كبرى البنوك وشركات التمويل السعودية، مع إمكانية التقسيط بدون دفعة أولى وبأقساط تبدأ من {{ number_format($car->min_installment ?? 1500) }} ريال شهرياً."
+    }
+  },{
+    "@type": "Question",
+    "name": "ما هي مدة ونوع الضمان المتوفر على سيارة {{ $fullCarTitle }}؟",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "تأتي السيارة بضمان شامل ومطابق للمواصفات السعودية مع إمكانية تمديد الضمان وخدمة المساعدة على الطريق مجاناً."
+    }
+  },{
+    "@type": "Question",
+    "name": "هل يتوفر شحن وتوصيل السيارة لكافة مدن السعودية؟",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "نعم، نقدم خدمة توصيل وشحن آمنة ومجانية للسيارة إلى باب منزلك في جميع مدن ومحافظات المملكة العربية السعودية."
+    }
+  }]
+}
+</script>
+@endsection
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('new-store/components/car-details-hero/car-details-hero.css') }}" />
@@ -96,6 +191,21 @@
             <p class="text-sm font-bold text-primary">توصيل مجاني</p>
           </div>
         </div>
+
+        {{-- Description --}}
+        @if(!empty(trim($car->description ?? '')))
+        <div class="car-description-card mt-6">
+          <div class="desc-header">
+            <div class="desc-icon">
+              <i class="fas fa-file-lines"></i>
+            </div>
+            <h3 class="desc-title">وصف السيارة</h3>
+          </div>
+          <div class="desc-body">
+            {!! nl2br(e($car->description)) !!}
+          </div>
+        </div>
+        @endif
 
       </div>
 
@@ -338,6 +448,48 @@
   </div>
 </section>
 @endif
+
+{{-- 6. Frequently Asked Questions (FAQ) Section --}}
+<section class="py-14 bg-white" dir="rtl">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <span class="text-gold font-bold text-sm tracking-wider uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-200">إجابات سريعة</span>
+      <h2 class="text-3xl font-extrabold text-primary mt-3">الأسئلة الشائعة حول {{ $fullCarTitle }}</h2>
+    </div>
+
+    <div class="space-y-4">
+      <div class="border border-gray-200 rounded-2xl p-5 hover:border-primary/30 transition-all bg-gray-50/50">
+        <h3 class="font-bold text-primary text-lg flex items-center gap-3">
+          <i class="fas fa-circle-question text-gold text-xl"></i>
+          <span>هل يمكن شراء {{ $fullCarTitle }} {{ $car->year }} بالتقسيط بدون دفعة أولى؟</span>
+        </h3>
+        <p class="text-gray-600 text-sm mt-3 leading-relaxed pr-8">
+          نعم، نوفر في سوق سيارة خطط تمويل ميسرة بالتعاون مع كبرى البنوك والجهات التمويلية المعتمدة في المملكة العربية السعودية، مع إمكانية التقسيط بدون دفعة أولى وبأقساط تبدأ من {{ number_format($car->min_installment ?? 1500) }} ريال شهرياً.
+        </p>
+      </div>
+
+      <div class="border border-gray-200 rounded-2xl p-5 hover:border-primary/30 transition-all bg-gray-50/50">
+        <h3 class="font-bold text-primary text-lg flex items-center gap-3">
+          <i class="fas fa-shield-halved text-green-600 text-xl"></i>
+          <span>ما هي تفاصيل الضمان على السيارة؟</span>
+        </h3>
+        <p class="text-gray-600 text-sm mt-3 leading-relaxed pr-8">
+          تحصل السيارة على ضمان شامل متوافق مع أعلى المعايير والمواصفات المعتمدة، مع خيارات تمديد الضمان وخدمة المساعدة على الطريق مجاناً لضمان راحة بالك.
+        </p>
+      </div>
+
+      <div class="border border-gray-200 rounded-2xl p-5 hover:border-primary/30 transition-all bg-gray-50/50">
+        <h3 class="font-bold text-primary text-lg flex items-center gap-3">
+          <i class="fas fa-truck-fast text-blue-600 text-xl"></i>
+          <span>هل التوصيل مجاني لجميع مناطق ومدن المملكة؟</span>
+        </h3>
+        <p class="text-gray-600 text-sm mt-3 leading-relaxed pr-8">
+          نعم، نوفر خدمة شحن وتوصيل آمنة ومجانية حتى باب منزلك في أي مدينة ومحافظة في جميع أنحاء المملكة العربية السعودية.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
 @endsection
 

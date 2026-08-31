@@ -1,6 +1,26 @@
 @extends('new-store.layouts.app')
 
-@section('title', 'سوق سيارة - جميع السيارات')
+@section('title', 'جميع السيارات الجديدة للبيع في السعودية كاش وتقسيط | سوق سيارة')
+
+@section('meta_description', 'تصفح أحدث تشكيلة من السيارات الجديدة في السعودية (تويوتا، هيونداي، نيسان، كيا، فورد، جيلي، شانجان وغيرها) بأفضل أسعار الكاش وبأقساط تمويلية مرنة بدون دفعة أولى.')
+
+@section('meta')
+<meta property="og:title" content="جميع السيارات الجديدة للبيع في السعودية كاش وتقسيط | سوق سيارة">
+<meta property="og:description" content="تصفح أحدث تشكيلة من السيارات الجديدة في السعودية بأفضل أسعار الكاش وبأقساط تمويلية مرنة بدون دفعة أولى.">
+<meta property="og:url" content="{{ route('new.cars.index') }}">
+<meta property="og:type" content="website">
+
+{{-- CollectionPage & ItemList Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "جميع السيارات للبيع في السعودية",
+  "description": "تصفح كتالوج السيارات الجديدة المتاحة للبيع كاش وبالتقسيط في السعودية مع سوق سيارة.",
+  "url": "{{ route('new.cars.index') }}"
+}
+</script>
+@endsection
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('new-store/components/all-cars-hero/all-cars-hero.css') }}" />

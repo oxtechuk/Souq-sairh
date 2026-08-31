@@ -1,6 +1,54 @@
 @extends('new-store.layouts.app')
 
-@section('title', 'سوق سيارة - ' . $post->title)
+@php
+    $blogTitle = $post->meta_title ?: ($post->title . ' | مدونة سوق سيارة');
+    $blogDesc = $post->meta_description ?: (\Illuminate\Support\Str::limit(strip_tags($post->excerpt ?: $post->content), 160));
+    $blogImg = $post->thumbnail ? asset('storage/' . $post->thumbnail) : asset('new-store/images/hero-video-poster.png');
+@endphp
+
+@section('title', $blogTitle)
+@section('meta_description', $blogDesc)
+
+@section('meta')
+<meta property="og:title" content="{{ $blogTitle }}">
+<meta property="og:description" content="{{ $blogDesc }}">
+<meta property="og:image" content="{{ $blogImg }}">
+<meta property="og:url" content="{{ route('new.blog.show', $post->slug) }}">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $blogTitle }}">
+<meta name="twitter:description" content="{{ $blogDesc }}">
+<meta name="twitter:image" content="{{ $blogImg }}">
+
+{{-- BlogPosting Schema --}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ addslashes($post->title) }}",
+  "image": "{{ $blogImg }}",
+  "description": "{{ addslashes($blogDesc) }}",
+  "datePublished": "{{ $post->published_at ? $post->published_at->tz('UTC')->toAtomString() : $post->created_at->tz('UTC')->toAtomString() }}",
+  "dateModified": "{{ $post->updated_at ? $post->updated_at->tz('UTC')->toAtomString() : now()->tz('UTC')->toAtomString() }}",
+  "author": {
+    "@type": "Organization",
+    "name": "سوق سيارة"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "سوق سيارة",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('new-store/images/logo.png') }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ route('new.blog.show', $post->slug) }}"
+  }
+}
+</script>
+@endsection
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('new-store/components/article-content/article-content.css') }}" />
