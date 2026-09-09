@@ -22,14 +22,14 @@ class HomeController extends Controller
             ->where('is_active', true)
             ->latest()
             ->limit(8)
-            ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'thumbnail', 'cash_price', 'min_installment']);
+            ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'type', 'specs', 'thumbnail', 'cash_price', 'min_installment']);
 
         if ($featuredCars->isEmpty()) {
             $featuredCars = Car::with(['brand:id,name,slug', 'activeOffers'])
                 ->where('is_active', true)
                 ->latest()
                 ->limit(8)
-                ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'thumbnail', 'cash_price', 'min_installment']);
+                ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'type', 'specs', 'thumbnail', 'cash_price', 'min_installment']);
         }
 
         $latestPosts = BlogPost::published()
@@ -44,7 +44,7 @@ class HomeController extends Controller
             ->where('is_highlighted', '!=', 'none')
             ->where('is_active', true)
             ->latest()
-            ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'thumbnail', 'cash_price', 'min_installment', 'is_highlighted']);
+            ->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'type', 'specs', 'thumbnail', 'cash_price', 'min_installment', 'is_highlighted']);
 
         $brands = $cache->remember('home.brands', function () {
             return Brand::where('is_active', true)

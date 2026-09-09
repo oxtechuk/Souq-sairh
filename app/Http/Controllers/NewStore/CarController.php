@@ -122,7 +122,7 @@ class CarController extends Controller
             default => $query->latest(),
         };
 
-        $cars = $query->limit(8)->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'thumbnail', 'cash_price', 'min_installment']);
+        $cars = $query->limit(8)->get(['id', 'brand_id', 'name', 'slug', 'model', 'year', 'type', 'specs', 'thumbnail', 'cash_price', 'min_installment']);
 
         $html = '';
         foreach ($cars as $car) {

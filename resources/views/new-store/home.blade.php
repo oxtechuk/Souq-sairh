@@ -215,7 +215,7 @@
     {{-- ==========================================
          2. SEARCH FILTER SECTION
     =========================================== --}}
-    <section class="bg-white py-8 sm:py-12 border-y border-gray-100">
+    <section class="bg-white py-8 sm:py-12 border-y border-gray-100 lazy-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <form action="{{ route('new.cars.index') }}" method="GET" class="space-y-5">
 
@@ -307,7 +307,7 @@
     {{-- ==========================================
          3. FEATURED CARS SECTION
     =========================================== --}}
-    <section class="bg-white py-10 sm:py-14 overflow-hidden" dir="rtl">
+    <section class="bg-white py-10 sm:py-14 overflow-hidden lazy-section" dir="rtl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section Header --}}
@@ -329,128 +329,7 @@
                 <div class="car-carousel-viewport overflow-hidden">
                     <div class="car-carousel-track flex gap-6 sm:gap-10 transition-transform duration-500 ease-in-out">
                         @foreach($featuredCars as $car)
-                            <div class="car-card shrink-0 w-[230px] bg-white rounded-[20px] border border-[#B8BFCF] flex flex-col items-center p-0 pb-4 gap-2" dir="rtl" style="isolation: isolate;">
-
-                                {{-- Image with Overlays --}}
-                                <div class="relative w-full flex flex-col" style="isolation: isolate;">
-                                    <div class="relative w-full overflow-hidden rounded-t-[20px]" style="height: 185px;">
-                                        <img src="{{ $car->thumbnail ? asset('storage/'.$car->thumbnail) : asset('new-store/images/car-1.png') }}"
-                                             alt="{{ $car->name }}"
-                                             class="w-full h-full object-cover rounded-t-[20px] transition-transform duration-500 hover:scale-105" loading="lazy"
-                                             style="image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;" />
-
-                                        {{-- Year Badge --}}
-                                        <span class="absolute flex items-center justify-center rounded-full"
-                                              style="top: 12px; left: 16px; padding: 6px 12px; gap: 4px; width: 57px; height: 26px; background: #1A3263; border: 1px solid #1A3263; backdrop-filter: blur(7.5px); font-family: 'Tajawal'; font-weight: 700; font-size: 12px; line-height: 14px; color: white; z-index: 4;">
-                    {{ $car->year }}
-                  </span>
-
-                                        {{-- Gradient Overlay --}}
-                                        <div class="absolute bottom-0 w-full" style="height: 77px; background: linear-gradient(180deg, rgba(26,50,99,0) 0%, rgba(26,50,99,0.2) 100%); z-index: 2;"></div>
-
-                                        {{-- Compare Button --}}
-                                        <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
-                                           class="absolute flex flex-row items-center rounded-full"
-                                           style="left: 50%; transform: translateX(-50%); bottom: 14px; padding: 6px 12px; gap: 4px; background: #FFF9E6; border: 1px solid #FFECB1; backdrop-filter: blur(7.5px); z-index: 3;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15" stroke="#1A3263" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5C15 6.10457 14.1046 7 13 7H11C9.89543 7 9 6.10457 9 5Z" stroke="#1A3263" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            <span style="font-family: 'Tajawal'; font-weight: 700; font-size: 12px; line-height: 14px; color: #1A3263;">أضف للمقارنة</span>
-                                        </a>
-                                    </div>
-
-                                    {{-- Details --}}
-                                    <div class="flex flex-col items-center gap-2 w-full px-0 pt-5" style="padding-top: 20px;">
-
-                                        {{-- Car Name --}}
-                                        <div class="w-full flex items-center" style="padding: 0px 16px 0px 0px; height: 22px;">
-                                            <h3 class="text-primary" style="font-family: 'Tajawal'; font-weight: 700; font-size: 18px; line-height: 22px; text-align: right;">
-                                                {{ $car->display_name }}
-                                            </h3>
-                                        </div>
-
-                                        {{-- Prices --}}
-                                        <div class="flex w-full" style="height: 78px;">
-                                            {{-- Monthly Payment --}}
-                                            <div class="flex flex-col items-end flex-1 border-l border-[#B8BFCF]" style="padding: 12px 16px; gap: 2px;">
-                                                <div class="flex flex-col items-end gap-1 w-full">
-                                                    <span class="text-primary" style="font-family: 'Tajawal'; font-weight: 400; font-size: 10px; line-height: 12px;">القسط الشهري</span>
-                                                    <span class="text-right self-stretch" style="font-family: 'Tajawal'; font-weight: 700; font-size: 18px; line-height: 19px; color: #FEC303;">
-                          {{ $car->min_installment ? number_format($car->min_installment) : '---' }}
-                        </span>
-                                                    <span class="text-primary text-right self-stretch" style="font-family: 'Tajawal'; font-weight: 400; font-size: 10px; line-height: 12px;">تقديري</span>
-                                                </div>
-                                            </div>
-
-                                            {{-- Cash Price --}}
-                                            <div class="flex flex-col items-end flex-1" style="padding: 12px 16px; gap: 2px;">
-                                                <div class="flex flex-col items-end gap-1 w-full">
-                                                    <span class="text-primary text-right self-stretch" style="font-family: 'Tajawal'; font-weight: 400; font-size: 10px; line-height: 12px;">سعر الكاش</span>
-                                                    <span class="text-right self-stretch" style="font-family: 'Tajawal'; font-weight: 700; font-size: 18px; line-height: 19px; color: #FEC303;">
-                          {{ number_format($car->cash_price) }}
-                        </span>
-                                                </div>
-                                                {{-- Strikethrough original price --}}
-                                                <div class="relative self-start">
-                        <span style="font-family: 'Tajawal'; font-weight: 400; font-size: 12px; line-height: 13px; text-align: right; color: #1A3263;">
-                          {{ number_format($car->cash_price) }}
-                        </span>
-                                                    <div class="absolute w-full" style="height: 0px; top: 6px; border-top: 1px solid #1A3263;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                {{-- Specs Row --}}
-                                <div class="flex items-center justify-between w-full px-4" style="height: 48px;">
-                                    <div class="flex flex-col items-start gap-4">
-                                        <div class="flex items-center gap-1">
-                                            <span style="font-family: 'Cairo'; font-weight: 400; font-size: 12px; line-height: 16px; color: #1A3263;">{{ $car->specs['fuel_type'] ?? 'بنزين' }}</span>
-                                            <i class="fas fa-gas-pump text-primary" style="font-size: 16px;"></i>
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            <span style="font-family: 'Cairo'; font-weight: 400; font-size: 12px; line-height: 16px; color: #1A3263;">{{ $car->specs['engine_size'] ?? ($car->specs['engine_capacity'] ?? '5.0') }}</span>
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1A3263" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M19 10h-2V7c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1v3H5c-1.1 0-2 .9-2 2v5c0 .55.45 1 1 1h1.33c.47 0 .89-.28 1.05-.68.05-.13.12-.25.2-.35.33-.44.84-.72 1.42-.72s1.09.28 1.42.72c.08.1.15.22.2.35.16.4.58.68 1.05.68h1.66c.47 0 .89-.28 1.05-.68.05-.13.12-.25.2-.35.33-.44.84-.72 1.42-.72s1.09.28 1.42.72c.08.1.15.22.2.35.16.4.58.68 1.05.68H21c.55 0 1-.45 1-1v-5c0-1.1-.9-2-2-2z"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-col items-end gap-4">
-                                        <div class="flex items-center gap-1">
-                                            <span style="font-family: 'Cairo'; font-weight: 400; font-size: 12px; line-height: 16px; color: #1A3263;">{{ $car->specs['transmission'] ?? 'أتوماتيك' }}</span>
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <rect x="3" y="4" width="18" height="16" rx="2" stroke="#1A3263" stroke-width="1.333" />
-                                                <rect x="5" y="8" width="14" height="8" rx="1" stroke="#1A3263" stroke-width="1.333" />
-                                                <line x1="5" y1="12" x2="19" y2="12" stroke="#1A3263" stroke-width="1.333" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            @php
-                                                $typeLabels = ['sedan' => 'سيدان', 'suv' => 'SUV', 'coupe' => 'كوبيه', 'hatchback' => 'هاتشباك', 'pickup' => 'بيك أب', 'van' => 'فان', 'other' => 'أخرى'];
-                                            @endphp
-                                            <span style="font-family: 'Cairo'; font-weight: 400; font-size: 12px; line-height: 16px; color: #1A3263;">{{ $typeLabels[$car->type] ?? 'SUV' }}</span>
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 14L3 19M19 14L21 19M4.5 14H19.5L18 8H6L4.5 14Z" stroke="#1A3263" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <circle cx="7" cy="17" r="2" stroke="#1A3263" stroke-width="1.5"/>
-                                                <circle cx="17" cy="17" r="2" stroke="#1A3263" stroke-width="1.5"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Button --}}
-                                <div class="flex justify-center w-full">
-                                    <a href="{{ route('new.cars.show', $car->slug) }}"
-                                       class="flex items-center justify-center"
-                                       style="width: 171px; height: 51px; border: 1px solid #1A3263; border-radius: 8px; font-family: 'Tajawal'; font-weight: 700; font-size: 16px; line-height: 19px; color: #1A3263; background: transparent;">
-                                        عرض التفاصيل
-                                    </a>
-                                </div>
-
-                            </div>
+                            @include('new-store.partials.car-card', ['car' => $car])
                         @endforeach
                     </div>
                 </div>
@@ -477,7 +356,7 @@
     {{-- ==========================================
          3.5 CARS LIST SECTION
     =========================================== --}}
-    <section class="bg-white py-12 border-t border-gray-100" dir="rtl">
+    <section class="bg-white py-12 border-t border-gray-100 lazy-section" dir="rtl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4" dir="rtl">
@@ -562,7 +441,7 @@
     {{-- ==========================================
          4. OFFERS GRID SECTION
     =========================================== --}}
-    <section class="bg-white py-12" dir="rtl">
+    <section class="bg-white py-12 lazy-section" dir="rtl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section Header --}}
@@ -650,7 +529,7 @@
     {{-- ==========================================
          5. BRANDS CAROUSEL SECTION
     =========================================== --}}
-    <section class="bg-white py-10 sm:py-14" dir="rtl">
+    <section class="bg-white py-10 sm:py-14 lazy-section" dir="rtl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section Header --}}
@@ -718,7 +597,7 @@
     {{-- ==========================================
          6. TESTIMONIALS SECTION
     =========================================== --}}
-    <section class="testimonials-section" dir="rtl">
+    <section class="testimonials-section lazy-section" dir="rtl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Section Header --}}
@@ -898,16 +777,33 @@
         })();
 
         // ==========================================
-        // 3. FEATURED CARS CAROUSEL
+        // LAZY INITIALIZATION HELPER (Performance Optimization)
         // ==========================================
-        setTimeout(() => {
+        function lazyInit(selector, initCallback) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            initCallback(el);
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '300px 0px' });
+                observer.observe(el);
+            } else {
+                initCallback(el);
+            }
+        }
+
+        // ==========================================
+        // 3. FEATURED CARS CAROUSEL (Lazy Init)
+        // ==========================================
+        lazyInit('#featured-cars-carousel', (wrapper) => {
             if (window.CarCarousel) {
                 new window.CarCarousel('#featured-cars-carousel');
             } else {
-                // Fallback if CarCarousel not loaded
-                const wrapper = document.getElementById('featured-cars-carousel');
-                if (!wrapper) return;
-
                 const track = wrapper.querySelector('.car-carousel-track');
                 const prevBtn = wrapper.querySelector('.car-carousel-prev');
                 const nextBtn = wrapper.querySelector('.car-carousel-next');
@@ -944,15 +840,12 @@
                 if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
                 updateProgress();
             }
-        }, 300);
+        });
 
         // ==========================================
-        // 3.5 CARS LIST CAROUSEL
+        // 3.5 CARS LIST CAROUSEL (Lazy Init)
         // ==========================================
-        setTimeout(() => {
-            const wrapper = document.getElementById('car-list-carousel');
-            if (!wrapper) return;
-
+        lazyInit('#car-list-carousel', (wrapper) => {
             const track = wrapper.querySelector('.car-carousel-track');
             const prevBtn = wrapper.querySelector('.car-carousel-prev');
             const nextBtn = wrapper.querySelector('.car-carousel-next');
@@ -992,7 +885,6 @@
 
                         const filter = this.dataset.filter;
                         try {
-                            // Render Skeleton Loaders
                             const homeSkeleton = `{!! view('new-store.partials.car-card-skeleton')->render() !!}`;
                             if (track) track.innerHTML = homeSkeleton.repeat(4);
 
@@ -1001,10 +893,7 @@
 
                             if (data.html !== undefined && track) {
                                 track.innerHTML = data.html;
-                                // Re-initialize cards and sizes as a mutable array
                                 cards = Array.from(track.querySelectorAll('.car-card'));
-
-                                // Reset position
                                 current = 0;
                                 goTo(0);
                             }
@@ -1014,25 +903,22 @@
                     });
                 });
             }
-        }, 300);
+        });
 
         // ==========================================
-        // 4. BRANDS CAROUSEL
+        // 4. BRANDS CAROUSEL (Lazy Init)
         // ==========================================
-        (function() {
-            const track = document.getElementById('brands-carousel-track');
+        lazyInit('#brands-carousel-track', (track) => {
             const prevBtn = document.getElementById('brands-prev');
             const nextBtn = document.getElementById('brands-next');
             const dotsContainer = document.getElementById('brands-dots');
-
-            if (!track) return;
 
             const pages = track.querySelectorAll('.brands-page-desktop');
             const total = pages.length;
             let current = 0;
 
             if (total <= 1) {
-                const navArea = track.closest('.brands-carousel-wrapper').querySelector('.brands-nav-area');
+                const navArea = track.closest('.brands-carousel-wrapper')?.querySelector('.brands-nav-area');
                 if (navArea) navArea.style.display = 'none';
                 return;
             }
@@ -1057,18 +943,15 @@
                 const vw = track.parentElement.offsetWidth;
                 track.style.transform = `translateX(${current * vw}px)`;
             });
-        })();
+        });
 
         // ==========================================
-        // 5. TESTIMONIALS CAROUSEL
+        // 5. TESTIMONIALS CAROUSEL (Lazy Init)
         // ==========================================
-        (function() {
-            const track = document.getElementById('testimonials-track');
+        lazyInit('#testimonials-track', (track) => {
             const prevBtn = document.getElementById('testimonials-prev');
             const nextBtn = document.getElementById('testimonials-next');
             const dotsContainer = document.getElementById('testimonials-dots');
-
-            if (!track) return;
 
             const pages = track.querySelectorAll('.testimonials-page');
             const total = pages.length;
@@ -1102,6 +985,6 @@
             });
 
             setInterval(() => goTo(current + 1), 6000);
-        })();
+        });
     </script>
 @endpush

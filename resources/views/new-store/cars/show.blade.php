@@ -569,5 +569,16 @@
       }
     });
   }
+
+  // Trigger ViewContent tracking event across Meta, TikTok, Snapchat & GTM
+  if (typeof trackEvent === 'function') {
+    trackEvent('view_item', {
+      content_name: '{{ addslashes($car->name) }}',
+      content_id: '{{ $car->id }}',
+      content_type: 'product',
+      value: {{ (float) ($car->activeOffer && $car->activeOffer->special_price ? $car->activeOffer->special_price : $car->cash_price) }},
+      currency: 'SAR'
+    });
+  }
 </script>
 @endpush

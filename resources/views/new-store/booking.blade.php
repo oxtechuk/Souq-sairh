@@ -119,6 +119,16 @@
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 text-center font-bold text-lg">
         {{ session('success') }}
       </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          if (typeof trackEvent === 'function') {
+            trackEvent('lead', {
+              content_name: 'حجز سيارة',
+              currency: 'SAR'
+            });
+          }
+        });
+      </script>
     @endif
 
     {{-- Tabs --}}

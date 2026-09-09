@@ -68,6 +68,8 @@
                     <div class="col-6 col-lg-2 col-md-3">
                         <select name="contact_type" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
                             <option value="">{{ __('نوع الطلب — الكل') }}</option>
+                            <option value="calculator" {{ request('contact_type') == 'calculator' ? 'selected' : '' }}>{{ __('عميل حاسبة') }}</option>
+                            <option value="car_request" {{ request('contact_type') == 'car_request' ? 'selected' : '' }}>{{ __('طلب سيارة') }}</option>
                             <option value="financing" {{ request('contact_type') == 'financing' ? 'selected' : '' }}>{{ __('طلب تمويل') }}</option>
                             <option value="individuals" {{ request('contact_type') == 'individuals' ? 'selected' : '' }}>{{ __('شراء كاش / أفراد') }}</option>
                             <option value="companies" {{ request('contact_type') == 'companies' ? 'selected' : '' }}>{{ __('طلب شركات') }}</option>
@@ -143,11 +145,26 @@
                             <small class="text-muted" dir="ltr">{{ $b->client_phone }}</small>
                         </td>
                         <td style="font-size:13px;">
-                            {{ number_format($b->monthly_installment) }}
-                            <small class="text-muted">{!! __('ريال') !!}</small>
+                            @if(!empty($b->monthly_installment) && $b->monthly_installment > 0)
+                                <div class="fw-bold">{{ number_format($b->monthly_installment) }} <small class="text-muted">{!! __('ريال') !!}</small></div>
+                                <small class="text-muted" style="font-size:10px;">{{ __('قسط شهري') }}</small>
+                            @elseif(!empty($b->salary_range))
+                                <div class="fw-semibold" style="font-size:12px;color:var(--crm-text);">{{ $b->salary_range }}</div>
+                                <small class="text-muted" style="font-size:10px;">{{ __('الراتب') }}</small>
+                            @else
+                                <span class="text-muted">—</span>
+                            @endif
                         </td>
                         <td>
-                            @if($b->contact_type === 'financing' || (!empty($b->monthly_installment) && $b->monthly_installment > 0))
+                            @if($b->contact_type === 'calculator' || $b->source === 'عميل حاسبة')
+                                <span class="badge rounded-pill bg-warning-subtle text-dark border border-warning-subtle px-2 py-1" style="font-size:11px;font-weight:700;">
+                                    <i class="bi bi-calculator me-1"></i>{{ __('عميل حاسبة') }}
+                                </span>
+                            @elseif($b->contact_type === 'car_request' || $b->source === 'طلب سيارة')
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size:11px;font-weight:700;">
+                                    <i class="bi bi-car-front me-1"></i>{{ __('طلب سيارة') }}
+                                </span>
+                            @elseif($b->contact_type === 'financing' || (!empty($b->monthly_installment) && $b->monthly_installment > 0))
                                 <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size:11px;">
                                     <i class="bi bi-credit-card me-1"></i>{{ __('طلب تمويل') }}
                                 </span>
@@ -156,15 +173,11 @@
                                     <i class="bi bi-building me-1"></i>{{ __('طلب شركات') }}
                                 </span>
                             @else
-                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size:11px;">
+                                <span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1" style="font-size:11px;">
                                     <i class="bi bi-cash-stack me-1"></i>{{ __('شراء كاش / أفراد') }}
                                 </span>
                             @endif
                         </td>
-                        <td>
-                            <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
-                            <small class="text-muted">{{ $b->car?->brand?->name }}</small>
-                        </td>-muted);">{{ __('طلب سيارة') }}</td>
                         <td>
                             <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
                             <small class="text-muted">{{ $b->car?->brand?->name }}</small>
@@ -283,6 +296,29 @@
                         <a href="{{ route('crm.bookings.show', $b) }}" class="fw-bold text-decoration-none" style="color:var(--crm-red);font-size:14px;">#{{ $b->id }}</a>
                         <div class="fw-bold mt-1" style="font-size:14px;color:var(--crm-text);">{{ $b->client_name }}</div>
                         <div style="font-size:12px;color:var(--crm-text-muted);" dir="ltr">{{ $b->client_phone }}</div>
+                        <div class="mt-1">
+                            @if($b->contact_type === 'calculator' || $b->source === 'عميل حاسبة')
+                                <span class="badge rounded-pill bg-warning-subtle text-dark border border-warning-subtle px-2 py-1" style="font-size:10px;font-weight:700;">
+                                    <i class="bi bi-calculator me-1"></i>{{ __('عميل حاسبة') }}
+                                </span>
+                            @elseif($b->contact_type === 'car_request' || $b->source === 'طلب سيارة')
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size:10px;font-weight:700;">
+                                    <i class="bi bi-car-front me-1"></i>{{ __('طلب سيارة') }}
+                                </span>
+                            @elseif($b->contact_type === 'financing' || (!empty($b->monthly_installment) && $b->monthly_installment > 0))
+                                <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size:10px;">
+                                    <i class="bi bi-credit-card me-1"></i>{{ __('طلب تمويل') }}
+                                </span>
+                            @elseif($b->contact_type === 'companies')
+                                <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle px-2 py-1" style="font-size:10px;">
+                                    <i class="bi bi-building me-1"></i>{{ __('طلب شركات') }}
+                                </span>
+                            @else
+                                <span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1" style="font-size:10px;">
+                                    <i class="bi bi-cash-stack me-1"></i>{{ __('شراء كاش / أفراد') }}
+                                </span>
+                            @endif
+                        </div>
                     </div>
                     <div>
                         <form action="{{ route('crm.bookings.status', $b) }}" method="POST">

@@ -73,9 +73,9 @@
           <div class="calc-group">
             <label>موديل السيارة المطلوب <span class="required">*</span></label>
             <select id="result-car" onchange="updateResultCar()">
-              <option value="0" data-name="">اختر سيارة...</option>
+              <option value="0" data-id="" data-name="">اختر سيارة...</option>
               @foreach($cars as $c)
-                <option value="{{ $c->cash_price }}" data-name="{{ $c->name }} {{ $c->model }}"
+                <option value="{{ $c->cash_price }}" data-id="{{ $c->id }}" data-name="{{ $c->name }} {{ $c->model }}"
                   {{ $data['car_id'] == $c->id ? 'selected' : '' }}>
                   {{ $c->name }} {{ $c->model }}
                 </option>
@@ -134,9 +134,9 @@
           <p class="calc-result-disclaimer">هذه الحسبة تقديرية ومن الممكن أن تختلف لعدة عوامل</p>
 
           <div class="calc-result-actions">
-            <button type="button" onclick="submitResult()" class="calc-result-btn-primary">
-              <i class="fas fa-check-circle"></i>
-              تأكيد وإرسال الطلب
+            <button type="button" onclick="submitResult()" class="calc-result-btn-primary" id="btn-request-car">
+              <i class="fas fa-car"></i>
+              طلب السيارة
             </button>
             <a href="{{ route('new.calculator') }}" class="calc-result-btn-secondary">
               <i class="fas fa-arrow-right"></i>
@@ -260,35 +260,77 @@
   //  Final Submission
   // =============================================
   function submitResult() {
-    var price = parseInt(document.getElementById('result-car').value) || 0;
+    var carSelect = document.getElementById('result-car');
+    var selectedOption = carSelect.options[carSelect.selectedIndex];
+    var carId = selectedOption ? selectedOption.getAttribute('data-id') : '';
+    var price = parseInt(carSelect.value) || 0;
     var monthsBtn = document.querySelector('#result-period-group .calc-range-btn.active');
     var months = monthsBtn ? parseInt(monthsBtn.dataset.months) : 36;
-    var carOption = document.querySelector('#result-car option:checked');
-    var carName = carOption ? carOption.dataset.name : '';
+    var bankBtn = document.querySelector('#result-bank-group .calc-range-btn.active');
+    var bankName = bankBtn ? bankBtn.innerText.trim().split('\n')[0] : '';
+    var carName = selectedOption ? selectedOption.getAttribute('data-name') : '';
 
-    if (!price) {
-      showToast('يرجى اختيار سيارة.', 'error');
+    if (!price || !carId) {
+      showToast('يرجى اختيار سيارة أولاً.', 'error');
       return;
     }
 
-    if (window.dataLayer) {
-      window.dataLayer.push({
-        event: 'lead',
-        lead_type: 'calculator_final',
-        tab: '{{ $data['tab'] }}',
-        phone: '{{ $data['phone'] }}',
-        car_model: carName,
-        city: '{{ $data['city'] }}',
-        salary: '{{ $data['salary_range'] }}',
-        car_price: price,
-        installment: Math.round(resultMonthly)
-      });
+    var btn = document.getElementById('btn-request-car');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إرسال طلب السيارة...';
     }
 
-    showToast('تم إرسال طلبك بنجاح. سنتواصل معك قريباً.');
-    setTimeout(function() {
-      window.location.href = '{{ route("new.calculator") }}';
-    }, 1500);
+    fetch('{{ route("new.calculator.confirm") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({
+        car_id: carId,
+        bank_name: bankName,
+        duration_months: months,
+        monthly_installment: Math.round(resultMonthly),
+        total_price: price
+      })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(response) {
+      if (response.success) {
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'lead',
+            lead_type: 'calculator_final',
+            tab: '{{ $data['tab'] }}',
+            phone: '{{ $data['phone'] }}',
+            car_model: carName,
+            city: '{{ $data['city'] }}',
+            salary: '{{ $data['salary_range'] }}',
+            car_price: price,
+            installment: Math.round(resultMonthly)
+          });
+        }
+
+        showToast('تم إرسال طلب السيارة بنجاح! سنتواصل معك قريباً.');
+        setTimeout(function() {
+          window.location.href = '{{ route("new.calculator") }}';
+        }, 2000);
+      } else {
+        showToast('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.', 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-car"></i> طلب السيارة';
+        }
+      }
+    })
+    .catch(function() {
+      showToast('حدث خطأ في الاتصال بالخادم.', 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-car"></i> طلب السيارة';
+      }
+    });
   }
 </script>
 @endpush

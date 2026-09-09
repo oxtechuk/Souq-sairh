@@ -33,10 +33,6 @@
         <i class="fas fa-building"></i>
         شركات
       </button>
-      <button type="button" class="calc-tab {{ $tab === 'financing' ? 'active' : '' }}" data-tab="financing">
-        <i class="fas fa-credit-card"></i>
-        تمويل
-      </button>
     </div>
 
     {{-- Card --}}
@@ -185,88 +181,6 @@
         </form>
       </div>
 
-      {{-- ===================== FINANCING ===================== --}}
-      <div class="calc-form {{ $tab === 'financing' ? 'active' : '' }}" id="form-financing">
-        <form onsubmit="return submitCalculatorForm('financing')">
-          <div class="calc-grid">
-            <div class="calc-group">
-              <label>الاسم الكامل <span class="required">*</span></label>
-              <input type="text" id="fin-name" required placeholder="أدخل اسمك الكامل" />
-            </div>
-            <div class="calc-group">
-              <label>رقم الجوال <span class="required">*</span></label>
-              <input type="tel" id="fin-phone" required placeholder="05xxxxxxxx" dir="ltr" />
-            </div>
-          </div>
-
-          <div class="calc-grid">
-            <div class="calc-group">
-              <label>موديل السيارة المطلوب</label>
-              <select id="fin-car_id">
-                <option value="">اختر سيارة...</option>
-                @foreach($cars as $c)
-                  <option value="{{ $c->id }}" data-price="{{ $c->cash_price }}">{{ $c->name }} {{ $c->model }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="calc-group">
-              <label>البريد الإلكتروني</label>
-              <input type="email" id="fin-email" placeholder="email@example.com" dir="ltr" />
-            </div>
-          </div>
-
-          <div class="calc-grid">
-            <div class="calc-group">
-              <label>الدفعة الأولى المتوقعة <span class="required">*</span></label>
-              <div class="calc-ranges" id="fin-down">
-                <button type="button" class="calc-range-btn" data-value="0%">0%</button>
-                <button type="button" class="calc-range-btn" data-value="5%">5%</button>
-                <button type="button" class="calc-range-btn active" data-value="10%">10%</button>
-                <button type="button" class="calc-range-btn" data-value="15%">15%</button>
-                <button type="button" class="calc-range-btn" data-value="20%">20%</button>
-                <button type="button" class="calc-range-btn" data-value="25%+">25%+</button>
-              </div>
-            </div>
-            <div class="calc-group">
-              <label>هل لديك سيارة للاستبدال؟</label>
-              <div class="calc-toggle" id="fin-trade">
-                <button type="button" class="calc-toggle-btn active" data-value="no">لا</button>
-                <button type="button" class="calc-toggle-btn" data-value="yes">نعم</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="calc-grid">
-            <div class="calc-group">
-              <label>قيمة التمويل المطلوبة <span class="required">*</span></label>
-              <div class="calc-ranges" id="fin-amount">
-                <button type="button" class="calc-range-btn active" data-value="أقل من 50,000 ﷼">أقل من 50,000 ﷼</button>
-                <button type="button" class="calc-range-btn" data-value="50,000-100,000 ﷼">50,000-100,000 ﷼</button>
-                <button type="button" class="calc-range-btn" data-value="100,000-150,000 ﷼">100,000-150,000 ﷼</button>
-                <button type="button" class="calc-range-btn" data-value="150,000-200,000 ﷼">150,000-200,000 ﷼</button>
-                <button type="button" class="calc-range-btn" data-value="أكثر من 200,000 ﷼">أكثر من 200,000 ﷼</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="calc-grid">
-            <div class="calc-group full">
-              <label>ملاحظات إضافية</label>
-              <textarea id="fin-notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
-            </div>
-          </div>
-
-          <input type="hidden" id="fin-down-val" value="10%" />
-          <input type="hidden" id="fin-trade-val" value="no" />
-          <input type="hidden" id="fin-amount-val" value="أقل من 50,000 ﷼" />
-
-          <button type="submit" class="calc-submit">
-            <i class="fas fa-calculator"></i>
-            احسب تمويلك
-          </button>
-        </form>
-      </div>
-
     </div>{{-- /calc-card --}}
   </div>
 </section>
@@ -380,21 +294,6 @@
       document.getElementById('ind-obligations-val').value = this.dataset.value;
     });
   });
-  document.querySelectorAll('#fin-down .calc-range-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.getElementById('fin-down-val').value = this.dataset.value;
-    });
-  });
-  document.querySelectorAll('#fin-trade .calc-toggle-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.getElementById('fin-trade-val').value = this.dataset.value;
-    });
-  });
-  document.querySelectorAll('#fin-amount .calc-range-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.getElementById('fin-amount-val').value = this.dataset.value;
-    });
-  });
 
   // =============================================
   //  Form Started (first focus on any input)
@@ -456,28 +355,6 @@
         company_name: company, contact_name: contact,
         phone: phone, email: email,
         num_cars: numCars, city: city, notes: notes
-      });
-    }
-    else if (tab === 'financing') {
-      var name = document.getElementById('fin-name').value;
-      var phone = document.getElementById('fin-phone').value;
-      var carId = document.getElementById('fin-car_id').value;
-      var email = document.getElementById('fin-email').value;
-      var downPayment = document.getElementById('fin-down-val').value;
-      var tradeIn = document.getElementById('fin-trade-val').value;
-      var finAmount = document.getElementById('fin-amount-val').value;
-      var notes = document.getElementById('fin-notes').value;
-
-      if (!name || !phone) {
-        alert('يرجى إدخال الاسم ورقم الجوال.');
-        return false;
-      }
-
-      Object.assign(data, {
-        name: name, phone: phone, car_id: carId,
-        email: email, down_payment: downPayment,
-        trade_in: tradeIn, financing_amount: finAmount,
-        notes: notes
       });
     }
 

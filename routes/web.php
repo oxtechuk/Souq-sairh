@@ -41,6 +41,7 @@ Route::name('new.')->group(function () {
     Route::get('/calculator', [NewCalculatorController::class, 'index'])->name('calculator');
     Route::post('/calculator/lead', [NewCalculatorController::class, 'saveLead'])->name('calculator.lead');
     Route::get('/calculator/result', [NewCalculatorController::class, 'result'])->name('calculator.result');
+    Route::post('/calculator/confirm', [NewCalculatorController::class, 'confirmBooking'])->name('calculator.confirm');
     // مقارنة
     Route::get('/compare', [NewCompareController::class,   'index'])->name('compare');
     Route::get('/compare/search', [NewCompareController::class,   'search'])->name('compare.search');
