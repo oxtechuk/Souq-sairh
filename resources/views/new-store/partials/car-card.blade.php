@@ -34,19 +34,19 @@
 
 <div class="car-card shrink-0 w-[280px] bg-white rounded-[22px] overflow-hidden border border-[#D5DDEB] hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group" dir="rtl">
   
-  {{-- Card Header: Car Image with High Quality & No Pixelation --}}
-  <div class="relative bg-gradient-to-b from-[#F6F8FB] via-[#EEF2F8] to-[#E5ECF6] h-[195px] overflow-hidden rounded-t-[21px] flex items-center justify-center p-3">
+  {{-- Card Header: Car Image with Full Size & High Quality --}}
+  <div class="relative bg-gray-100 h-[210px] sm:h-[215px] overflow-hidden rounded-t-[21px]">
     
     <img src="{{ $carThumbnailUrl }}"
       alt="{{ $displayName }}"
-      class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+      class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
       loading="lazy"
       decoding="async"
       style="image-rendering: auto; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0);"
       onerror="this.onerror=null; this.src='{{ asset('new-store/images/car-1.png') }}';" />
 
     {{-- Year Badge --}}
-    <span class="absolute top-3.5 left-3.5 bg-primary/95 text-white px-3 py-1 rounded-full text-xs font-extrabold shadow-sm z-10 backdrop-blur-sm tracking-wide">
+    <span class="absolute top-3.5 left-3.5 bg-primary/90 text-white px-3 py-1 rounded-full text-xs font-extrabold shadow-md z-10 backdrop-blur-sm tracking-wide">
       {{ $car->year }}
     </span>
 

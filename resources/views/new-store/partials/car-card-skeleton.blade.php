@@ -1,7 +1,7 @@
 {{-- Skeleton Card Partial --}}
 <div class="car-card-skeleton shrink-0 w-[280px] bg-white rounded-[22px] overflow-hidden border border-[#D5DDEB] animate-pulse flex flex-col justify-between" dir="rtl">
   {{-- Header Image Skeleton --}}
-  <div class="relative bg-gradient-to-b from-gray-100 to-gray-200 h-[195px] w-full flex items-center justify-center">
+  <div class="relative bg-gradient-to-b from-gray-100 to-gray-200 h-[210px] sm:h-[215px] w-full flex items-center justify-center">
     <div class="w-12 h-12 rounded-full bg-gray-300/60 flex items-center justify-center">
       <i class="fas fa-car text-2xl text-gray-400/50"></i>
     </div>
