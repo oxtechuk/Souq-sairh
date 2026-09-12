@@ -202,15 +202,6 @@
         </div>
         @endif
 
-        {{-- Compare Button --}}
-        <div>
-          <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
-             class="w-full bg-white text-primary border-2 border-primary py-3.5 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-center">
-            <i class="fas fa-code-compare"></i>
-            أضف للمقارنة
-          </a>
-        </div>
-
       </div>
 
       {{-- Left: Images --}}
@@ -259,6 +250,16 @@
       </div>
 
     </div>
+
+    {{-- Compare Button --}}
+    <div class="mt-8">
+      <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
+         class="w-full bg-white text-primary border-2 border-primary py-4 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-center text-lg">
+        <i class="fas fa-code-compare"></i>
+        أضف للمقارنة
+      </a>
+    </div>
+
   </div>
 </section>
 
