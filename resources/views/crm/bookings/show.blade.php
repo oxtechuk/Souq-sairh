@@ -41,21 +41,73 @@
                 </div>
                 <div class="card-body px-4 py-3">
                     @php
+                        $typeLabel = match(true) {
+                            $booking->contact_type === 'calculator' || $booking->source === 'عميل حاسبة' => 'عميل حاسبة',
+                            $booking->contact_type === 'car_request' || $booking->source === 'طلب سيارة' => 'طلب سيارة',
+                            $booking->contact_type === 'financing' || (!empty($booking->monthly_installment) && $booking->monthly_installment > 0) => 'طلب تمويل',
+                            $booking->contact_type === 'companies' => 'طلب شركات',
+                            default => 'شراء كاش / أفراد',
+                        };
+
                         $orderRows = [
-                            __('رقم العميل')      => '#' . ($booking->lead_id ?? $booking->id),
                             __('رقم الطلب')       => '#' . $booking->id,
                             __('اسم العميل')      => $booking->client_name,
                             __('جوال العميل')     => $booking->client_phone,
-                            __('تاريخ الطلب')     => $booking->created_at->format('d/m/Y • H:i') . ($booking->created_at->format('A') == 'AM' ? ' ص' : ' م'),
-                            __('نوع الطلب')       => __('حجز سيارة / تمويل'),
                         ];
+
+                        if (!empty($booking->client_email)) {
+                            $orderRows[__('البريد الإلكتروني')] = $booking->client_email;
+                        }
+                        if (!empty($booking->city)) {
+                            $orderRows[__('المدينة')] = $booking->city;
+                        }
+                        if (!empty($booking->company_name)) {
+                            $orderRows[__('اسم الشركة')] = $booking->company_name;
+                        }
+                        if (!empty($booking->num_cars)) {
+                            $orderRows[__('عدد السيارات المطلوبة')] = $booking->num_cars;
+                        }
+                        if (!empty($booking->salary_range)) {
+                            $orderRows[__('الراتب الشهري')] = $booking->salary_range;
+                        }
+                        if (!empty($booking->obligations_range)) {
+                            $orderRows[__('الالتزامات الشهرية')] = $booking->obligations_range;
+                        }
+
+                        $orderRows[__('نوع الطلب')] = $typeLabel;
+                        $orderRows[__('تاريخ الطلب')] = $booking->created_at->format('d/m/Y • H:i') . ($booking->created_at->format('A') == 'AM' ? ' ص' : ' م');
                     @endphp
                     @foreach($orderRows as $label => $value)
                     <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid var(--crm-border);">
                         <span style="font-size:13px;color:var(--crm-text-muted);">{{ $label }}</span>
-                        <span style="font-size:13px;font-weight:700;color:var(--crm-text);" dir="{{ in_array($label, [__('جوال العميل')]) ? 'ltr' : 'inherit' }}">{{ $value }}</span>
+                        <span style="font-size:13px;font-weight:700;color:var(--crm-text);" dir="{{ in_array($label, [__('جوال العميل'), __('البريد الإلكتروني')]) ? 'ltr' : 'inherit' }}">
+                            @if($label === __('نوع الطلب'))
+                                @if($booking->contact_type === 'calculator' || $booking->source === 'عميل حاسبة')
+                                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1" style="font-size:11px;font-weight:700;">
+                                        <i class="bi bi-calculator me-1"></i>عميل حاسبة
+                                    </span>
+                                @elseif($booking->contact_type === 'car_request' || $booking->source === 'طلب سيارة')
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size:11px;font-weight:700;">
+                                        <i class="bi bi-car-front me-1"></i>طلب سيارة
+                                    </span>
+                                @else
+                                    {{ $value }}
+                                @endif
+                            @else
+                                {{ $value }}
+                            @endif
+                        </span>
                     </div>
                     @endforeach
+
+                    @if(!empty($booking->notes))
+                    <div class="mt-3 p-3 rounded-3" style="background:#FFFBEB;border:1px solid #FDE68A;">
+                        <div class="fw-bold mb-1" style="font-size:12px;color:#92400E;">
+                            <i class="bi bi-chat-left-text me-1"></i> {{ __('ملاحظات العميل / تفاصيل الطلب') }}
+                        </div>
+                        <div style="font-size:13px;color:#78350F;white-space:pre-line;">{{ $booking->notes }}</div>
+                    </div>
+                    @endif
                     <div class="d-flex justify-content-between py-2 align-items-center">
                         <span style="font-size:13px;color:var(--crm-text-muted);">{{ __('حالة الطلب') }}</span>
                         @php

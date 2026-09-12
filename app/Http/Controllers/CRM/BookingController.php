@@ -30,11 +30,30 @@ class BookingController extends Controller
             $query->where('assigned_to', $request->employee_id);
         }
 
-        // فلترة بنوع الطلب (تمويل / كاش أفراد / شركات)
+        // فلترة بنوع الطلب (عميل حاسبة / طلب سيارة / تمويل / كاش أفراد / شركات)
         if ($request->filled('contact_type')) {
-            $query->where('contact_type', $request->contact_type);
+            $ct = $request->contact_type;
+            if ($ct === 'calculator') {
+                $query->where(function ($q) {
+                    $q->where('contact_type', 'calculator')->orWhere('source', 'عميل حاسبة');
+                });
+            } elseif ($ct === 'car_request') {
+                $query->where(function ($q) {
+                    $q->where('contact_type', 'car_request')->orWhere('source', 'طلب سيارة');
+                });
+            } else {
+                $query->where('contact_type', $ct);
+            }
         } elseif ($request->filled('type')) {
-            if ($request->type === 'financing' || $request->type === 'loan') {
+            if ($request->type === 'calculator') {
+                $query->where(function ($q) {
+                    $q->where('contact_type', 'calculator')->orWhere('source', 'عميل حاسبة');
+                });
+            } elseif ($request->type === 'car_request') {
+                $query->where(function ($q) {
+                    $q->where('contact_type', 'car_request')->orWhere('source', 'طلب سيارة');
+                });
+            } elseif ($request->type === 'financing' || $request->type === 'loan') {
                 $query->where('contact_type', 'financing');
             } elseif ($request->type === 'individuals' || $request->type === 'cash') {
                 $query->where('contact_type', 'individuals');

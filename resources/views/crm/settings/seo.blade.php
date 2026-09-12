@@ -45,22 +45,29 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="card border-0 shadow-sm mb-4 rounded-4">
                         <div class="card-header bg-transparent border-0 pt-4 px-4">
-                            <h5 class="card-title mb-0 fw-bold">{{ __('تحليلات وأدوات التتبع') }}</h5>
+                            <h5 class="card-title mb-0 fw-bold">{{ __('تحليلات وأدوات التتبع (Tracking Pixels)') }}</h5>
+                            <small class="text-muted">{{ __('ربط وتتبع الحملات الإعلانية ومعدلات التحويل بدقة') }}</small>
                         </div>
-                        <div class="card-body p-4">
+                        <div class="card-body p-4 space-y-4">
                             @php
+                                $gtmId = $settings['google_tag_manager_id'] ?? 'GTM-PLPF4RXN';
+                                $pixelId = $settings['meta_pixel_id'] ?? '1391587686296113';
+                                $tiktokId = $settings['tiktok_pixel_id'] ?? 'DAGKF8BC77UC8FLJU9TG';
+                                $tiktokToken = $settings['tiktok_access_token'] ?? '334d37ec9ab16637528708e657d3b5ca63353fa5';
+                                $snapId = $settings['snapchat_pixel_id'] ?? 'a29bd8a6-9047-45bc-b184-dd10d94233f7';
+                                $snapToken = $settings['snapchat_api_token'] ?? '';
                                 $gaId = $settings['google_analytics_id'] ?? '';
-                                $pixelId = $settings['meta_pixel_id'] ?? '';
                             @endphp
 
-                            <div class="mb-4">
+                            {{-- 1. Google Tag Manager --}}
+                            <div class="mb-3 pb-3 border-bottom">
                                 <label class="form-label fw-bold small text-muted d-flex align-items-center gap-2">
-                                    <i class="bi bi-google text-primary"></i>
-                                    {{ __('معرف Google Analytics (GA4)') }}
-                                    @if($gaId)
+                                    <i class="bi bi-tags-fill text-primary" style="color: #4285F4 !important;"></i>
+                                    {{ __('معرف Google Tag Manager (GTM)') }}
+                                    @if($gtmId)
                                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
                                             <i class="bi bi-check-circle-fill me-1"></i>{{ __('مفعل') }}
                                         </span>
@@ -70,14 +77,15 @@
                                         </span>
                                     @endif
                                 </label>
-                                <input type="text" name="google_analytics_id"
-                                    class="form-control bg-light border-0 shadow-none py-2"
-                                    placeholder="G-XXXXXXXXXX"
-                                    value="{{ $gaId }}" dir="ltr">
-                                <small class="text-muted">{{ __('مثال: G-1234567890') }}</small>
+                                <input type="text" name="google_tag_manager_id"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace"
+                                    placeholder="GTM-XXXXXXX"
+                                    value="{{ $gtmId }}" dir="ltr">
+                                <small class="text-muted">{{ __('مثال: GTM-PLPF4RXN') }}</small>
                             </div>
 
-                            <div class="mb-0">
+                            {{-- 2. Meta Pixel (Facebook) --}}
+                            <div class="mb-3 pb-3 border-bottom">
                                 <label class="form-label fw-bold small text-muted d-flex align-items-center gap-2">
                                     <i class="bi bi-facebook text-primary" style="color:#1877F2 !important;"></i>
                                     {{ __('معرف Meta Pixel (Facebook)') }}
@@ -92,10 +100,92 @@
                                     @endif
                                 </label>
                                 <input type="text" name="meta_pixel_id"
-                                    class="form-control bg-light border-0 shadow-none py-2"
-                                    placeholder="1234567890"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace"
+                                    placeholder="1391587686296113"
                                     value="{{ $pixelId }}" dir="ltr">
-                                <small class="text-muted">{{ __('مثال: 1234567890') }}</small>
+                                <small class="text-muted">{{ __('مثال: 1391587686296113') }}</small>
+                            </div>
+
+                            {{-- 3. TikTok Pixel --}}
+                            <div class="mb-3 pb-3 border-bottom">
+                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-2">
+                                    <i class="bi bi-tiktok text-dark"></i>
+                                    {{ __('معرف TikTok Pixel') }}
+                                    @if($tiktokId)
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>{{ __('مفعل') }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-dash-circle me-1"></i>{{ __('غير مفعل') }}
+                                        </span>
+                                    @endif
+                                </label>
+                                <input type="text" name="tiktok_pixel_id"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace mb-2"
+                                    placeholder="DAGKF8BC77UC8FLJU9TG"
+                                    value="{{ $tiktokId }}" dir="ltr">
+
+                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-1 mt-2">
+                                    <i class="bi bi-key-fill text-warning"></i>
+                                    {{ __('توكن ربط TikTok Events API (اختياري)') }}
+                                </label>
+                                <input type="password" name="tiktok_access_token"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace"
+                                    placeholder="334d37ec9ab16637..."
+                                    value="{{ $tiktokToken }}" dir="ltr">
+                            </div>
+
+                            {{-- 4. Snapchat Pixel --}}
+                            <div class="mb-3 pb-3 border-bottom">
+                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-2">
+                                    <i class="bi bi-snapchat text-warning" style="color: #FFFC00 !important; -webkit-text-stroke: 1px #000;"></i>
+                                    {{ __('معرف Snapchat Pixel') }}
+                                    @if($snapId)
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>{{ __('مفعل') }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-dash-circle me-1"></i>{{ __('غير مفعل') }}
+                                        </span>
+                                    @endif
+                                </label>
+                                <input type="text" name="snapchat_pixel_id"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace mb-2"
+                                    placeholder="a29bd8a6-9047-45bc-b184-dd10d94233f7"
+                                    value="{{ $snapId }}" dir="ltr">
+
+                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-1 mt-2">
+                                    <i class="bi bi-shield-lock-fill text-info"></i>
+                                    {{ __('توكن Snapchat CAPI Token (اختياري)') }}
+                                </label>
+                                <textarea name="snapchat_api_token"
+                                    rows="2"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace small"
+                                    placeholder="eyJhbGciOiJIUzI1NiIs..."
+                                    dir="ltr">{{ $snapToken }}</textarea>
+                            </div>
+
+                            {{-- 5. Google Analytics 4 (GA4) --}}
+                            <div class="mb-0">
+                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-2">
+                                    <i class="bi bi-google text-danger"></i>
+                                    {{ __('معرف Google Analytics (GA4)') }}
+                                    @if($gaId)
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>{{ __('مفعل') }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2 py-1 ms-auto" style="font-size:10px;">
+                                            <i class="bi bi-dash-circle me-1"></i>{{ __('غير مفعل') }}
+                                        </span>
+                                    @endif
+                                </label>
+                                <input type="text" name="google_analytics_id"
+                                    class="form-control bg-light border-0 shadow-none py-2 font-monospace"
+                                    placeholder="G-XXXXXXXXXX"
+                                    value="{{ $gaId }}" dir="ltr">
                             </div>
                         </div>
                     </div>

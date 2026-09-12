@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\NewStore;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\BookingNote;
 use App\Models\CalculatorBank;
 use App\Models\CalculatorFactor;
 use App\Models\CalculatorLead;
 use App\Models\Car;
 use App\Services\CacheService;
+use App\Services\OrderDistributionService;
 use Illuminate\Http\Request;
 
 class CalculatorController extends Controller
@@ -16,7 +19,7 @@ class CalculatorController extends Controller
     {
         $tab = $request->query('tab', 'individuals');
 
-        if (!in_array($tab, ['individuals', 'companies', 'financing'])) {
+        if (!in_array($tab, ['individuals', 'companies'])) {
             $tab = 'individuals';
         }
 
@@ -38,6 +41,9 @@ class CalculatorController extends Controller
     public function saveLead(Request $request)
     {
         $tab = $request->input('tab', 'individuals');
+        if (!in_array($tab, ['individuals', 'companies'])) {
+            $tab = 'individuals';
+        }
 
         $rules = [
             'individuals' => [
@@ -59,16 +65,6 @@ class CalculatorController extends Controller
                 'city' => 'nullable|string|max:100',
                 'notes' => 'nullable|string|max:1000',
             ],
-            'financing' => [
-                'name' => 'required|string|max:255',
-                'phone' => 'required|string|max:20',
-                'email' => 'nullable|email|max:255',
-                'car_id' => 'nullable|exists:cars,id',
-                'down_payment' => 'nullable|string|max:100',
-                'trade_in' => 'nullable|string|max:10',
-                'financing_amount' => 'nullable|string|max:100',
-                'notes' => 'nullable|string|max:1000',
-            ],
         ];
 
         $validated = $request->validate($rules[$tab]);
@@ -84,8 +80,6 @@ class CalculatorController extends Controller
             'details' => $details,
         ]);
 
-        $lead->refresh();
-
         $carPrice = 0;
         $carName = '';
         if (!empty($validated['car_id'])) {
@@ -96,20 +90,154 @@ class CalculatorController extends Controller
             }
         }
 
+        // إنشاء طلب مباشر في جدول الطلبات (Bookings) وتسميته "عميل حاسبة"
+        $clientName = $tab === 'companies' ? ($validated['contact_name'] ?? '') : ($validated['name'] ?? '');
+        $companyName = $tab === 'companies' ? ($validated['company_name'] ?? null) : null;
+        $numCars = $tab === 'companies' ? ($validated['num_cars'] ?? 1) : null;
+
+        $booking = Booking::create([
+            'car_id' => $validated['car_id'] ?? null,
+            'client_name' => $clientName,
+            'client_phone' => $validated['phone'],
+            'client_email' => $validated['email'] ?? null,
+            'city' => $validated['city'] ?? null,
+            'salary_range' => $validated['salary_range'] ?? null,
+            'obligations_range' => $validated['obligations_range'] ?? null,
+            'company_name' => $companyName,
+            'num_cars' => $numCars,
+            'notes' => $validated['notes'] ?? null,
+            'total_price' => $carPrice,
+            'down_payment' => 0,
+            'duration_years' => 3,
+            'monthly_installment' => 0,
+            'contact_type' => 'calculator',
+            'source' => 'عميل حاسبة',
+            'status' => 'new',
+        ]);
+
+        try {
+            app(OrderDistributionService::class)->distribute($booking);
+        } catch (\Throwable $e) {
+            // توزيع الطلب اختياري بحسب إعدادات النظام
+        }
+
+        try {
+            BookingNote::create([
+                'booking_id' => $booking->id,
+                'note' => 'تم إنشاء الطلب آلياً من حاسبة التمويل (الخطوة الأولى) - نوع العميل: ' . ($tab === 'companies' ? 'شركات' : 'أفراد'),
+                'type' => 'note',
+            ]);
+        } catch (\Throwable $e) {
+        }
+
         session(['calculator_result' => [
             'lead_id' => $lead->id,
+            'booking_id' => $booking->id,
             'tab' => $tab,
-            'name' => $lead->name,
-            'phone' => $lead->phone,
+            'name' => $clientName,
+            'phone' => $booking->client_phone,
+            'email' => $booking->client_email,
             'car_id' => $validated['car_id'] ?? null,
             'car_name' => $carName,
             'car_price' => $carPrice,
             'city' => $details['city'] ?? '',
             'salary_range' => $details['salary_range'] ?? '',
+            'obligations_range' => $details['obligations_range'] ?? '',
+            'company_name' => $companyName,
+            'num_cars' => $numCars,
             'notes' => $details['notes'] ?? '',
         ]]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'booking_id' => $booking->id,
+        ]);
+    }
+
+    public function confirmBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'car_id' => 'nullable|exists:cars,id',
+            'bank_name' => 'nullable|string|max:100',
+            'duration_months' => 'nullable|integer',
+            'monthly_installment' => 'nullable|numeric',
+            'total_price' => 'nullable|numeric',
+        ]);
+
+        $data = session('calculator_result', []);
+        $bookingId = $data['booking_id'] ?? null;
+
+        $booking = null;
+        if ($bookingId) {
+            $booking = Booking::find($bookingId);
+        }
+
+        if (!$booking && !empty($data['phone'])) {
+            $booking = Booking::where('client_phone', $data['phone'])->latest()->first();
+        }
+
+        $durationYears = !empty($validated['duration_months']) ? (int) ceil($validated['duration_months'] / 12) : 3;
+
+        $bankPart = !empty($validated['bank_name']) ? "البنك: " . $validated['bank_name'] : "";
+        $calcNote = "تم تأكيد طلب السيارة من حاسبة التمويل";
+        if ($bankPart) {
+            $calcNote .= " - " . $bankPart;
+        }
+        if (!empty($validated['monthly_installment'])) {
+            $calcNote .= " - القسط التقريبي: " . number_format($validated['monthly_installment']) . " ريال";
+        }
+
+        if ($booking) {
+            $existingNotes = $booking->notes ? $booking->notes . "\n" : '';
+            $booking->update([
+                'car_id' => $validated['car_id'] ?? $booking->car_id,
+                'total_price' => $validated['total_price'] ?? $booking->total_price,
+                'duration_years' => $durationYears,
+                'monthly_installment' => $validated['monthly_installment'] ?? $booking->monthly_installment,
+                'contact_type' => 'car_request',
+                'source' => 'طلب سيارة',
+                'notes' => $existingNotes . $calcNote,
+            ]);
+        } else {
+            $booking = Booking::create([
+                'client_name' => $data['name'] ?? 'عميل حاسبة',
+                'client_phone' => $data['phone'] ?? '',
+                'client_email' => $data['email'] ?? null,
+                'city' => $data['city'] ?? null,
+                'salary_range' => $data['salary_range'] ?? null,
+                'obligations_range' => $data['obligations_range'] ?? null,
+                'company_name' => $data['company_name'] ?? null,
+                'num_cars' => $data['num_cars'] ?? null,
+                'car_id' => $validated['car_id'] ?? null,
+                'total_price' => $validated['total_price'] ?? 0,
+                'duration_years' => $durationYears,
+                'monthly_installment' => $validated['monthly_installment'] ?? 0,
+                'contact_type' => 'car_request',
+                'source' => 'طلب سيارة',
+                'status' => 'new',
+                'notes' => $calcNote,
+            ]);
+
+            try {
+                app(OrderDistributionService::class)->distribute($booking);
+            } catch (\Throwable $e) {
+            }
+        }
+
+        try {
+            BookingNote::create([
+                'booking_id' => $booking->id,
+                'note' => 'قام العميل بالضغط على "طلب السيارة" وتأكيد تفاصيل الحسبة.',
+                'type' => 'note',
+            ]);
+        } catch (\Throwable $e) {
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إرسال طلب السيارة بنجاح، سنتواصل معك قريباً.',
+            'booking_id' => $booking->id,
+        ]);
     }
 
     public function result()

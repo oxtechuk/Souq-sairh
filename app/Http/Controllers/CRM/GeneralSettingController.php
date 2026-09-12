@@ -42,8 +42,10 @@ class GeneralSettingController extends Controller
             'contact_whatsapp', 'contact_address', 'bento_cars',
             'hero_ad_1_link', 'hero_ad_2_link', 'hero_ad_3_link', 'store_home_hero', 'store_home_description',
             'order_distribution_method',
-            'twilio_sid', 'twilio_auth_token', 'twilio_from',
-            'google_analytics_id', 'meta_pixel_id',             'offers_grid_title',
+            'google_analytics_id', 'google_tag_manager_id', 'meta_pixel_id',
+            'tiktok_pixel_id', 'tiktok_access_token',
+            'snapchat_pixel_id', 'snapchat_api_token',
+            'offers_grid_title',
             'privacy_policy', 'terms_conditions',
         ];
 
