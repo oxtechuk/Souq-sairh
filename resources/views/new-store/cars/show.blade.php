@@ -160,16 +160,11 @@
           @endif
         </div>
 
-        {{-- Buttons --}}
-        <div class="flex gap-4">
+        {{-- Booking Button --}}
+        <div>
           <a href="{{ route('new.booking', ['car_id' => $car->id]) }}"
-             class="flex-1 bg-primary text-white py-4 rounded-lg font-bold text-lg hover:bg-primary-dark transition-all text-center">
+             class="w-full block bg-primary text-white py-4 rounded-lg font-bold text-lg hover:bg-primary-dark transition-all text-center">
             اطلبها الآن
-          </a>
-          <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
-             class="bg-white text-primary border-2 border-primary py-4 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
-            <i class="fas fa-code-compare"></i>
-            أضف للمقارنة
           </a>
         </div>
 
@@ -206,6 +201,15 @@
           </div>
         </div>
         @endif
+
+        {{-- Compare Button --}}
+        <div>
+          <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
+             class="w-full bg-white text-primary border-2 border-primary py-3.5 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-center">
+            <i class="fas fa-code-compare"></i>
+            أضف للمقارنة
+          </a>
+        </div>
 
       </div>
 
