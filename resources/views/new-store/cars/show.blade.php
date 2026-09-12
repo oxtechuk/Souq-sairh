@@ -114,6 +114,7 @@
 <link rel="stylesheet" href="{{ asset('new-store/components/technical-specs/technical-specs.css') }}" />
 <link rel="stylesheet" href="{{ asset('new-store/components/car-gallery/car-gallery.css') }}" />
 <link rel="stylesheet" href="{{ asset('new-store/components/features-list/features-list.css') }}" />
+<link rel="stylesheet" href="{{ asset('new-store/components/compare-cta/compare-cta.css') }}" />
 @endpush
 
 @section('content')
@@ -249,15 +250,6 @@
 
       </div>
 
-    </div>
-
-    {{-- Compare Button --}}
-    <div class="mt-8">
-      <a href="{{ route('new.compare', ['cars' => $car->id]) }}"
-         class="w-full bg-white text-primary border-2 border-primary py-4 px-6 rounded-lg font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 text-center text-lg">
-        <i class="fas fa-code-compare"></i>
-        أضف للمقارنة
-      </a>
     </div>
 
   </div>
@@ -491,6 +483,30 @@
         <p class="text-gray-600 text-sm mt-3 leading-relaxed pr-8">
           نعم، نوفر خدمة شحن وتوصيل آمنة ومجانية حتى باب منزلك في أي مدينة ومحافظة في جميع أنحاء المملكة العربية السعودية.
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{-- 7. Call To Action (CTA) Section --}}
+<section class="compare-cta-section py-14 bg-white" dir="rtl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="compare-cta-banner">
+      <div class="compare-cta-content">
+        <h2 class="compare-cta-title">جاهز لامتلاك {{ $fullCarTitle }} {{ $car->year }}؟</h2>
+        <p class="compare-cta-subtitle">
+          احجز سيارتك الآن كاش أو بالتقسيط بأفضل الأسعار، أو أضفها إلى المقارنة للمفاضلة بين المواصفات بكل سهولة.
+        </p>
+
+        <div class="compare-cta-buttons">
+          <a href="{{ route('new.booking', ['car_id' => $car->id]) }}" class="compare-cta-btn compare-cta-btn-primary">
+            اطلبها الآن
+          </a>
+          <a href="{{ route('new.compare', ['cars' => $car->id]) }}" class="compare-cta-btn compare-cta-btn-secondary flex items-center justify-center gap-2">
+            <i class="fas fa-code-compare"></i>
+            <span>أضف للمقارنة</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
