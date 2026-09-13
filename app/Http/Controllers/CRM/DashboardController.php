@@ -13,38 +13,40 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $stats = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_stats', 300, function () {
-            return [
-                'total' => Booking::count(),
-                'new' => Booking::new()->count(),
-                'in_progress' => Booking::inProgress()->count(),
-                'sold' => Booking::completed()->count(),
-                'rejected' => Booking::where('status', 'rejected')->count(),
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if ($isAdmin) {
+            $stats = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_stats', 300, function () {
+                return [
+                    'total' => Booking::count(),
+                    'new' => Booking::new()->count(),
+                    'in_progress' => Booking::inProgress()->count(),
+                    'sold' => Booking::completed()->count(),
+                    'rejected' => Booking::where('status', 'rejected')->count(),
+                ];
+            });
+
+            $recentBookings = Booking::with('car.brand')
+                ->latest()
+                ->limit(10)
+                ->get();
+        } else {
+            $userId = $user?->id;
+            $stats = [
+                'total' => Booking::where('assigned_to', $userId)->count(),
+                'new' => Booking::where('assigned_to', $userId)->new()->count(),
+                'in_progress' => Booking::where('assigned_to', $userId)->inProgress()->count(),
+                'sold' => Booking::where('assigned_to', $userId)->completed()->count(),
+                'rejected' => Booking::where('assigned_to', $userId)->where('status', 'rejected')->count(),
             ];
-        });
 
-        // أكثر 5 سيارات عليها طلبات
-        $topCars = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_top_cars', 300, function () {
-            return Car::withCount('bookings')
-                ->with('brand') // Eager load brand for grid
-                ->orderByDesc('bookings_count')
-                ->limit(6) // increased to 6 for a better grid
+            $recentBookings = Booking::with('car.brand')
+                ->where('assigned_to', $userId)
+                ->latest()
+                ->limit(10)
                 ->get();
-        });
-
-        // إحصائيات الأسبوع (آخر 7 أيام) للـ Chart
-        $weeklyBookings = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_weekly_bookings', 300, function () {
-            return Booking::selectRaw('DATE(created_at) as date, COUNT(*) as count')
-                ->where('created_at', '>=', now()->subDays(6))
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-        });
-
-        $recentBookings = Booking::with('car.brand')
-            ->latest()
-            ->limit(10)
-            ->get();
+        }
 
         $totals = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_totals', 300, function () {
             return [

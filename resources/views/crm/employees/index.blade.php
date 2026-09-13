@@ -43,6 +43,7 @@
                         <th class="py-3 text-muted fw-bold small text-uppercase">{{ __('بيانات التواصل') }}</th>
                         <th class="py-3 text-muted fw-bold small text-uppercase text-center">{{ __('الصلاحية') }}</th>
                         <th class="py-3 text-muted fw-bold small text-uppercase text-center">{{ __('الطلبات المستلمة') }}</th>
+                        <th class="py-3 text-muted fw-bold small text-uppercase text-center">{{ __('استقبال الطلبات') }}</th>
                         <th class="py-3 text-muted fw-bold small text-uppercase text-center">{{ __('الحالة') }}</th>
                         <th class="py-3 text-end px-4"></th>
                     </tr>
@@ -78,6 +79,17 @@
                             </span>
                         </td>
                         <td class="text-center">
+                            @if($emp->can_receive_orders)
+                                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill small fw-bold" title="{{ __('يستقبل طلبات جديدة في التوزيع التلقائي') }}">
+                                    <i class="bi bi-check-circle-fill me-1"></i> {{ __('يستقبل طلبات') }}
+                                </span>
+                            @else
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill small fw-bold" title="{{ __('متوقف عن استقبال الطلبات التلقائية') }}">
+                                    <i class="bi bi-dash-circle-fill me-1"></i> {{ __('متوقف') }}
+                                </span>
+                            @endif
+                        </td>
+                        <td class="text-center">
                             @if($emp->is_active)
                                 <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill small fw-bold">{{ __('نشط') }}</span>
                             @else
@@ -87,7 +99,7 @@
                         <td class="text-end px-4">
                             <div class="d-flex gap-2 justify-content-end">
                                 @can('users.edit')
-                                <button class="btn btn-sm btn-white border shadow-xs rounded-2" data-bs-toggle="modal" data-bs-target="#editEmployeeModal{{ $emp->id }}">
+                                <button class="btn btn-sm btn-white border shadow-xs rounded-2" data-bs-toggle="modal" data-bs-target="#editEmployeeModal{{ $emp->id }}" title="{{ __('تعديل') }}">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 @endcan
@@ -135,11 +147,17 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="mb-4">
+                                        <div class="mb-3">
                                             <label class="form-label fw-bold small text-muted">{{ __('كلمة المرور الجديدة') }}</label>
                                             <input type="password" name="password" class="form-control bg-light border-0 shadow-none" placeholder="{{ __('اتركه فارغاً للاحتفاظ بالكلمة الحالية') }}" minlength="6" dir="ltr">
                                         </div>
-                                        <div class="form-check form-switch p-3 bg-light rounded-3">
+                                        <div class="form-check form-switch p-3 bg-light rounded-3 mb-2 border">
+                                            <input class="form-check-input {{ app()->getLocale() == 'ar' ? 'ms-0 me-2 float-none' : '' }}" type="checkbox" name="can_receive_orders" value="1" id="canReceive{{ $emp->id }}" {{ $emp->can_receive_orders ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold ms-2" for="canReceive{{ $emp->id }}">
+                                                <i class="bi bi-inbox-fill text-primary me-1"></i> {{ __('استقبال طلبات جديدة (توزيع تلقائي)') }}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch p-3 bg-light rounded-3 border">
                                             <input class="form-check-input {{ app()->getLocale() == 'ar' ? 'ms-0 me-2 float-none' : '' }}" type="checkbox" name="is_active" value="1" id="active{{ $emp->id }}" {{ $emp->is_active ? 'checked' : '' }}>
                                             <label class="form-check-label fw-bold ms-2" for="active{{ $emp->id }}">{{ __('حساب الموظف نشط') }}</label>
                                         </div>
@@ -154,7 +172,7 @@
                     </div>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5">
+                        <td colspan="7" class="text-center py-5">
                             <div class="opacity-25 mb-3">
                                 <i class="bi bi-people" style="font-size: 4rem;"></i>
                             </div>
@@ -208,9 +226,15 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">{{ __('كلمة المرور') }} <span class="text-danger">*</span></label>
                         <input type="password" name="password" class="form-control bg-light border-0 shadow-none" required minlength="6" dir="ltr" placeholder="••••••••">
+                    </div>
+                    <div class="form-check form-switch p-3 bg-light rounded-3 mb-2 border">
+                        <input class="form-check-input {{ app()->getLocale() == 'ar' ? 'ms-0 me-2 float-none' : '' }}" type="checkbox" name="can_receive_orders" value="1" id="addCanReceiveOrders" checked>
+                        <label class="form-check-label fw-bold ms-2" for="addCanReceiveOrders">
+                            <i class="bi bi-inbox-fill text-primary me-1"></i> {{ __('استقبال طلبات جديدة (توزيع تلقائي)') }}
+                        </label>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">

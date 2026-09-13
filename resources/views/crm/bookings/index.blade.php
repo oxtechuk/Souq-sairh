@@ -44,7 +44,7 @@
             <div class="card-body p-3">
                 <div class="row g-2 align-items-center">
                     {{-- 1. Search by Name, Phone, or ID --}}
-                    <div class="col-12 col-lg-3 col-md-6">
+                    <div class="col-12 {{ ($isAdmin ?? false) ? 'col-lg-3' : 'col-lg-5' }} col-md-6">
                         <div style="position:relative;">
                             <input type="text" name="search" value="{{ request('search') }}"
                                    placeholder="{{ __('بحث بالاسم، رقم الجوال، أو رقم الطلب #...') }}"
@@ -55,6 +55,7 @@
                     </div>
 
                     {{-- 2. Filter by Employee --}}
+                    @if($isAdmin ?? false)
                     <div class="col-6 col-lg-2 col-md-3">
                         <select name="employee_id" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
                             <option value="">{{ __('الموظف — الكل') }}</option>
@@ -63,6 +64,7 @@
                             @endforeach
                         </select>
                     </div>
+                    @endif
 
                     {{-- 3. Filter by Request Type (تمويل / شراء كاش / شركات) --}}
                     <div class="col-6 col-lg-2 col-md-3">
@@ -187,6 +189,7 @@
                             <small class="text-muted fw-normal">{!! __('ريال') !!}</small>
                         </td>
                         <td style="font-size:12px;">
+                            @if($isAdmin ?? false)
                             <form action="{{ route('crm.bookings.assign', $b) }}" method="POST" class="m-0">
                                 @csrf @method('PATCH')
                                 <div class="d-flex align-items-center gap-1 bg-light rounded-pill p-1 pe-2 border" style="width: fit-content; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--crm-red)'" onmouseout="this.style.borderColor='var(--crm-border)'">
@@ -199,7 +202,7 @@
                                             <i class="bi bi-person"></i>
                                         </div>
                                     @endif
-                                    <select @disabled(!auth()->user()->hasRole('admin')) name="employee_id" class="form-select form-select-sm border-0 shadow-none bg-transparent fw-bold p-0 ps-1" style="font-size:12px;color:var(--crm-text);width:auto;cursor:pointer;background-image:none;outline:none;" onchange="this.form.submit()">
+                                    <select name="employee_id" class="form-select form-select-sm border-0 shadow-none bg-transparent fw-bold p-0 ps-1" style="font-size:12px;color:var(--crm-text);width:auto;cursor:pointer;background-image:none;outline:none;" onchange="this.form.submit()">
                                         <option value="">{{ __('غير معين') }}</option>
                                         @foreach($employees as $emp)
                                             <option value="{{ $emp->id }}" {{ $b->assigned_to == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
@@ -208,6 +211,21 @@
                                     <i class="bi bi-chevron-down text-muted" style="font-size:10px; pointer-events: none;"></i>
                                 </div>
                             </form>
+                            @else
+                                <div class="d-flex align-items-center gap-1 bg-light rounded-pill p-1 pe-2 border" style="width: fit-content;">
+                                    @if($b->employee)
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="width:24px;height:24px;font-size:10px;font-weight:bold;background:#1a3163;">
+                                            {{ strtoupper(substr($b->employee->name, 0, 1)) }}
+                                        </div>
+                                        <span class="fw-bold px-1" style="font-size:12px;color:var(--crm-text);">{{ $b->employee->name }}</span>
+                                    @else
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-white text-muted flex-shrink-0 border shadow-sm" style="width:24px;height:24px;font-size:12px;">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                        <span class="text-muted px-1" style="font-size:12px;">{{ __('غير معين') }}</span>
+                                    @endif
+                                </div>
+                            @endif
                         </td>
                         <td style="font-size:12px;color:var(--crm-text-muted);">{{ $b->created_at->format('d/m/Y') }}</td>
                         <td>
@@ -352,6 +370,7 @@
                         {{ $b->car?->brand?->name }} {{ $b->car?->name ?? '—' }}
                     </div>
                     <div>
+                        @if($isAdmin ?? false)
                         <form action="{{ route('crm.bookings.assign', $b) }}" method="POST" class="m-0 d-inline-block">
                             @csrf @method('PATCH')
                             <div class="d-flex align-items-center gap-1 bg-light rounded-pill px-2 py-1 border" style="width: fit-content;">
@@ -368,6 +387,16 @@
                                 </select>
                             </div>
                         </form>
+                        @else
+                            <div class="d-flex align-items-center gap-1 bg-light rounded-pill px-2 py-1 border" style="width: fit-content;">
+                                @if($b->employee)
+                                    <span class="rounded-circle d-inline-flex align-items-center justify-content-center text-white flex-shrink-0" style="width:20px;height:20px;font-size:9px;font-weight:bold;background:#1a3163;">{{ strtoupper(substr($b->employee->name,0,1)) }}</span>
+                                    <span class="fw-bold" style="font-size:11px;color:var(--crm-text);">{{ $b->employee->name }}</span>
+                                @else
+                                    <span class="text-muted" style="font-size:11px;">{{ __('غير معين') }}</span>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="d-flex gap-2 mt-2">

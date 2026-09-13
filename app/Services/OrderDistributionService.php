@@ -39,11 +39,11 @@ class OrderDistributionService
 
     private function getNextRoundRobin(): ?Employee
     {
-        $activeEmployees = Employee::where('is_active', true)
+        $eligibleEmployees = Employee::receivingOrders()
             ->orderBy('id')
             ->get(['id']);
 
-        if ($activeEmployees->isEmpty()) {
+        if ($eligibleEmployees->isEmpty()) {
             return null;
         }
 
@@ -51,14 +51,14 @@ class OrderDistributionService
             ->first()?->value;
 
         $nextIndex = 0;
-        foreach ($activeEmployees as $i => $emp) {
+        foreach ($eligibleEmployees as $i => $emp) {
             if ((int) $emp->id === $lastAssignedId) {
-                $nextIndex = ($i + 1) % $activeEmployees->count();
+                $nextIndex = ($i + 1) % $eligibleEmployees->count();
                 break;
             }
         }
 
-        $next = $activeEmployees[$nextIndex];
+        $next = $eligibleEmployees[$nextIndex];
 
         Setting::updateOrCreate(
             ['key' => 'round_robin_last_employee_id'],
@@ -70,13 +70,13 @@ class OrderDistributionService
 
     private function getLeastLoaded(): ?Employee
     {
-        $activeEmployees = Employee::where('is_active', true)->get(['id']);
+        $eligibleEmployees = Employee::receivingOrders()->get(['id']);
 
-        if ($activeEmployees->isEmpty()) {
+        if ($eligibleEmployees->isEmpty()) {
             return null;
         }
 
-        $employee = Employee::where('is_active', true)
+        $employee = Employee::receivingOrders()
             ->withCount(['bookings as active_count' => function ($q) {
                 $q->whereNotIn('status', ['sold', 'rejected']);
             }])

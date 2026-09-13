@@ -126,6 +126,7 @@
                     {{-- تعيين مسؤول المبيعات --}}
                     <div class="mt-3 p-3 rounded-3" style="background:#F8F9FC;border:1px solid var(--crm-border);">
                         <label style="font-size:12px;font-weight:700;margin-bottom:8px;display:block;">{{ __('مسؤول المبيعات') }}</label>
+                        @if($isAdmin ?? false)
                         <form action="{{ route('crm.bookings.assign', $booking) }}" method="POST" class="d-flex align-items-center gap-2 w-100">
                             @csrf @method('PATCH')
                             <select name="employee_id" class="form-select form-select-sm border-0 shadow-none" style="background:#fff;border-radius:8px;font-size:13px;font-weight:700;">
@@ -134,12 +135,18 @@
                                 <option value="{{ $emp->id }}" {{ $booking->assigned_to == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
                                 @endforeach
                             </select>
-                            @can('bookings.edit')
                             <button type="submit" class="btn btn-sm fw-bold rounded-2 text-white flex-shrink-0" style="background:var(--crm-text);font-size:12px;white-space:nowrap;padding: 6px 12px;">
                                 {{ __('تحويل') }}
                             </button>
-                            @endcan
                         </form>
+                        @else
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="width:28px;height:28px;font-size:11px;font-weight:bold;background:#1a3163;">
+                                {{ strtoupper(substr($booking->employee?->name ?? 'U', 0, 1)) }}
+                            </div>
+                            <span class="fw-bold" style="font-size:13px;color:var(--crm-text);">{{ $booking->employee?->name ?? __('غير معين') }}</span>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

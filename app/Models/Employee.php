@@ -13,14 +13,20 @@ class Employee extends Authenticatable
 
     protected $guard_name = 'web';
 
-    protected $fillable = ['name', 'username', 'email', 'password', 'phone', 'role', 'is_active', 'avatar'];
+    protected $fillable = ['name', 'username', 'email', 'password', 'phone', 'role', 'is_active', 'can_receive_orders', 'avatar'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'can_receive_orders' => 'boolean',
         'password' => 'hashed',
     ];
+
+    public function scopeReceivingOrders($query)
+    {
+        return $query->where('is_active', true)->where('can_receive_orders', true);
+    }
 
     public function bookings(): HasMany
     {

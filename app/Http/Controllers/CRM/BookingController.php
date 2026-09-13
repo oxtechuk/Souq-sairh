@@ -20,14 +20,20 @@ class BookingController extends Controller
 
         $query = Booking::with(['car.brand', 'employee'])->latest();
 
+        // للموظف العادي: إظهار الطلبات المسندة إليه فقط، واستبعاد الطلبات المغلقة أو في انتظار مراجعة الأدمن
+        if (!$isAdmin) {
+            $query->where('assigned_to', $user?->id);
+            if (!$request->filled('status')) {
+                $query->whereNotIn('status', ['pending_closure', 'closed']);
+            }
+        } elseif ($request->filled('employee_id')) {
+            // فلترة بالموظف للأدمن فقط
+            $query->where('assigned_to', $request->employee_id);
+        }
+
         // فلترة بالحالة
         if ($request->filled('status')) {
             $query->where('status', $request->status);
-        }
-
-        // فلترة بالموظف
-        if ($request->filled('employee_id')) {
-            $query->where('assigned_to', $request->employee_id);
         }
 
         // فلترة بنوع الطلب (عميل حاسبة / طلب سيارة / تمويل / كاش أفراد / شركات)
@@ -67,14 +73,6 @@ class BookingController extends Controller
             $query->whereDate('created_at', $request->date);
         }
 
-        // للموظف العادي: إظهار الطلبات المسندة إليه فقط، واستبعاد الطلبات المغلقة أو في انتظار مراجعة الأدمن
-        if (!$isAdmin) {
-            $query->where('assigned_to', $user?->id);
-            if (!$request->filled('status')) {
-                $query->whereNotIn('status', ['pending_closure', 'closed']);
-            }
-        }
-
         // بحث شامل: رقم الطلب (#ID)، رقم/جوال العميل، اسم العميل، اسم السيارة/الماركة
         if ($request->filled('search')) {
             $s = trim($request->search);
@@ -95,17 +93,26 @@ class BookingController extends Controller
         }
 
         $bookings = $query->paginate(20)->withQueryString();
-        $employees = Employee::where('is_active', true)->get();
         $statuses = Booking::STATUSES;
         $cars = Car::with('brand')->where('is_active', true)->get();
 
-        $stats = [
-            'pending_review' => Booking::where('status', 'pending_closure')->count(),
-            'today_count' => Booking::whereDate('created_at', now()->format('Y-m-d'))->count(),
-            'total' => Booking::count(),
-        ];
+        if ($isAdmin) {
+            $employees = Employee::where('is_active', true)->get();
+            $stats = [
+                'pending_review' => Booking::where('status', 'pending_closure')->count(),
+                'today_count' => Booking::whereDate('created_at', now()->format('Y-m-d'))->count(),
+                'total' => Booking::count(),
+            ];
+        } else {
+            $employees = collect();
+            $stats = [
+                'pending_review' => Booking::where('assigned_to', $user?->id)->where('status', 'pending_closure')->count(),
+                'today_count' => Booking::where('assigned_to', $user?->id)->whereDate('created_at', now()->format('Y-m-d'))->count(),
+                'total' => Booking::where('assigned_to', $user?->id)->count(),
+            ];
+        }
 
-        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'cars', 'stats'));
+        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'cars', 'stats', 'isAdmin'));
     }
 
     public function store(Request $request)
@@ -145,17 +152,28 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin && (int)$booking->assigned_to !== (int)$user?->id) {
+            abort(403, __('عفواً، لا تملك صلاحية الوصول لهذا الطلب'));
+        }
+
         $booking->load(['car.brand', 'employee', 'notes_list.employee', 'documents.employee']);
-        $employees = Employee::where('is_active', true)->get();
+        $employees = $isAdmin ? Employee::where('is_active', true)->get() : collect();
         $statuses = Booking::STATUSES;
 
-        return view('crm.bookings.show', compact('booking', 'employees', 'statuses'));
+        return view('crm.bookings.show', compact('booking', 'employees', 'statuses', 'isAdmin'));
     }
 
     public function updateStatus(Request $request, Booking $booking)
     {
         $user = auth('employee')->user() ?? auth()->user();
         $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin && (int)$booking->assigned_to !== (int)$user?->id) {
+            abort(403, __('عفواً، لا تملك صلاحية تعديل هذا الطلب'));
+        }
 
         $request->validate([
             'status' => 'required|in:'.implode(',', array_keys(Booking::STATUSES)),
@@ -264,10 +282,17 @@ class BookingController extends Controller
 
     public function addNote(Request $request, Booking $booking)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin && (int)$booking->assigned_to !== (int)$user?->id) {
+            abort(403, __('عفواً، لا تملك صلاحية إضافة ملاحظات على هذا الطلب'));
+        }
+
         $request->validate(['note' => 'required|string|max:2000', 'type' => 'in:note,call']);
         BookingNote::create([
             'booking_id' => $booking->id,
-            'employee_id' => auth('employee')->id(),
+            'employee_id' => $user?->id,
             'note' => $request->note,
             'type' => $request->type ?? 'note',
         ]);
@@ -277,6 +302,13 @@ class BookingController extends Controller
 
     public function uploadDocument(Request $request, Booking $booking)
     {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin && (int)$booking->assigned_to !== (int)$user?->id) {
+            abort(403, __('عفواً، لا تملك صلاحية رفع مستندات لهذا الطلب'));
+        }
+
         $request->validate([
             'title' => 'nullable|string|max:255',
             'file' => 'required|file|max:10240', // 10MB max
@@ -286,7 +318,7 @@ class BookingController extends Controller
         $path = $file->store('booking_documents', 'public');
 
         $booking->documents()->create([
-            'employee_id' => auth('employee')->id(),
+            'employee_id' => $user?->id,
             'title' => $request->title ?? $file->getClientOriginalName(),
             'file_path' => $path,
             'file_type' => $file->getClientOriginalExtension(),

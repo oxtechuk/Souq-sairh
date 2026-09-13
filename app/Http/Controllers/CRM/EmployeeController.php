@@ -25,8 +25,10 @@ class EmployeeController extends Controller
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:20',
             'role' => 'required|string',
+            'can_receive_orders' => 'nullable|boolean',
         ]);
         // $data['password'] = Hash::make($data['password']);
+        $data['can_receive_orders'] = $request->boolean('can_receive_orders', true);
         unset($data['role']);
         $employee = Employee::create($data);
 
@@ -43,9 +45,11 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:20',
             'role' => 'required|string',
             'is_active' => 'boolean',
+            'can_receive_orders' => 'boolean',
             'password' => 'nullable|string|min:6',
         ]);
         $data['is_active'] = $request->boolean('is_active');
+        $data['can_receive_orders'] = $request->boolean('can_receive_orders');
         if (! empty($data['password'])) {
            // $data['password'] = Hash::make($data['password']);
         } else {

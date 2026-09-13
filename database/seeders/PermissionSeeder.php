@@ -56,20 +56,30 @@ class PermissionSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $adminRole->syncPermissions($permissions);
 
-        $employeeRole = Role::firstOrCreate(['name' => 'employee', 'guard_name' => 'web']);
-        $employeeRole->syncPermissions([
+        $salesPermissions = [
             'dashboard.view',
+            'cars.view',
+            'brands.view',
+            'offers.view',
             'contacts.view', 'contacts.create', 'contacts.edit',
             'bookings.view', 'bookings.create', 'bookings.edit',
             'tasks.view', 'tasks.create', 'tasks.edit',
             'tracking.view',
-        ]);
+        ];
+
+        $employeeRole = Role::firstOrCreate(['name' => 'employee', 'guard_name' => 'web']);
+        $employeeRole->syncPermissions($salesPermissions);
+
+        $salesRole = Role::firstOrCreate(['name' => 'sales', 'guard_name' => 'web']);
+        $salesRole->syncPermissions($salesPermissions);
 
         // Assign roles to existing employees
         $employeeModel = \App\Models\Employee::class;
         foreach ($employeeModel::all() as $emp) {
             if ($emp->role === 'admin') {
                 $emp->assignRole('admin');
+            } elseif ($emp->role === 'sales') {
+                $emp->assignRole('sales');
             } else {
                 $emp->assignRole('employee');
             }
