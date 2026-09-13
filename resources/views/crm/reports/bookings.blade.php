@@ -338,7 +338,13 @@
                         <tbody class="border-top-0">
                             @forelse ($sourcesReport as $src)
                                 <tr>
-                                    <td class="px-4 fw-bold text-dark">{{ $src->source }}</td>
+                                    <td class="px-4">
+                                        <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2"
+                                              style="font-size:12px; font-weight:700; background:{{ $src->badge_bg ?? '#F0F4F8' }}; color:{{ $src->badge_text ?? '#475569' }}; border:1px solid {{ $src->badge_border ?? '#CBD5E1' }};">
+                                            <i class="{{ $src->icon ?? 'bi bi-globe2' }}"></i>
+                                            <span>{{ $src->source }}</span>
+                                        </span>
+                                    </td>
                                     <td class="text-center fw-bold">{{ $src->total_bookings }}</td>
                                     <td class="text-center text-primary fw-bold">{{ $src->total_new }}</td>
                                     <td class="text-center text-warning fw-bold">{{ $src->total_interested }}</td>
@@ -398,7 +404,14 @@
                                     <td class="text-center">{{ $b->car?->name ?? '—' }}</td>
                                     <td class="text-center"><span class="badge bg-{{ $b->status_color }}-subtle text-{{ $b->status_color }} px-3 py-2 rounded-pill">{{ $b->status_label }}</span></td>
                                     <td class="text-center text-muted">{{ $b->employee?->name ?? '—' }}</td>
-                                    <td class="text-center text-muted">{{ $b->source ?? '—' }}</td>
+                                    <td class="text-center">
+                                        @php $bm = $b->source_meta; @endphp
+                                        <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1"
+                                              style="font-size:11px; font-weight:700; background:{{ $bm['badge_bg'] }}; color:{{ $bm['badge_text'] }}; border:1px solid {{ $bm['badge_border'] }};">
+                                            <i class="{{ $bm['icon'] }}"></i>
+                                            <span>{{ $bm['label'] }}</span>
+                                        </span>
+                                    </td>
                                     <td class="text-center text-muted small">{{ $b->created_at->format('Y-m-d') }}</td>
                                 </tr>
                             @empty

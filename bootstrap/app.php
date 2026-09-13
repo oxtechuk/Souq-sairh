@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\LocalizationMiddleware::class,
+            \App\Http\Middleware\TrackTrafficSource::class,
         ]);
 
         $middleware->redirectTo(

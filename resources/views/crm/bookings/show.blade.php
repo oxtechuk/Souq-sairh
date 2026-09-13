@@ -75,6 +75,7 @@
                         }
 
                         $orderRows[__('نوع الطلب')] = $typeLabel;
+                        $orderRows[__('مصدر الطلب')] = $booking->source_label;
                         $orderRows[__('تاريخ الطلب')] = $booking->created_at->format('d/m/Y • H:i') . ($booking->created_at->format('A') == 'AM' ? ' ص' : ' م');
                     @endphp
                     @foreach($orderRows as $label => $value)
@@ -93,6 +94,12 @@
                                 @else
                                     {{ $value }}
                                 @endif
+                            @elseif($label === __('مصدر الطلب'))
+                                @php $sm = $booking->source_meta; @endphp
+                                <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1"
+                                      style="font-size:11px; font-weight:700; background:{{ $sm['badge_bg'] }}; color:{{ $sm['badge_text'] }}; border:1px solid {{ $sm['badge_border'] }};">
+                                    <i class="{{ $sm['icon'] }}"></i> {{ $sm['label'] }}
+                                </span>
                             @else
                                 {{ $value }}
                             @endif
@@ -218,6 +225,47 @@
                         @endif
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- تفاصيل مصدر الطلب والحملة التسويقية --}}
+    <div class="card border-0 shadow-sm rounded-4 mb-3" style="border:1px solid var(--crm-border)!important;">
+        <div class="card-header bg-white border-0 px-4 pt-4 pb-3 d-flex justify-content-between align-items-center" style="border-bottom:1px solid var(--crm-border)!important;">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-broadcast me-1" style="color:var(--crm-red);"></i>
+                {{ __('تفاصيل مصدر الطلب والحملة التسويقية') }}
+            </h6>
+            @php $showMeta = $booking->source_meta; @endphp
+            <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1"
+                  style="font-size:12px; font-weight:700; background:{{ $showMeta['badge_bg'] }}; color:{{ $showMeta['badge_text'] }}; border:1px solid {{ $showMeta['badge_border'] }};">
+                <i class="{{ $showMeta['icon'] }}"></i> {{ $showMeta['label'] }}
+            </span>
+        </div>
+        <div class="card-body px-4 py-3">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('المنصة / المصدر') }}</div>
+                    <div class="fw-bold" style="font-size:13px;color:var(--crm-text);">{{ $showMeta['label'] }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('اسم الحملة (Campaign)') }}</div>
+                    <div class="fw-bold" style="font-size:13px;color:var(--crm-text);">{{ $booking->utm_campaign ?: '—' }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('الوسيط (Medium)') }}</div>
+                    <div class="fw-bold" style="font-size:13px;color:var(--crm-text);">{{ $booking->utm_medium ?: '—' }}</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:4px;">{{ __('معرّف النقر (Click ID)') }}</div>
+                    <div class="fw-bold" style="font-size:12px;color:var(--crm-text);word-break:break-all;" dir="ltr">{{ $booking->click_id ?: '—' }}</div>
+                </div>
+                @if(!empty($booking->referrer_url))
+                <div class="col-12 mt-2 pt-2 border-top">
+                    <div style="font-size:12px;color:var(--crm-text-muted);margin-bottom:2px;">{{ __('الرابط المرجعي (Referrer)') }}</div>
+                    <div style="font-size:12px;color:var(--crm-text);" dir="ltr">{{ $booking->referrer_url }}</div>
+                </div>
+                @endif
             </div>
         </div>
     </div>

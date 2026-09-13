@@ -54,6 +54,8 @@ class BookingController extends Controller
             'num_cars' => 'nullable|integer|min:1|max:50',
         ]);
 
+        $attribution = app(\App\Services\AttributionService::class)->getStored();
+
         $booking = Booking::create([
             'car_id' => $data['car_id'],
             'client_name' => $data['client_name'],
@@ -69,7 +71,14 @@ class BookingController extends Controller
             'financing_period' => $data['financing_period'] ?? null,
             'num_cars' => $data['num_cars'] ?? null,
             'notes' => $data['notes'] ?? null,
-            'source' => 'website',
+            'source' => $attribution['platform'] ?? 'website',
+            'utm_source' => $attribution['utm_source'] ?? null,
+            'utm_medium' => $attribution['utm_medium'] ?? null,
+            'utm_campaign' => $attribution['utm_campaign'] ?? null,
+            'utm_content' => $attribution['utm_content'] ?? null,
+            'utm_term' => $attribution['utm_term'] ?? null,
+            'click_id' => $attribution['click_id'] ?? null,
+            'referrer_url' => $attribution['referrer_url'] ?? null,
             'status' => 'new',
         ]);
 

@@ -66,7 +66,21 @@
                     </div>
                     @endif
 
-                    {{-- 3. Filter by Request Type (تمويل / شراء كاش / شركات) --}}
+                    {{-- 3. Filter by Source (مصدر الطلب: سناب، فيس، جوجل، داخلي...) --}}
+                    <div class="col-6 col-lg-2 col-md-3">
+                        <select name="source" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
+                            <option value="">{{ __('المصدر — الكل') }}</option>
+                            <option value="snapchat" {{ request('source') == 'snapchat' ? 'selected' : '' }}>🟡 {{ __('سناب شات') }}</option>
+                            <option value="facebook" {{ request('source') == 'facebook' ? 'selected' : '' }}>🔵 {{ __('فيسبوك') }}</option>
+                            <option value="google" {{ request('source') == 'google' ? 'selected' : '' }}>🟢 {{ __('إعلانات جوجل') }}</option>
+                            <option value="internal" {{ request('source') == 'internal' ? 'selected' : '' }}>🏢 {{ __('داخلي (CRM)') }}</option>
+                            <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>🌐 {{ __('الموقع المباشر') }}</option>
+                            <option value="tiktok" {{ request('source') == 'tiktok' ? 'selected' : '' }}>⬛ {{ __('تيك توك') }}</option>
+                            <option value="instagram" {{ request('source') == 'instagram' ? 'selected' : '' }}>🟣 {{ __('إنستغرام') }}</option>
+                        </select>
+                    </div>
+
+                    {{-- 4. Filter by Request Type (تمويل / شراء كاش / شركات) --}}
                     <div class="col-6 col-lg-2 col-md-3">
                         <select name="contact_type" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
                             <option value="">{{ __('نوع الطلب — الكل') }}</option>
@@ -78,18 +92,18 @@
                         </select>
                     </div>
 
-                    {{-- 4. Filter by Status (الحالة كاملة) --}}
-                    <div class="col-6 col-lg-2 col-md-4">
+                    {{-- 5. Filter by Status (الحالة كاملة) --}}
+                    <div class="col-6 col-lg-1 col-md-4">
                         <select name="status" class="form-select" style="border:1px solid var(--crm-border);border-radius:8px;padding:8px 14px;font-size:13px;outline:none;font-family:'Cairo',sans-serif;">
-                            <option value="">{{ __('الحالة — الكل') }}</option>
+                            <option value="">{{ __('الحالة') }}</option>
                             @foreach($statuses as $key => $s)
                                 <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $s['label'] }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    {{-- 5. Date --}}
-                    <div class="col-6 col-lg-2 col-md-4">
+                    {{-- 6. Date --}}
+                    <div class="col-6 col-lg-1 col-md-4">
                         <div style="position:relative;">
                             <input type="date" name="date" value="{{ request('date') }}"
                                    class="form-control"
@@ -98,10 +112,10 @@
                         </div>
                     </div>
 
-                    {{-- 6. Action Buttons --}}
+                    {{-- 7. Action Buttons --}}
                     <div class="col-12 col-lg-1 col-md-4 d-flex gap-2 align-items-center">
                         <button type="submit" class="btn-crm-primary w-100" style="padding:8px 14px;font-size:13px;">{{ __('تصفية') }}</button>
-                        @if(request()->hasAny(['search', 'employee_id', 'contact_type', 'type', 'status', 'date']))
+                        @if(request()->hasAny(['search', 'employee_id', 'contact_type', 'type', 'status', 'date', 'source']))
                             <a href="{{ route('crm.bookings.index') }}" class="btn btn-light border text-danger" title="{{ __('إلغاء الفلاتر') }}" style="padding:7px 12px;border-radius:8px;">
                                 <i class="bi bi-x-lg"></i>
                             </a>
@@ -128,6 +142,7 @@
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('رقم العميل') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('الراتب/القسط') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('نوع الطلب') }}</th>
+                        <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('مصدر الطلب') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('السيارة') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('سعر السيارة') }}</th>
                         <th class="py-3 text-muted fw-bold" style="font-size:12px;">{{ __('المسؤول') }}</th>
@@ -179,6 +194,22 @@
                                     <i class="bi bi-cash-stack me-1"></i>{{ __('شراء كاش / أفراد') }}
                                 </span>
                             @endif
+                        </td>
+                        <td>
+                            @php $srcMeta = $b->source_meta; @endphp
+                            <div class="d-inline-flex flex-column align-items-start">
+                                <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1"
+                                      style="font-size:11px; font-weight:700; background:{{ $srcMeta['badge_bg'] }}; color:{{ $srcMeta['badge_text'] }}; border:1px solid {{ $srcMeta['badge_border'] }};"
+                                      title="{{ $b->utm_source ? 'UTM: ' . $b->utm_source : $srcMeta['label'] }}">
+                                    <i class="{{ $srcMeta['icon'] }}" style="font-size:12px;"></i>
+                                    <span>{{ $srcMeta['label'] }}</span>
+                                </span>
+                                @if(!empty($b->utm_campaign))
+                                    <small class="text-muted mt-1 text-truncate" style="max-width: 110px; font-size: 10px;" title="{{ $b->utm_campaign }}">
+                                        <i class="bi bi-tag-fill me-1" style="font-size: 8px;"></i>{{ Str::limit($b->utm_campaign, 13) }}
+                                    </small>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <div style="font-size:12px;color:var(--crm-text);">{{ $b->car?->name ?? '—' }}</div>
@@ -285,7 +316,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="text-center text-muted py-5">
+                        <td colspan="11" class="text-center text-muted py-5">
                             <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
                             {{ __('لا توجد طلبات حالياً') }}
                         </td>
@@ -307,11 +338,18 @@
                     'pending_closure'    => 'waiting',
                     default              => 'confirmed',
                 };
+                $srcMetaM = $b->source_meta;
             @endphp
             <div class="mb-3 p-3 rounded-3" style="border:1px solid var(--crm-border);background:#fff;">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <a href="{{ route('crm.bookings.show', $b) }}" class="fw-bold text-decoration-none" style="color:var(--crm-red);font-size:14px;">#{{ $b->id }}</a>
+                        <div class="d-flex align-items-center gap-1 flex-wrap">
+                            <a href="{{ route('crm.bookings.show', $b) }}" class="fw-bold text-decoration-none" style="color:var(--crm-red);font-size:14px;">#{{ $b->id }}</a>
+                            <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1"
+                                  style="font-size:10px; font-weight:700; background:{{ $srcMetaM['badge_bg'] }}; color:{{ $srcMetaM['badge_text'] }}; border:1px solid {{ $srcMetaM['badge_border'] }};">
+                                <i class="{{ $srcMetaM['icon'] }}"></i> {{ $srcMetaM['label'] }}
+                            </span>
+                        </div>
                         <div class="fw-bold mt-1" style="font-size:14px;color:var(--crm-text);">{{ $b->client_name }}</div>
                         <div style="font-size:12px;color:var(--crm-text-muted);" dir="ltr">{{ $b->client_phone }}</div>
                         <div class="mt-1">
@@ -462,16 +500,28 @@
                                     <input type="text" name="client_phone" class="form-control border-0" style="font-size: 14px;" required placeholder="5X XXX XXXX" dir="ltr">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label fw-bold text-muted small">{{ __('البريد الإلكتروني') }}</label>
                                 <input type="email" name="client_email" class="form-control form-control-lg bg-white border-0 shadow-sm" style="border-radius: 12px; font-size: 14px;" placeholder="{{ __('البريد الإلكتروني (اختياري)') }}">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label fw-bold text-muted small">{{ __('نوع الطلب') }}</label>
                                 <select name="type" class="form-select form-select-lg bg-white border-0 shadow-sm" style="border-radius: 12px; font-size: 14px;">
                                     <option value="booking">{{ __('حجز سيارة') }}</option>
                                     <option value="loan">{{ __('تمويل') }}</option>
                                     <option value="test">{{ __('تجربة قيادة') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-muted small">{{ __('مصدر الطلب') }}</label>
+                                <select name="source" class="form-select form-select-lg bg-white border-0 shadow-sm" style="border-radius: 12px; font-size: 14px;">
+                                    <option value="internal">🏢 {{ __('داخلي / CRM يدوي') }}</option>
+                                    <option value="snapchat">🟡 {{ __('سناب شات') }}</option>
+                                    <option value="facebook">🔵 {{ __('فيسبوك') }}</option>
+                                    <option value="google">🟢 {{ __('إعلانات جوجل') }}</option>
+                                    <option value="tiktok">⬛ {{ __('تيك توك') }}</option>
+                                    <option value="instagram">🟣 {{ __('إنستغرام') }}</option>
+                                    <option value="website">🌐 {{ __('الموقع المباشر') }}</option>
                                 </select>
                             </div>
                         </div>

@@ -129,8 +129,12 @@
                                 <tbody class="border-top-0">
                                     @forelse ($bookingBySource as $label => $n)
                                         <tr>
-                                            <td class="px-3 fw-bold text-dark text-capitalize">{{ $label ?: '—' }}</td>
-                                            <td class="text-center fw-bold text-success">{{ $n }}</td>
+                                            <td class="px-3 fw-bold text-dark">
+                                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill" style="font-size:12px;">
+                                                    {{ $label ?: '—' }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center fw-bold text-success" style="font-size:14px;">{{ $n }}</td>
                                         </tr>
                                     @empty
                                         <tr><td colspan="2" class="text-center text-muted py-4">{{ __('لا توجد بيانات متاحة حالياً') }}</td></tr>

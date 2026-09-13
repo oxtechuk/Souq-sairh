@@ -68,6 +68,66 @@ class BookingController extends Controller
             }
         }
 
+        // فلترة بمصدر الطلب (فيس، جوجل، سناب، داخلي، مباشر...)
+        if ($request->filled('source')) {
+            $src = $request->source;
+            if ($src === 'facebook') {
+                $query->where(function ($q) {
+                    $q->where('source', 'facebook')
+                        ->orWhere('source', 'fb')
+                        ->orWhere('utm_source', 'like', '%facebook%')
+                        ->orWhere('utm_source', 'like', '%fb%')
+                        ->orWhere('click_id', 'like', '%fbclid%')
+                        ->orWhere('referrer_url', 'like', '%facebook%');
+                });
+            } elseif ($src === 'google') {
+                $query->where(function ($q) {
+                    $q->where('source', 'google')
+                        ->orWhere('utm_source', 'like', '%google%')
+                        ->orWhere('click_id', 'like', '%gclid%')
+                        ->orWhere('referrer_url', 'like', '%google%');
+                });
+            } elseif ($src === 'snapchat') {
+                $query->where(function ($q) {
+                    $q->where('source', 'snapchat')
+                        ->orWhere('source', 'snap')
+                        ->orWhere('utm_source', 'like', '%snap%')
+                        ->orWhere('click_id', 'like', '%sccid%')
+                        ->orWhere('referrer_url', 'like', '%snapchat%');
+                });
+            } elseif ($src === 'tiktok') {
+                $query->where(function ($q) {
+                    $q->where('source', 'tiktok')
+                        ->orWhere('utm_source', 'like', '%tiktok%')
+                        ->orWhere('click_id', 'like', '%ttclid%');
+                });
+            } elseif ($src === 'instagram') {
+                $query->where(function ($q) {
+                    $q->where('source', 'instagram')
+                        ->orWhere('source', 'ig')
+                        ->orWhere('utm_source', 'like', '%instagram%')
+                        ->orWhere('referrer_url', 'like', '%instagram%');
+                });
+            } elseif ($src === 'internal') {
+                $query->where(function ($q) {
+                    $q->where('source', 'internal')
+                        ->orWhere('source', 'crm')
+                        ->orWhere('source', 'like', '%CRM%')
+                        ->orWhere('source', 'like', '%يدوي%')
+                        ->orWhere('source', 'like', '%داخلي%');
+                });
+            } elseif ($src === 'website') {
+                $query->where(function ($q) {
+                    $q->where('source', 'website')
+                        ->orWhereNull('source')
+                        ->orWhere('source', 'عميل حاسبة')
+                        ->orWhere('source', 'طلب سيارة');
+                });
+            } else {
+                $query->where('source', $src);
+            }
+        }
+
         // فلترة بالتاريخ
         if ($request->filled('date')) {
             $query->whereDate('created_at', $request->date);
@@ -94,6 +154,7 @@ class BookingController extends Controller
 
         $bookings = $query->paginate(20)->withQueryString();
         $statuses = Booking::STATUSES;
+        $sources = Booking::SOURCES;
         $cars = Car::with('brand')->where('is_active', true)->get();
 
         if ($isAdmin) {
@@ -112,7 +173,7 @@ class BookingController extends Controller
             ];
         }
 
-        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'cars', 'stats', 'isAdmin'));
+        return view('crm.bookings.index', compact('bookings', 'employees', 'statuses', 'sources', 'cars', 'stats', 'isAdmin'));
     }
 
     public function store(Request $request)
@@ -128,6 +189,7 @@ class BookingController extends Controller
             'monthly_installment' => 'nullable|numeric',
             'notes' => 'nullable|string',
             'type' => 'nullable|string',
+            'source' => 'nullable|string|max:50',
         ]);
 
         $booking = Booking::create([
@@ -140,7 +202,7 @@ class BookingController extends Controller
             'duration_years' => $request->duration_years ?? 5,
             'monthly_installment' => $request->monthly_installment ?? 0,
             'notes' => $request->notes,
-            'source' => 'CRM (يدوي)',
+            'source' => $request->filled('source') ? $request->source : 'internal',
             'status' => 'new',
             'assigned_to' => auth('employee')->id(), // assign to the creator by default
         ]);

@@ -95,6 +95,9 @@ class CalculatorController extends Controller
         $companyName = $tab === 'companies' ? ($validated['company_name'] ?? null) : null;
         $numCars = $tab === 'companies' ? ($validated['num_cars'] ?? 1) : null;
 
+        $attribution = app(\App\Services\AttributionService::class)->getStored();
+        $sourcePlatform = ($attribution['platform'] ?? 'website') !== 'website' ? $attribution['platform'] : 'website';
+
         $booking = Booking::create([
             'car_id' => $validated['car_id'] ?? null,
             'client_name' => $clientName,
@@ -111,7 +114,14 @@ class CalculatorController extends Controller
             'duration_years' => 3,
             'monthly_installment' => 0,
             'contact_type' => 'calculator',
-            'source' => 'عميل حاسبة',
+            'source' => $sourcePlatform,
+            'utm_source' => $attribution['utm_source'] ?? null,
+            'utm_medium' => $attribution['utm_medium'] ?? null,
+            'utm_campaign' => $attribution['utm_campaign'] ?? null,
+            'utm_content' => $attribution['utm_content'] ?? null,
+            'utm_term' => $attribution['utm_term'] ?? null,
+            'click_id' => $attribution['click_id'] ?? null,
+            'referrer_url' => $attribution['referrer_url'] ?? null,
             'status' => 'new',
         ]);
 
@@ -195,10 +205,12 @@ class CalculatorController extends Controller
                 'duration_years' => $durationYears,
                 'monthly_installment' => $validated['monthly_installment'] ?? $booking->monthly_installment,
                 'contact_type' => 'car_request',
-                'source' => 'طلب سيارة',
                 'notes' => $existingNotes . $calcNote,
             ]);
         } else {
+            $attribution = app(\App\Services\AttributionService::class)->getStored();
+            $sourcePlatform = ($attribution['platform'] ?? 'website') !== 'website' ? $attribution['platform'] : 'website';
+
             $booking = Booking::create([
                 'client_name' => $data['name'] ?? 'عميل حاسبة',
                 'client_phone' => $data['phone'] ?? '',
@@ -213,7 +225,14 @@ class CalculatorController extends Controller
                 'duration_years' => $durationYears,
                 'monthly_installment' => $validated['monthly_installment'] ?? 0,
                 'contact_type' => 'car_request',
-                'source' => 'طلب سيارة',
+                'source' => $sourcePlatform,
+                'utm_source' => $attribution['utm_source'] ?? null,
+                'utm_medium' => $attribution['utm_medium'] ?? null,
+                'utm_campaign' => $attribution['utm_campaign'] ?? null,
+                'utm_content' => $attribution['utm_content'] ?? null,
+                'utm_term' => $attribution['utm_term'] ?? null,
+                'click_id' => $attribution['click_id'] ?? null,
+                'referrer_url' => $attribution['referrer_url'] ?? null,
                 'status' => 'new',
                 'notes' => $calcNote,
             ]);

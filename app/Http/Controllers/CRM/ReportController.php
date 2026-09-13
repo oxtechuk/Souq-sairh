@@ -98,25 +98,50 @@ class ReportController extends Controller
             'avg_monthly' => (clone $base)->where('monthly_installment', '>', 0)->avg('monthly_installment') ?? 0,
         ];
 
-        // 5. Sources Analysis
-        $sourcesReport = (clone $base)->whereNotNull('source')
-            ->selectRaw('
-                source,
-                count(*) as total_bookings,
-                sum(case when status = \'sold\' then 1 else 0 end) as total_sold,
-                sum(case when status = \'rejected\' then 1 else 0 end) as total_rejected,
-                sum(case when status = \'interested\' then 1 else 0 end) as total_interested,
-                sum(case when status not in (\'sold\',\'rejected\',\'interested\') then 1 else 0 end) as total_new
-            ')
-            ->groupBy('source')
-            ->orderByDesc('total_bookings')
-            ->get()
-            ->map(function ($s) {
-                $s->conversion_rate = $s->total_bookings > 0
-                    ? round(($s->total_sold / $s->total_bookings) * 100, 1)
-                    : 0;
-                return $s;
-            });
+        // 5. Sources Analysis: Group and aggregate by normalized platform
+        $bookingsForSources = (clone $base)->get();
+        $sourcesGrouped = [];
+
+        foreach ($bookingsForSources as $b) {
+            $key = $b->normalized_source;
+            if (!isset($sourcesGrouped[$key])) {
+                $meta = $b->source_meta;
+                $sourcesGrouped[$key] = (object) [
+                    'key' => $key,
+                    'source' => $meta['label'],
+                    'icon' => $meta['icon'],
+                    'badge_bg' => $meta['badge_bg'],
+                    'badge_text' => $meta['badge_text'],
+                    'badge_border' => $meta['badge_border'],
+                    'total_bookings' => 0,
+                    'total_sold' => 0,
+                    'total_rejected' => 0,
+                    'total_interested' => 0,
+                    'total_new' => 0,
+                    'conversion_rate' => 0,
+                ];
+            }
+
+            $sourcesGrouped[$key]->total_bookings++;
+            if ($b->status === 'sold') {
+                $sourcesGrouped[$key]->total_sold++;
+            } elseif ($b->status === 'rejected') {
+                $sourcesGrouped[$key]->total_rejected++;
+            } elseif ($b->status === 'interested') {
+                $sourcesGrouped[$key]->total_interested++;
+            } else {
+                $sourcesGrouped[$key]->total_new++;
+            }
+        }
+
+        foreach ($sourcesGrouped as $key => $s) {
+            $s->conversion_rate = $s->total_bookings > 0
+                ? round(($s->total_sold / $s->total_bookings) * 100, 1)
+                : 0;
+        }
+
+        usort($sourcesGrouped, fn($a, $b) => $b->total_bookings <=> $a->total_bookings);
+        $sourcesReport = collect($sourcesGrouped);
 
         // 6. All bookings detail for the detail table
         $allBookings = (clone $base)
@@ -140,10 +165,14 @@ class ReportController extends Controller
 
         $contactSources = ContactSource::orderBy('sort_order')->orderBy('id')->get();
 
-        $bookingBySource = Booking::query()
-            ->selectRaw('source, count(*) as total')
-            ->groupBy('source')
-            ->pluck('total', 'source');
+        $bookingsAll = Booking::all();
+        $bookingBySourceGrouped = [];
+        foreach ($bookingsAll as $b) {
+            $label = $b->source_label;
+            $bookingBySourceGrouped[$label] = ($bookingBySourceGrouped[$label] ?? 0) + 1;
+        }
+        arsort($bookingBySourceGrouped);
+        $bookingBySource = collect($bookingBySourceGrouped);
 
         $leadsTotal = Lead::count();
         $bookingsTotal = Booking::count();
