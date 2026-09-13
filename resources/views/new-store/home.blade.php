@@ -63,12 +63,12 @@
                         <div id="hero-video-container" class="relative w-full max-w-[453px]" style="aspect-ratio: 453/614">
                             <div class="video-mask-wrapper w-full h-full">
                                 @if($heroVideo)
-                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop>
-                                        <source src="{{ asset('storage/' . $heroVideo) }}" type="video/mp4" />
+                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop muted>
+                                        <source src="{{ (str_starts_with($heroVideo, 'http') || str_starts_with($heroVideo, '//')) ? $heroVideo : asset('storage/' . $heroVideo) }}" type="video/mp4" />
                                         Your browser does not support the video tag.
                                     </video>
                                 @else
-                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop>
+                                    <video id="hero-video" class="w-full h-full object-cover" poster="{{ asset('new-store/images/hero-video-poster.png') }}" autoplay playsinline loop muted>
                                         <source src="{{ asset('new-store/images/videos/hero-video.mp4') }}" type="video/mp4" />
                                         Your browser does not support the video tag.
                                     </video>

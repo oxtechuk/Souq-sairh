@@ -249,6 +249,8 @@ Route::prefix('Souq-admin')->name('crm.')->middleware(['auth:employee', 'guard.e
         Route::get('general', [GeneralSettingController::class, 'index'])->name('general');
         Route::get('seo', [GeneralSettingController::class, 'seo'])->name('seo');
         Route::post('update', [GeneralSettingController::class, 'update'])->name('update');
+        Route::post('upload-hero-video', [GeneralSettingController::class, 'uploadHeroVideo'])->name('upload-hero-video');
+        Route::delete('delete-hero-video', [GeneralSettingController::class, 'deleteHeroVideo'])->name('delete-hero-video');
         Route::post('twilio-test', [GeneralSettingController::class, 'testTwilio'])->name('twilio.test');
 
         // التوصيات

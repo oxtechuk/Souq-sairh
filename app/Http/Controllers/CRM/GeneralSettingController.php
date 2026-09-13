@@ -56,6 +56,11 @@ class GeneralSettingController extends Controller
             }
         }
 
+        // Direct video URL support
+        if ($request->filled('hero_video_url')) {
+            Setting::updateOrCreate(['key' => 'hero_video'], ['value' => trim($request->hero_video_url)]);
+        }
+
         // Handle Social Media Array
         $socialIcons = $request->input('social_icon', []);
         $socialLinks = $request->input('social_link', []);
@@ -71,6 +76,21 @@ class GeneralSettingController extends Controller
             }
         }
         Setting::updateOrCreate(['key' => 'social_media'], ['value' => $socialMedia]);
+
+        // Delete Hero Video if requested
+        if ($request->boolean('delete_hero_video')) {
+            $oldVideo = Setting::where('key', 'hero_video')->value('value');
+            if ($oldVideo && !str_starts_with($oldVideo, 'http') && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldVideo)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldVideo);
+            }
+            Setting::where('key', 'hero_video')->delete();
+        }
+
+        // Check if hero_video was attempted to upload but failed at PHP level (size limits)
+        if ($request->file('hero_video') && !$request->file('hero_video')->isValid()) {
+            $errMsg = $request->file('hero_video')->getErrorMessage();
+            return back()->with('error', 'تعذر رفع الفيديو: ' . $errMsg . ' (يرجى التأكد من أن حجم الفيديو لا يتجاوز حد السيرفر، أو استخدم زر رفع الفيديو المخصص).');
+        }
 
         // Handle File Uploads (Only if new files are uploaded)
         $files = [
@@ -159,5 +179,79 @@ class GeneralSettingController extends Controller
                 'message' => __('تعذر الاتصال:').' '.e($e->getMessage()),
             ]);
         }
+    }
+
+    public function uploadHeroVideo(Request $request, CacheService $cache)
+    {
+        // Check if file was dropped due to post_max_size / upload_max_filesize before reaching Laravel
+        if (! $request->hasFile('hero_video')) {
+            $maxUpload = ini_get('upload_max_filesize');
+            $maxPost = ini_get('post_max_size');
+
+            return response()->json([
+                'success' => false,
+                'message' => "لم يتم استلام ملف الفيديو بشكل سليم. قد يكون حجم الملف أكبر من الحد المسموح به في السيرفر (upload_max_filesize: {$maxUpload}, post_max_size: {$maxPost}). يرجى ضغط الفيديو أو اختيار ملف أصغر.",
+            ], 422);
+        }
+
+        $file = $request->file('hero_video');
+
+        if (! $file->isValid()) {
+            $errMsg = $file->getErrorMessage();
+
+            return response()->json([
+                'success' => false,
+                'message' => "تعذر رفع الفيديو: {$errMsg}",
+            ], 422);
+        }
+
+        $request->validate([
+            'hero_video' => 'required|file|mimes:mp4,webm,mov,ogg,mkv,avi|max:512000',
+        ], [
+            'hero_video.required' => 'يرجى اختيار ملف فيديو للرفع.',
+            'hero_video.file' => 'الملف المحدد غير صالح.',
+            'hero_video.mimes' => 'صيغة الفيديو غير مدعومة. الصيغ المدعومة: MP4, WebM, MOV.',
+            'hero_video.max' => 'حجم الفيديو كبير جداً (الحد الأقصى 500 ميغابايت).',
+        ]);
+
+        $path = $file->store('settings/videos', 'public');
+
+        // Delete previous video file if exists and local
+        $oldVideo = Setting::where('key', 'hero_video')->value('value');
+        if ($oldVideo && ! str_starts_with($oldVideo, 'http') && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldVideo)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldVideo);
+        }
+
+        Setting::updateOrCreate(['key' => 'hero_video'], ['value' => $path]);
+        $cache->forget('settings.all');
+
+        return response()->json([
+            'success' => true,
+            'message' => __('تم رفع وحفظ فيديو الهيرو بنجاح!'),
+            'path' => $path,
+            'url' => asset('storage/'.$path),
+        ]);
+    }
+
+    public function deleteHeroVideo(Request $request, CacheService $cache)
+    {
+        $oldVideo = Setting::where('key', 'hero_video')->value('value');
+        if ($oldVideo) {
+            if (! str_starts_with($oldVideo, 'http') && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldVideo)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldVideo);
+            }
+            Setting::where('key', 'hero_video')->delete();
+        }
+
+        $cache->forget('settings.all');
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('تم حذف فيديو الهيرو والعودة للفيديو الافتراضي.'),
+            ]);
+        }
+
+        return back()->with('success', __('تم حذف فيديو الهيرو والعودة للفيديو الافتراضي.'));
     }
 }

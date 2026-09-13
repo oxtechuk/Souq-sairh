@@ -377,15 +377,31 @@
                                             <p class="text-muted small mb-0 mt-1">{{ __('يظهر هذا الفيديو في الجزء الأيمن من الهيرو الرئيسي بدلاً من الصورة الثابتة') }}</p>
                                         </div>
                                         <div class="card-body p-4 pt-2">
-                                            @if(isset($settings['hero_video']))
-                                            <div class="mb-3 rounded-4 overflow-hidden border" style="max-height:200px;">
-                                                <video src="{{ asset('storage/' . $settings['hero_video']) }}" class="w-100" style="max-height:200px;object-fit:cover;" muted controls></video>
+                                            {{-- Alert message container --}}
+                                            <div id="videoStatusAlert" class="alert d-none mb-3 py-2 px-3 rounded-3" style="font-size: 13px;"></div>
+
+                                            {{-- Video Preview Player Container --}}
+                                            <div id="videoPreviewWrapper" class="mb-3 {{ !empty($settings['hero_video']) ? '' : 'd-none' }}">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="small fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i>{{ __('الفيديو الحالي المعروض في الموقع') }}</span>
+                                                    @can('settings.manage')
+                                                    <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 rounded-pill" id="deleteCurrentVideoBtn" style="font-size: 11px;">
+                                                        <i class="bi bi-trash me-1"></i>{{ __('حذف الفيديو والرجوع للافتراضي') }}
+                                                    </button>
+                                                    @endcan
+                                                </div>
+                                                <div class="rounded-4 overflow-hidden border shadow-sm" style="max-height:220px; background:#000;">
+                                                    <video id="currentHeroVideoPlayer" src="{{ !empty($settings['hero_video']) ? ((str_starts_with($settings['hero_video'], 'http') || str_starts_with($settings['hero_video'], '//')) ? $settings['hero_video'] : asset('storage/' . $settings['hero_video'])) : '' }}" class="w-100" style="max-height:220px;object-fit:cover;" muted controls playsinline></video>
+                                                </div>
                                             </div>
-                                            @else
-                                            <div class="mb-3 bg-light rounded-4 d-flex align-items-center justify-content-center border border-dashed" style="min-height:120px;" id="videoEmptyPlaceholder">
-                                                <div class="text-muted text-center"><i class="bi bi-camera-video fs-2 d-block mb-1 opacity-50"></i><span class="small">{{ __('لم يُرفع فيديو بعد') }}</span></div>
+
+                                            {{-- Empty placeholder when no custom video --}}
+                                            <div class="mb-3 bg-light rounded-4 d-flex align-items-center justify-content-center border border-dashed {{ empty($settings['hero_video']) ? '' : 'd-none' }}" style="min-height:110px;" id="videoEmptyPlaceholder">
+                                                <div class="text-muted text-center py-3">
+                                                    <i class="bi bi-camera-video fs-2 d-block mb-1 opacity-50"></i>
+                                                    <span class="small">{{ __('يعمل حالياً الفيديو الترويجي الافتراضي للموقع') }}</span>
+                                                </div>
                                             </div>
-                                            @endif
 
                                             {{-- Custom Video Upload Zone --}}
                                             <div id="videoUploadZone" class="video-upload-zone" onclick="document.getElementById('heroVideoInput').click()">
@@ -394,23 +410,23 @@
                                                         <i class="bi bi-cloud-arrow-up-fill upload-icon"></i>
                                                     </div>
                                                     <div class="upload-text-wrap">
-                                                        <span class="upload-title">{{ __('اضغط لاختيار فيديو') }}</span>
-                                                        <span class="upload-sub">MP4, WebM &mdash; {{ __('حجم أقصى 500MB') }}</span>
+                                                        <span class="upload-title">{{ __('اضغط لاختيار فيديو من جهازك') }}</span>
+                                                        <span class="upload-sub">MP4, WebM, MOV &mdash; {{ __('يُفضل حجم خفيف للتحميل السريع') }}</span>
                                                     </div>
                                                     <button type="button" class="upload-btn">{{ __('اختر ملف') }}</button>
                                                 </div>
                                             </div>
 
-                                            {{-- Hidden real input --}}
-                                            <input type="file" name="hero_video" id="heroVideoInput" class="d-none" accept="video/mp4,video/webm">
+                                            {{-- Hidden real file input --}}
+                                            <input type="file" name="hero_video" id="heroVideoInput" class="d-none" accept="video/mp4,video/webm,video/quicktime,video/ogg">
 
                                             {{-- File Info + Progress (hidden by default) --}}
-                                            <div id="videoUploadInfo" class="video-upload-info d-none">
+                                            <div id="videoUploadInfo" class="video-upload-info d-none mt-3">
                                                 <div class="file-meta">
                                                     <div class="file-icon"><i class="bi bi-film"></i></div>
                                                     <div class="file-details">
                                                         <div class="file-name" id="videoFileName">...</div>
-                                                        <div class="file-size" id="videoFileSize">...</div>
+                                                        <div class="file-size text-muted" id="videoFileSize">...</div>
                                                     </div>
                                                     <button type="button" class="file-remove" id="videoRemoveBtn" title="{{ __('إلغاء') }}">
                                                         <i class="bi bi-x-circle-fill"></i>
@@ -418,21 +434,33 @@
                                                 </div>
                                                 <div class="progress-wrap mt-2">
                                                     <div class="progress-bar-bg">
-                                                        <div class="progress-bar-fill" id="videoProgressBar"></div>
+                                                        <div class="progress-bar-fill" id="videoProgressBar" style="width: 0%;"></div>
                                                     </div>
-                                                    <div class="progress-labels">
-                                                        <span id="videoProgressText" class="progress-pct">0%</span>
-                                                        <span id="videoProgressStatus" class="progress-status">{{ __('جاهز للرفع') }}</span>
+                                                    <div class="progress-labels d-flex justify-content-between mt-1">
+                                                        <span id="videoProgressText" class="progress-pct fw-bold">0%</span>
+                                                        <span id="videoProgressStatus" class="progress-status small">{{ __('جاهز للرفع') }}</span>
                                                     </div>
                                                 </div>
                                                 @can('settings.manage')
-                                                <button type="submit" id="saveVideoBtn" class="btn btn-success w-100 mt-3 d-none fw-bold" style="border-radius: 12px; padding: 10px;">
-                                                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>{{ __('حفظ الفيديو الآن') }}
+                                                <button type="button" id="uploadVideoNowBtn" class="btn btn-success w-100 mt-3 fw-bold shadow-sm" style="border-radius: 12px; padding: 11px;">
+                                                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>{{ __('رفع وحفظ الفيديو الآن') }}
                                                 </button>
                                                 @endcan
                                             </div>
 
-                                            <div class="mt-2 small text-muted"><i class="bi bi-info-circle me-1"></i>{{ __('الصيغ المدعومة: MP4 أو WebM — يُفضل دقة 1280×720 أو أعلى') }}</div>
+                                            {{-- Alternative: Direct Video URL --}}
+                                            <div class="mt-3 pt-3 border-top">
+                                                <label class="form-label fw-bold small text-muted d-flex align-items-center gap-1">
+                                                    <i class="bi bi-link-45deg"></i> {{ __('أو أدخل رابط فيديو مباشر (Direct MP4 URL)') }}
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="url" name="hero_video_url" id="heroVideoUrlInput" class="form-control bg-light border-0 shadow-none"
+                                                           style="font-size: 13px;" dir="ltr"
+                                                           placeholder="https://example.com/videos/hero.mp4"
+                                                           value="{{ !empty($settings['hero_video']) && (str_starts_with($settings['hero_video'], 'http') || str_starts_with($settings['hero_video'], '//')) ? $settings['hero_video'] : '' }}">
+                                                </div>
+                                                <small class="text-muted" style="font-size: 11px;">{{ __('إذا كان الفيديو مرفوعاً على خادم خارجي أو CDN، يمكنك وضع الرابط المباشر وسيعمل فوراً دون قيود حجم الرفع.') }}</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -854,61 +882,55 @@
 @section('scripts')
 <script>
 (function() {
-    const input    = document.getElementById('heroVideoInput');
-    const zone     = document.getElementById('videoUploadZone');
-    const info     = document.getElementById('videoUploadInfo');
-    const nameEl   = document.getElementById('videoFileName');
-    const sizeEl   = document.getElementById('videoFileSize');
-    const bar      = document.getElementById('videoProgressBar');
-    const pctEl    = document.getElementById('videoProgressText');
-    const statusEl = document.getElementById('videoProgressStatus');
-    const removeBtn = document.getElementById('videoRemoveBtn');
+    const input       = document.getElementById('heroVideoInput');
+    const zone        = document.getElementById('videoUploadZone');
+    const info        = document.getElementById('videoUploadInfo');
+    const nameEl      = document.getElementById('videoFileName');
+    const sizeEl      = document.getElementById('videoFileSize');
+    const bar         = document.getElementById('videoProgressBar');
+    const pctEl       = document.getElementById('videoProgressText');
+    const statusEl    = document.getElementById('videoProgressStatus');
+    const removeBtn   = document.getElementById('videoRemoveBtn');
+    const uploadBtn   = document.getElementById('uploadVideoNowBtn');
+    const alertBox    = document.getElementById('videoStatusAlert');
+    const previewWrap = document.getElementById('videoPreviewWrapper');
+    const emptyPlace  = document.getElementById('videoEmptyPlaceholder');
+    const player      = document.getElementById('currentHeroVideoPlayer');
+    const deleteBtn   = document.getElementById('deleteCurrentVideoBtn');
 
     if (!input) return;
+
+    function showAlert(type, message) {
+        if (!alertBox) return;
+        alertBox.className = 'alert alert-' + type + ' mb-3 py-2 px-3 rounded-3';
+        alertBox.innerHTML = '<i class="bi bi-' + (type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill') + ' me-2"></i>' + message;
+        alertBox.classList.remove('d-none');
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideAlert() {
+        if (alertBox) alertBox.classList.add('d-none');
+    }
 
     function formatSize(bytes) {
         if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
         return (bytes / 1024).toFixed(0) + ' KB';
     }
 
-    function simulateProgress(onDone) {
-        let pct = 0;
-        bar.style.width = '0%';
-        pctEl.textContent = '0%';
-        statusEl.textContent = '{{ __("يتم التحضير...") }}';
-
-        const interval = setInterval(() => {
-            // simulate fast until 85%, then slow
-            const step = pct < 60 ? 6 : pct < 85 ? 2 : 0.4;
-            pct = Math.min(pct + step, 95);
-            bar.style.width = pct + '%';
-            pctEl.textContent = Math.round(pct) + '%';
-            if (pct > 30)  statusEl.textContent = '{{ __("تم التحليل...") }}';
-            if (pct > 70)  statusEl.textContent = '{{ __("جاهز للحفظ...") }}';
-            if (pct >= 95) {
-                clearInterval(interval);
-                bar.style.width = '100%';
-                pctEl.textContent = '100%';
-                statusEl.textContent = '{{ __("✓ جاهز — اضغط حفظ لرفع الفيديو") }}';
-                bar.style.background = 'linear-gradient(90deg, #16a34a, #22c55e)';
-                document.getElementById('saveVideoBtn').classList.remove('d-none');
-                if (onDone) onDone();
-            }
-        }, 60);
-    }
-
     input.addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
 
-        // Show info card, hide upload zone
+        hideAlert();
         zone.style.display = 'none';
         info.classList.remove('d-none');
         nameEl.textContent = file.name;
         sizeEl.textContent = formatSize(file.size);
-        bar.style.background = 'linear-gradient(90deg, #EE1E26, #ff6b6b)';  // reset
-
-        simulateProgress();
+        bar.style.width = '0%';
+        bar.style.background = 'linear-gradient(90deg, #EE1E26, #ff6b6b)';
+        pctEl.textContent = '0%';
+        statusEl.textContent = '{{ __("جاهز للرفع — اضغط الزر بالأسفل للبدء") }}';
+        if (uploadBtn) uploadBtn.disabled = false;
     });
 
     removeBtn.addEventListener('click', function () {
@@ -917,8 +939,141 @@
         zone.style.display = '';
         bar.style.width = '0%';
         pctEl.textContent = '0%';
-        document.getElementById('saveVideoBtn').classList.add('d-none');
+        hideAlert();
     });
+
+    // Real AJAX Video Upload with Live Progress Bar
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', function () {
+            const file = input.files[0];
+            if (!file) {
+                showAlert('warning', 'يرجى اختيار ملف فيديو أولاً');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            removeBtn.style.display = 'none';
+            statusEl.textContent = '{{ __("جاري رفع الفيديو إلى السيرفر...") }}';
+            bar.style.background = 'linear-gradient(90deg, #EE1E26, #ff6b6b)';
+            hideAlert();
+
+            const formData = new FormData();
+            formData.append('hero_video', file);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route("crm.settings.upload-hero-video") }}', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.upload.onprogress = function (e) {
+                if (e.lengthComputable) {
+                    const pct = Math.min(Math.round((e.loaded / e.total) * 100), 99);
+                    bar.style.width = pct + '%';
+                    pctEl.textContent = pct + '%';
+                    if (pct >= 95) {
+                        statusEl.textContent = '{{ __("اكتمل الرفع، جاري معالجة وحفظ الفيديو في السيرفر...") }}';
+                    }
+                }
+            };
+
+            xhr.onload = function () {
+                uploadBtn.disabled = false;
+                removeBtn.style.display = '';
+
+                if (xhr.status === 200) {
+                    try {
+                        const res = JSON.parse(xhr.responseText);
+                        if (res.success) {
+                            bar.style.width = '100%';
+                            bar.style.background = 'linear-gradient(90deg, #16a34a, #22c55e)';
+                            pctEl.textContent = '100%';
+                            statusEl.textContent = '{{ __("✓ تم الحفظ بنجاح!") }}';
+
+                            showAlert('success', res.message || '{{ __("تم رفع وحفظ فيديو الهيرو بنجاح!") }}');
+
+                            // Update live preview
+                            if (player) {
+                                player.src = res.url;
+                                player.load();
+                            }
+                            if (previewWrap) previewWrap.classList.remove('d-none');
+                            if (emptyPlace) emptyPlace.classList.add('d-none');
+
+                            // Reset upload zone
+                            setTimeout(() => {
+                                input.value = '';
+                                info.classList.add('d-none');
+                                zone.style.display = '';
+                            }, 1500);
+                        } else {
+                            showAlert('danger', res.message || '{{ __("حدث خطأ أثناء حفظ الفيديو.") }}');
+                            statusEl.textContent = '{{ __("فشل الحفظ") }}';
+                        }
+                    } catch (e) {
+                        showAlert('danger', '{{ __("تم الرفع ولكن حدث خطأ في معالجة استجابة السيرفر.") }}');
+                    }
+                } else if (xhr.status === 413) {
+                    showAlert('danger', '{{ __("حجم الفيديو كبير جداً (413 Request Entity Too Large). يتجاوز الحد الأقصى المسموح به في خادم الويب. يرجى ضغط الفيديو بواسطة تطبيق ضغط أو اختيار فيديو بحجم أصغر، أو استخدام خيار الرابط المباشر.") }}');
+                    statusEl.textContent = '{{ __("حجم الفيديو كبير جداً") }}';
+                } else if (xhr.status === 419) {
+                    showAlert('danger', '{{ __("انتهت صلاحية الجلسة (419)، يرجى تحديث الصفحة والمحاولة مرة أخرى.") }}');
+                    statusEl.textContent = '{{ __("انتهت الجلسة") }}';
+                } else {
+                    let msg = '{{ __("تعذر رفع الفيديو") }} (كود: ' + xhr.status + ')';
+                    try {
+                        const res = JSON.parse(xhr.responseText);
+                        if (res.message) msg = res.message;
+                    } catch (e) {}
+                    showAlert('danger', msg);
+                    statusEl.textContent = '{{ __("حدث خطأ") }}';
+                }
+            };
+
+            xhr.onerror = function () {
+                uploadBtn.disabled = false;
+                removeBtn.style.display = '';
+                showAlert('danger', '{{ __("فشل الاتصال بالسيرفر أثناء رفع الفيديو. يرجى التأكد من اتصال الإنترنت وأن حجم الملف لا يتجاوز حد السيرفر.") }}');
+                statusEl.textContent = '{{ __("فشل الاتصال") }}';
+            };
+
+            xhr.send(formData);
+        });
+    }
+
+    // Delete Current Video Handler
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function () {
+            if (!confirm('{{ __("هل أنت متأكد من حذف الفيديو المخصص والرجوع للفيديو الترويجي الافتراضي للموقع؟") }}')) return;
+
+            deleteBtn.disabled = true;
+            fetch('{{ route("crm.settings.delete-hero-video") }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(r => r.json())
+            .then(res => {
+                deleteBtn.disabled = false;
+                if (res.success) {
+                    showAlert('success', res.message);
+                    if (previewWrap) previewWrap.classList.add('d-none');
+                    if (emptyPlace) emptyPlace.classList.remove('d-none');
+                    if (player) player.src = '';
+                    const urlInput = document.getElementById('heroVideoUrlInput');
+                    if (urlInput) urlInput.value = '';
+                } else {
+                    showAlert('danger', res.message || '{{ __("فشل حذف الفيديو") }}');
+                }
+            })
+            .catch(() => {
+                deleteBtn.disabled = false;
+                showAlert('danger', '{{ __("تعذر الاتصال بالسيرفر لحذف الفيديو") }}');
+            });
+        });
+    }
 
     // Drag & Drop
     zone.addEventListener('dragover',  (e) => { e.preventDefault(); zone.style.borderColor = '#EE1E26'; });
@@ -927,7 +1082,7 @@
         e.preventDefault();
         zone.style.borderColor = '';
         const file = e.dataTransfer.files[0];
-        if (file && (file.type === 'video/mp4' || file.type === 'video/webm')) {
+        if (file) {
             const dt = new DataTransfer();
             dt.items.add(file);
             input.files = dt.files;
