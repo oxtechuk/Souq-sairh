@@ -27,6 +27,14 @@ class DashboardController extends Controller
                 ];
             });
 
+            $weeklyBookings = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_weekly_bookings', 300, function () {
+                return Booking::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                    ->where('created_at', '>=', now()->subDays(6))
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+            });
+
             $recentBookings = Booking::with('car.brand')
                 ->latest()
                 ->limit(10)
@@ -41,12 +49,28 @@ class DashboardController extends Controller
                 'rejected' => Booking::where('assigned_to', $userId)->where('status', 'rejected')->count(),
             ];
 
+            $weeklyBookings = Booking::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                ->where('assigned_to', $userId)
+                ->where('created_at', '>=', now()->subDays(6))
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+
             $recentBookings = Booking::with('car.brand')
                 ->where('assigned_to', $userId)
                 ->latest()
                 ->limit(10)
                 ->get();
         }
+
+        // أكثر 6 سيارات عليها طلبات
+        $topCars = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_top_cars', 300, function () {
+            return Car::withCount('bookings')
+                ->with('brand')
+                ->orderByDesc('bookings_count')
+                ->limit(6)
+                ->get();
+        });
 
         $totals = \Illuminate\Support\Facades\Cache::remember('crm_dashboard_totals', 300, function () {
             return [
