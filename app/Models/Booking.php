@@ -60,6 +60,20 @@ class Booking extends Model
             'badge_border' => '#F8BBD0',
             'icon' => 'bi bi-instagram',
         ],
+        'haraj' => [
+            'label' => 'حراج',
+            'badge_bg' => '#E8F5E9',
+            'badge_text' => '#2E7D32',
+            'badge_border' => '#C8E6C9',
+            'icon' => 'bi bi-tag',
+        ],
+        'twitter' => [
+            'label' => 'إكس / تويتر',
+            'badge_bg' => '#F3F4F6',
+            'badge_text' => '#111827',
+            'badge_border' => '#E5E7EB',
+            'icon' => 'bi bi-twitter-x',
+        ],
         'internal' => [
             'label' => 'داخلي (CRM)',
             'badge_bg' => '#F4EFF0',
@@ -138,8 +152,13 @@ class Booking extends Model
         $click = strtolower(trim((string) $this->click_id));
         $ref = strtolower(trim((string) $this->referrer_url));
 
+        // Direct exact match
+        if (isset(self::SOURCES[$raw])) {
+            return $raw;
+        }
+
         // Snapchat
-        if (str_contains($raw, 'snap') || str_contains($utm, 'snap') || str_contains($click, 'sccid') || str_contains($ref, 'snapchat.com')) {
+        if (str_contains($raw, 'snap') || str_contains($utm, 'snap') || str_contains($ref, 'snapchat.com')) {
             return 'snapchat';
         }
 
@@ -149,18 +168,28 @@ class Booking extends Model
         }
 
         // Facebook
-        if (str_contains($raw, 'facebook') || str_contains($raw, 'fb') || str_contains($utm, 'facebook') || str_contains($utm, 'fb') || str_contains($click, 'fbclid') || str_contains($ref, 'facebook.com') || str_contains($ref, 'fb.com')) {
+        if (str_contains($raw, 'facebook') || str_contains($raw, 'fb') || str_contains($utm, 'facebook') || str_contains($utm, 'fb') || str_contains($ref, 'facebook.com') || str_contains($ref, 'fb.com')) {
             return 'facebook';
         }
 
         // Google
-        if (str_contains($raw, 'google') || str_contains($utm, 'google') || str_contains($click, 'gclid') || str_contains($click, 'wbraid') || str_contains($click, 'gbraid') || str_contains($ref, 'google.')) {
+        if (str_contains($raw, 'google') || str_contains($utm, 'google') || str_contains($ref, 'google.')) {
             return 'google';
         }
 
         // TikTok
-        if (str_contains($raw, 'tiktok') || str_contains($utm, 'tiktok') || str_contains($click, 'ttclid') || str_contains($ref, 'tiktok.com')) {
+        if (str_contains($raw, 'tiktok') || str_contains($utm, 'tiktok') || str_contains($ref, 'tiktok.com')) {
             return 'tiktok';
+        }
+
+        // Twitter / X
+        if (str_contains($raw, 'twitter') || str_contains($raw, 'x.com') || str_contains($utm, 'twitter') || str_contains($utm, 'x.com') || str_contains($ref, 'twitter.com') || str_contains($ref, 't.co')) {
+            return 'twitter';
+        }
+
+        // Haraj
+        if (str_contains($raw, 'haraj') || str_contains($raw, 'حراج') || str_contains($utm, 'haraj') || str_contains($ref, 'haraj.com.sa')) {
+            return 'haraj';
         }
 
         // Internal / CRM

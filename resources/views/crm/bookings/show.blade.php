@@ -96,10 +96,26 @@
                                 @endif
                             @elseif($label === __('مصدر الطلب'))
                                 @php $sm = $booking->source_meta; @endphp
-                                <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1"
-                                      style="font-size:11px; font-weight:700; background:{{ $sm['badge_bg'] }}; color:{{ $sm['badge_text'] }}; border:1px solid {{ $sm['badge_border'] }};">
-                                    <i class="{{ $sm['icon'] }}"></i> {{ $sm['label'] }}
-                                </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <form action="{{ route('crm.bookings.source', $booking) }}" method="POST" class="d-inline-flex align-items-center m-0">
+                                        @csrf @method('PATCH')
+                                        <select name="source" class="form-select form-select-sm"
+                                                style="font-size:11px;font-weight:700;border-radius:20px;padding:3px 26px 3px 10px;background-color:{{ $sm['badge_bg'] }};color:{{ $sm['badge_text'] }};border:1px solid {{ $sm['badge_border'] }};cursor:pointer;"
+                                                title="{{ __('انقر لتعديل مصدر الطلب يدوياً') }}"
+                                                onchange="this.form.submit()">
+                                            @foreach(\App\Models\Booking::SOURCES as $srcKey => $srcData)
+                                                <option value="{{ $srcKey }}" {{ $booking->normalized_source === $srcKey ? 'selected' : '' }}>
+                                                    {{ $srcData['label'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                    @if($booking->utm_campaign)
+                                        <span class="badge bg-light text-muted border" style="font-size:10px;" title="الحملة: {{ $booking->utm_campaign }}">
+                                            <i class="bi bi-tag-fill me-1"></i>{{ Str::limit($booking->utm_campaign, 15) }}
+                                        </span>
+                                    @endif
+                                </div>
                             @else
                                 {{ $value }}
                             @endif

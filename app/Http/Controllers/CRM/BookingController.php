@@ -108,6 +108,22 @@ class BookingController extends Controller
                         ->orWhere('utm_source', 'like', '%instagram%')
                         ->orWhere('referrer_url', 'like', '%instagram%');
                 });
+            } elseif ($src === 'haraj') {
+                $query->where(function ($q) {
+                    $q->where('source', 'haraj')
+                        ->orWhere('source', 'like', '%حراج%')
+                        ->orWhere('utm_source', 'like', '%haraj%')
+                        ->orWhere('referrer_url', 'like', '%haraj%');
+                });
+            } elseif ($src === 'twitter') {
+                $query->where(function ($q) {
+                    $q->where('source', 'twitter')
+                        ->orWhere('source', 'x.com')
+                        ->orWhere('utm_source', 'like', '%twitter%')
+                        ->orWhere('utm_source', 'like', '%x.com%')
+                        ->orWhere('referrer_url', 'like', '%twitter%')
+                        ->orWhere('referrer_url', 'like', '%t.co%');
+                });
             } elseif ($src === 'internal') {
                 $query->where(function ($q) {
                     $q->where('source', 'internal')
@@ -340,6 +356,38 @@ class BookingController extends Controller
         }
 
         return back()->with('success', 'تم توزيع الطلب على الموظف');
+    }
+
+    public function updateSource(Request $request, Booking $booking)
+    {
+        $user = auth('employee')->user() ?? auth()->user();
+        $isAdmin = $user && ($user->isAdmin() || $user->hasRole('admin') || $user->role === 'admin');
+
+        if (!$isAdmin && (int)$booking->assigned_to !== (int)$user?->id) {
+            abort(403, __('عفواً، لا تملك صلاحية تعديل مصدر هذا الطلب'));
+        }
+
+        $validSources = array_keys(Booking::SOURCES);
+        $request->validate([
+            'source' => 'required|string|in:' . implode(',', $validSources),
+        ]);
+
+        $oldSourceLabel = $booking->source_label;
+        $booking->update([
+            'source' => $request->source,
+        ]);
+        $newSourceLabel = $booking->fresh()->source_label;
+
+        try {
+            BookingNote::create([
+                'booking_id' => $booking->id,
+                'employee_id' => $user?->id,
+                'note' => 'تم تغيير مصدر الطلب من "' . $oldSourceLabel . '" إلى "' . $newSourceLabel . '"',
+                'type' => 'status_change',
+            ]);
+        } catch (\Throwable $e) {}
+
+        return back()->with('success', 'تم تحديث مصدر الطلب بنجاح إلى: ' . $newSourceLabel);
     }
 
     public function addNote(Request $request, Booking $booking)

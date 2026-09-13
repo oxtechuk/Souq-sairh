@@ -28,21 +28,39 @@ class AttributionService
         $utmContent = $request->query('utm_content');
         $utmTerm = $request->query('utm_term');
 
-        // Check click IDs
+        // Check click IDs and detect platform directly
         $fbclid = $request->query('fbclid');
         $gclid = $request->query('gclid') ?? $request->query('wbraid') ?? $request->query('gbraid');
         $sccid = $request->query('sccid') ?? $request->query('ScCid');
         $ttclid = $request->query('ttclid');
         $igshid = $request->query('igshid');
 
-        $clickId = $fbclid ?? $gclid ?? $sccid ?? $ttclid ?? $igshid;
+        $clickType = null;
+        $clickId = null;
+
+        if (!empty($sccid)) {
+            $clickType = 'snapchat';
+            $clickId = $sccid;
+        } elseif (!empty($fbclid)) {
+            $clickType = 'facebook';
+            $clickId = $fbclid;
+        } elseif (!empty($ttclid)) {
+            $clickType = 'tiktok';
+            $clickId = $ttclid;
+        } elseif (!empty($igshid)) {
+            $clickType = 'instagram';
+            $clickId = $igshid;
+        } elseif (!empty($gclid)) {
+            $clickType = 'google';
+            $clickId = $gclid;
+        }
 
         $referer = $request->headers->get('referer');
 
         $hasCampaignParams = $utmSource || $utmCampaign || $clickId;
 
-        // Infer platform
-        $platform = $this->inferPlatform($utmSource, $clickId, $referer);
+        // Infer platform (giving priority to explicit click ID platform, then UTM, then referer)
+        $platform = $this->inferPlatform($utmSource, $clickType, $referer);
 
         // If no explicit ad parameters or external referer found, check if we already have attribution
         if (!$hasCampaignParams && ($platform === 'website' || $platform === null)) {
@@ -51,8 +69,8 @@ class AttributionService
 
         $data = [
             'platform' => $platform ?: 'website',
-            'utm_source' => $utmSource ? substr($utmSource, 0, 191) : null,
-            'utm_medium' => $utmMedium ? substr($utmMedium, 0, 191) : null,
+            'utm_source' => $utmSource ? substr($utmSource, 0, 191) : ($clickType ?: null),
+            'utm_medium' => $utmMedium ? substr($utmMedium, 0, 191) : ($clickType ? 'cpc' : null),
             'utm_campaign' => $utmCampaign ? substr($utmCampaign, 0, 191) : null,
             'utm_content' => $utmContent ? substr($utmContent, 0, 191) : null,
             'utm_term' => $utmTerm ? substr($utmTerm, 0, 191) : null,
@@ -102,16 +120,19 @@ class AttributionService
     }
 
     /**
-     * Infer platform string from utm_source, click ID, or referer.
+     * Infer platform string from utm_source, clickType, or referer.
      */
-    public function inferPlatform(?string $utmSource, ?string $clickId = null, ?string $referer = null): string
+    public function inferPlatform(?string $utmSource, ?string $clickType = null, ?string $referer = null): string
     {
+        if (!empty($clickType)) {
+            return $clickType;
+        }
+
         $src = strtolower(trim((string) $utmSource));
-        $clk = strtolower(trim((string) $clickId));
         $ref = strtolower(trim((string) $referer));
 
         // Snapchat
-        if (str_contains($src, 'snap') || str_contains($clk, 'sccid') || str_contains($ref, 'snapchat.com')) {
+        if (str_contains($src, 'snap') || str_contains($ref, 'snapchat.com')) {
             return 'snapchat';
         }
 
@@ -121,17 +142,17 @@ class AttributionService
         }
 
         // Facebook / Meta
-        if (str_contains($src, 'facebook') || str_contains($src, 'fb') || str_contains($clk, 'fbclid') || str_contains($ref, 'facebook.com') || str_contains($ref, 'fb.com')) {
+        if (str_contains($src, 'facebook') || str_contains($src, 'fb') || str_contains($ref, 'facebook.com') || str_contains($ref, 'fb.com')) {
             return 'facebook';
         }
 
         // Google
-        if (str_contains($src, 'google') || str_contains($clk, 'gclid') || str_contains($clk, 'wbraid') || str_contains($clk, 'gbraid') || str_contains($ref, 'google.')) {
+        if (str_contains($src, 'google') || str_contains($ref, 'google.')) {
             return 'google';
         }
 
         // TikTok
-        if (str_contains($src, 'tiktok') || str_contains($clk, 'ttclid') || str_contains($ref, 'tiktok.com')) {
+        if (str_contains($src, 'tiktok') || str_contains($ref, 'tiktok.com')) {
             return 'tiktok';
         }
 
@@ -143,6 +164,11 @@ class AttributionService
         // WhatsApp
         if (str_contains($src, 'whatsapp') || str_contains($src, 'wa') || str_contains($ref, 'whatsapp.com')) {
             return 'whatsapp';
+        }
+
+        // Haraj
+        if (str_contains($src, 'haraj') || str_contains($ref, 'haraj.com.sa')) {
+            return 'haraj';
         }
 
         // Internal / CRM

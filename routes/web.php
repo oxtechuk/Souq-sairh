@@ -200,6 +200,7 @@ Route::prefix('Souq-admin')->name('crm.')->middleware(['auth:employee', 'guard.e
         Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
         Route::patch('bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.status');
         Route::patch('bookings/{booking}/assign', [BookingController::class, 'assign'])->name('bookings.assign');
+        Route::patch('bookings/{booking}/source', [BookingController::class, 'updateSource'])->name('bookings.source');
         Route::post('bookings/{booking}/note', [BookingController::class, 'addNote'])->name('bookings.note');
         Route::post('bookings/{booking}/documents', [BookingController::class, 'uploadDocument'])->name('bookings.documents.store');
         Route::delete('booking-documents/{document}', [BookingController::class, 'deleteDocument'])->name('bookings.documents.destroy');

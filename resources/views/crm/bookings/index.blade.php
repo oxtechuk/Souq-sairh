@@ -73,10 +73,12 @@
                             <option value="snapchat" {{ request('source') == 'snapchat' ? 'selected' : '' }}>🟡 {{ __('سناب شات') }}</option>
                             <option value="facebook" {{ request('source') == 'facebook' ? 'selected' : '' }}>🔵 {{ __('فيسبوك') }}</option>
                             <option value="google" {{ request('source') == 'google' ? 'selected' : '' }}>🟢 {{ __('إعلانات جوجل') }}</option>
-                            <option value="internal" {{ request('source') == 'internal' ? 'selected' : '' }}>🏢 {{ __('داخلي (CRM)') }}</option>
-                            <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>🌐 {{ __('الموقع المباشر') }}</option>
                             <option value="tiktok" {{ request('source') == 'tiktok' ? 'selected' : '' }}>⬛ {{ __('تيك توك') }}</option>
                             <option value="instagram" {{ request('source') == 'instagram' ? 'selected' : '' }}>🟣 {{ __('إنستغرام') }}</option>
+                            <option value="haraj" {{ request('source') == 'haraj' ? 'selected' : '' }}>🏷️ {{ __('حراج') }}</option>
+                            <option value="twitter" {{ request('source') == 'twitter' ? 'selected' : '' }}>✖️ {{ __('إكس / تويتر') }}</option>
+                            <option value="internal" {{ request('source') == 'internal' ? 'selected' : '' }}>🏢 {{ __('داخلي (CRM)') }}</option>
+                            <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>🌐 {{ __('الموقع المباشر') }}</option>
                         </select>
                     </div>
 
